@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->tinyInteger('rating')->default(0)->index();
             $table->text('comment')->nullable();
-            $table->foreignIdFor(User::class)->constrained()->onDelete('set null');
+            $table->foreignIdFor(User::class);
             $table->foreignIdFor(Product::class)->constrained()->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();

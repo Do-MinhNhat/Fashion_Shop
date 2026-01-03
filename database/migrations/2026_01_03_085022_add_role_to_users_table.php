@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->foreignIdFor(Role::class);
             $table->string('phone');
-            $table->boolen('gender')->default(1);
+            $table->boolean('gender')->default(1);
             $table->string('address')->nullable();
             $table->boolean('review')->default(1)->index();
             $table->boolean('status')->default(1)->index();

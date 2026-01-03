@@ -16,14 +16,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->nullable()->constrained()->onDelete('set null');
+            $table->foreignIdFor(User::class)->nullable();
             $table->string('name');
             $table->string('phone')->index();
             $table->string('address');
             $table->foreignIdFor(User::class, 'admin_id')->nullable()->constrained('users');
             $table->foreignIdFor(User::class, 'shipper_id')->nullable()->constrained('users');
-            $table->foreignIdFor(OrderStatus::class)->nullable();
-            $table->foreignIdFor(ShipStatus::class)->nullable();
+            $table->foreignIdFor(OrderStatus::class)->default(1);
+            $table->foreignIdFor(ShipStatus::class)->default(1);
             $table->decimal('total_price',15,2)->default(0)->index();
             $table->timestamps();
         });

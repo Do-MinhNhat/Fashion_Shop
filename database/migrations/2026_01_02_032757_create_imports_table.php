@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('imports', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained()->onDelete('set null');
+            $table->foreignIdFor(User::class);
             $table->decimal('total_price',15,2)->index();
             $table->timestamps();
         });
