@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('slides', function (Blueprint $table) {
             $table->id();
+            $table->string('image')->default('default.png');
+            $table->string('url');
+            $table->boolean('status')->index();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

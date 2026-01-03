@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Product;
+use App\Models\Tag;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('images', function (Blueprint $table) {
+        Schema::create('product_tags', function (Blueprint $table) {
             $table->foreignIdFor(Product::class)->constrained()->onDelete('cascade');
-            $table->string('url');
-            $table->timestamps();
+            $table->foreignIdFor(Tag::class)->constrained()->onDelete('cascade');
+            $table->primary(['product_id','tag_id']);
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('images');
+        Schema::dropIfExists('product_tags');
     }
 };
