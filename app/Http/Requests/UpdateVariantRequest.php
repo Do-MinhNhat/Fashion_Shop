@@ -6,29 +6,20 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateVariantRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
-        ];
-    }
-    public function messages(): array
-    {
-        return [
-            //
+            'product_id'   => 'required|exists:products,id',
+            'color_id'     => 'required|exists:colors,id',
+            'size_id'      => 'required|exists:sizes,id',
+            'price'        => 'required|numeric|min:0',
+            'sale_price'   => 'nullable|numeric|min:0|lte:price',
+            'quantity'     => 'required|integer|min:0',
         ];
     }
 }

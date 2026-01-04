@@ -19,7 +19,7 @@ class UpdateBrandRequest extends FormRequest
         return [
             'name'  => 'required|string|max:255',
             'slug'  => 'required|string|max:255|unique:brands,slug,' . $brandId,
-            'image' => 'nullable|string|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|string|max:255',
         ];
     }
 
@@ -28,6 +28,7 @@ class UpdateBrandRequest extends FormRequest
         return [
             'name.required' => 'Tên thương hiệu không được để trống',
             'slug.unique'   => 'Slug đã tồn tại',
+            'image.string'  => 'Image phải là chuỗi (URL hoặc path)',
         ];
     }
 }
