@@ -2,14 +2,18 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         $users = [
@@ -18,7 +22,7 @@ class UserSeeder extends Seeder
                 'email' => 'huy@gmail.com',
                 'role_id' => 1,
                 'phone' => '0123456789',
-                'gender' => 1,
+                'gender' => 'male',
                 'address' => 'TP Hồ Chí Minh',
                 'review' => 1,
                 'status' => 1,
@@ -28,7 +32,7 @@ class UserSeeder extends Seeder
                 'email' => 'nhat@gmail.com',
                 'role_id' => 1,
                 'phone' => '0912345678',
-                'gender' => 1,
+                'gender' => 'male',
                 'address' => 'TP Hồ Chí Minh',
                 'review' => 1,
                 'status' => 1,
@@ -38,7 +42,7 @@ class UserSeeder extends Seeder
                 'email' => 'cuong@gmail.com',
                 'role_id' => 1,
                 'phone' => '0912345678',
-                'gender' => 1,
+                'gender' => 'male',
                 'address' => 'TP Hồ Chí Minh',
                 'review' => 1,
                 'status' => 1,
@@ -48,7 +52,7 @@ class UserSeeder extends Seeder
                 'email' => 'duong@gmail.com',
                 'role_id' => 1,
                 'phone' => '0912345678',
-                'gender' => 1,
+                'gender' => 'male',
                 'address' => 'TP Hồ Chí Minh',
                 'review' => 1,
                 'status' => 1,

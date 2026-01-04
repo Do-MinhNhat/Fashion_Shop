@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Size;
 use App\Models\Category;
@@ -36,4 +37,3 @@ class SizeSeeder extends Seeder
         }
     }
 }
-
