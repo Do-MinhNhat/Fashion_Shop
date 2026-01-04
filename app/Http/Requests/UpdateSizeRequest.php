@@ -25,4 +25,10 @@ class UpdateSizeRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

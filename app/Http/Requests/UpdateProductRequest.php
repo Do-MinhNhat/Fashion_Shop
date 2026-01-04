@@ -25,4 +25,10 @@ class UpdateProductRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

@@ -25,4 +25,10 @@ class StoreProductRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

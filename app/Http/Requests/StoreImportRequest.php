@@ -25,4 +25,10 @@ class StoreImportRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

@@ -25,4 +25,10 @@ class StoreCategoryRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

@@ -25,4 +25,10 @@ class UpdateOrderStatusRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

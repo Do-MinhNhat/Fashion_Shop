@@ -25,4 +25,10 @@ class UpdateShipStatusRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

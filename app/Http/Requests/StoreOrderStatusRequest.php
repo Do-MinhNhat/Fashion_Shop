@@ -25,4 +25,10 @@ class StoreOrderStatusRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

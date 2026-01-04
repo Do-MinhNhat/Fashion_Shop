@@ -25,4 +25,10 @@ class StoreReviewRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

@@ -25,4 +25,10 @@ class StoreCartDetailRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

@@ -25,4 +25,10 @@ class UpdateSlideRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

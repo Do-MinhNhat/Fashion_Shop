@@ -25,4 +25,10 @@ class StoreSlideRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }

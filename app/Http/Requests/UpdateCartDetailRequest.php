@@ -25,4 +25,10 @@ class UpdateCartDetailRequest extends FormRequest
             //
         ];
     }
+    public function messages(): array
+    {
+        return [
+            //
+        ];
+    }
 }
