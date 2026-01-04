@@ -14,10 +14,11 @@ return new class extends Migration
     {
         Schema::create('sizes', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->foreignIdFor(Category::class)->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
-            $table->softDeletes();
+
+            $table->unique(['name', 'category_id']);
         });
     }
 
