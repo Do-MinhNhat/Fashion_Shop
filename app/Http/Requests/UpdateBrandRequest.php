@@ -19,7 +19,7 @@ class UpdateBrandRequest extends FormRequest
         return [
             'name'  => 'required|string|max:255',
             'slug'  => 'required|string|max:255|unique:brands,slug,' . $brandId,
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|string|mimes:jpg,jpeg,png,webp|max:2048',
         ];
     }
 
