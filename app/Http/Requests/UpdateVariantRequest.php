@@ -22,4 +22,25 @@ class UpdateVariantRequest extends FormRequest
             'quantity'     => 'required|integer|min:0',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'product_id.required' => 'Vui lòng chọn sản phẩm',
+            'product_id.exists'   => 'Sản phẩm không tồn tại',
+            'color_id.required'   => 'Vui lòng chọn màu sắc',
+            'color_id.exists'     => 'Màu sắc không tồn tại',
+            'size_id.required'    => 'Vui lòng chọn size',
+            'size_id.exists'      => 'Size không tồn tại',
+            'price.required'      => 'Giá sản phẩm không được để trống',
+            'price.numeric'       => 'Giá sản phẩm phải là số',
+            'price.min'           => 'Giá sản phẩm phải lớn hơn hoặc bằng 0',
+            'sale_price.numeric'  => 'Giá khuyến mãi phải là số',
+            'sale_price.min'      => 'Giá khuyến mãi phải lớn hơn hoặc bằng 0',
+            'sale_price.lte'      => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc',
+            'quantity.required'   => 'Số lượng không được để trống',
+            'quantity.integer'    => 'Số lượng phải là số nguyên',
+            'quantity.min'        => 'Số lượng phải lớn hơn hoặc bằng 0',
+        ];
+    }
 }
