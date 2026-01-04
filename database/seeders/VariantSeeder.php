@@ -12,23 +12,16 @@ class VariantSeeder extends Seeder
 {
     public function run(): void
     {
-        $products = Product::all();
-        $colors = Color::all();
-        $sizes = Size::all();
+        
+        $data = [
+            ['product_id' => 1, 'color_id' => 1, 'size_id' => 1, 'price' => 550000, 'sale_price' => 499000, 'quantity' => 100],
+            ['product_id' => 1, 'color_id' => 1, 'size_id' => 2, 'price' => 550000, 'sale_price' => 499000, 'quantity' => 80],
+            ['product_id' => 2, 'color_id' => 2, 'size_id' => 1, 'price' => 350000, 'sale_price' => null, 'quantity' => 50],
+            ['product_id' => 3, 'color_id' => 3, 'size_id' => 3, 'price' => 250000, 'sale_price' => 200000, 'quantity' => 30],
+        ];
 
-        foreach ($products as $product) {
-            foreach ($colors as $color) {
-                foreach ($sizes as $size) {
-                    Variant::create([
-                        'product_id' => $product->id,
-                        'color_id' => $color->id,
-                        'size_id' => $size->id,
-                        'price' => rand(200000, 800000),
-                        'sale_price' => rand(150000, 600000),
-                        'quantity' => rand(5, 50),
-                    ]);
-                }
-            }
+        foreach ($data as $item) {
+            Variant::create($item);
         }
     }
 }

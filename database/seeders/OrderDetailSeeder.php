@@ -11,32 +11,15 @@ class OrderDetailSeeder extends Seeder
 {
     public function run(): void
     {
-        $order = Order::first();
-        $variants = Variant::take(3)->get();
+       $data = [
+            ['order_id' => 1, 'variant_id' => 1, 'quantity' => 1, 'price' => 499000],
+            ['order_id' => 2, 'variant_id' => 1, 'quantity' => 2, 'price' => 499000],
+            ['order_id' => 3, 'variant_id' => 3, 'quantity' => 1, 'price' => 350000],
+            ['order_id' => 4, 'variant_id' => 4, 'quantity' => 1, 'price' => 200000],
+        ];
 
-        if (!$order || $variants->isEmpty()) {
-            return;
+        foreach ($data as $item) {
+            OrderDetail::create($item);
         }
-
-        $total = 0;
-
-        foreach ($variants as $variant) {
-            $quantity = rand(1, 3);
-            $price = $variant->sale_price ?? $variant->price;
-
-            OrderDetail::create([
-                'order_id' => $order->id,
-                'variant_id' => $variant->id,
-                'quantity' => $quantity,
-                'price' => $price,
-            ]);
-
-            $total += $quantity * $price;
-        }
-
-        // cập nhật tổng tiền đơn hàng
-        $order->update([
-            'total_price' => $total,
-        ]);
     }
 }

@@ -12,26 +12,55 @@ class OrderSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::where('role_id', 2)->first();
-        $admin = User::where('role_id', 1)->first();
+        $data = [
+            [
+                'user_id' => 1, 
+                'name' => 'Nguyễn Văn Hải', 
+                'phone' => '0905123456', 
+                'address' => '123 Lê Duẩn, Đà Nẵng', 
+                'admin_id' => 1, 
+                'shipper_id' => 2, 
+                'order_status_id' => 1, 
+                'ship_status_id' => 1, 
+                'total_price' => 499000
+            ],
+            [
+                'user_id' => 1, 
+                'name' => 'Nguyễn Văn Hải', 
+                'phone' => '0905123456', 
+                'address' => '123 Lê Duẩn, Đà Nẵng', 
+                'admin_id' => 1, 
+                'shipper_id' => 2, 
+                'order_status_id' => 4, 
+                'ship_status_id' => 3, 
+                'total_price' => 998000
+            ],
+            [
+                'user_id' => 3, 
+                'name' => 'Trần Thị Thu Thảo', 
+                'phone' => '0914888999', 
+                'address' => '456 Cách Mạng Tháng 8, TP HCM', 
+                'admin_id' => 1, 
+                'shipper_id' => 2, 
+                'order_status_id' => 2, 
+                'ship_status_id' => 2, 
+                'total_price' => 350000
+            ],
+            [
+                'user_id' => 4, 
+                'name' => 'Lê Minh Tâm', 
+                'phone' => '0935111222', 
+                'address' => '78 Phan Chu Trinh, Hà Nội', 
+                'admin_id' => 1, 
+                'shipper_id' => 2, 
+                'order_status_id' => 1, 
+                'ship_status_id' => 1, 
+                'total_price' => 200000
+            ],
+        ];
 
-        $orderStatus = OrderStatus::first();
-        $shipStatus = ShipStatus::first();
-
-        if (!$user || !$admin || !$orderStatus || !$shipStatus) {
-            return;
+        foreach ($data as $item) {
+            Order::create($item);
         }
-
-        Order::create([
-            'user_id' => $user->id,
-            'name' => $user->name,
-            'phone' => $user->phone,
-            'address' => $user->address,
-            'admin_id' => $admin->id,
-            'shipper_id' => null,
-            'order_status_id' => $orderStatus->id,
-            'ship_status_id' => $shipStatus->id,
-            'total_price' => 0,
-        ]);
     }
 }
