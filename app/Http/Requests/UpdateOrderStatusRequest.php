@@ -21,14 +21,18 @@ class UpdateOrderStatusRequest extends FormRequest
      */
     public function rules(): array
     {
+        $orderStatusId = $this->route('order_status');
         return [
-            //
+            'name' => 'required|string|max:255|unique:order_statuses,name,' . $orderStatusId,
         ];
     }
     public function messages(): array
     {
         return [
-            //
+            'name.required' => 'Tên trạng thái không được để trống.',
+            'name.string'   => 'Tên trạng thái phải là chuỗi ký tự.',
+            'name.max'      => 'Tên trạng thái không được vượt quá 255 ký tự.',
+            'name.unique'   => 'Tên trạng thái này đã tồn tại.',
         ];
     }
 }

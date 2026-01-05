@@ -22,13 +22,16 @@ class UpdateCartDetailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'quantity' => 'required|integer|min:1|max:100',
         ];
     }
     public function messages(): array
     {
         return [
-            //
+            'quantity.required' => 'Số lượng không được để trống.',
+            'quantity.integer'  => 'Số lượng phải là một con số.',
+            'quantity.min'      => 'Số lượng sản phẩm tối thiểu phải là 1.',
+            'quantity.max'      => 'Số lượng sản phẩm tối đa cho mỗi mục là 100.',
         ];
     }
 }
