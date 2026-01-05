@@ -2,6 +2,19 @@
 
 namespace Database\Seeders;
 
+<<<<<<< HEAD
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class OrderDetailSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        //
+=======
 use Illuminate\Database\Seeder;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -21,5 +34,6 @@ class OrderDetailSeeder extends Seeder
         foreach ($data as $item) {
             OrderDetail::create($item);
         }
+>>>>>>> 8f1f8c4ee490de5ca1b4469fa863122e3f1bce93
     }
 }

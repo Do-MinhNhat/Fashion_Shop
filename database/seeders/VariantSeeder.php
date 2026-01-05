@@ -12,7 +12,7 @@ class VariantSeeder extends Seeder
 {
     public function run(): void
     {
-        
+
         $data = [
             ['product_id' => 1, 'color_id' => 1, 'size_id' => 1, 'price' => 550000, 'sale_price' => 499000, 'quantity' => 100],
             ['product_id' => 1, 'color_id' => 1, 'size_id' => 2, 'price' => 550000, 'sale_price' => 499000, 'quantity' => 80],
