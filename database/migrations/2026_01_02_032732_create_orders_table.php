@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('address');
             $table->foreignIdFor(User::class, 'admin_id')->nullable()->constrained('users');
             $table->foreignIdFor(User::class, 'shipper_id')->nullable()->constrained('users');
-            $table->foreignIdFor(OrderStatus::class)->default(1);
-            $table->foreignIdFor(ShipStatus::class)->default(1);
+            $table->foreignIdFor(OrderStatus::class)->constrained()->default(1);
+            $table->foreignIdFor(ShipStatus::class)->constrained()->default(1);
             $table->decimal('total_price',15,2)->default(0)->index();
             $table->timestamps();
         });

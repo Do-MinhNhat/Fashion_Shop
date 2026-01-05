@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('comment')->nullable();
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Product::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(User::class, 'replier')->nullable();
+            $table->foreignIdFor(User::class, 'replier')->nullable()->constrained('users');
             $table->text('reply')->nullable();
             $table->timestamp('reply_at')->nullable();
             $table->timestamps();
