@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique();
-            $table->string('image')->nullable();
+            $table->boolean('status')->default(1)->index();
+            $table->string('image')->nullable()->default('default-brand.png');
             $table->timestamps();
             $table->softDeletes();
         });

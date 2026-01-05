@@ -9,17 +9,15 @@ class ShipStatusSeeder extends Seeder
 {
     public function run(): void
     {
-        $statuses = [
-            'Chưa giao',
-            'Đang giao',
-            'Đã giao',
-            'Giao thất bại',
+        $data = [
+            ['name'=>'Chưa giao'],
+            ['name'=>'Đang giao'],
+            ['name'=>'Đã giao'],
+            ['name'=>'Giao thất bại'],
         ];
 
-        foreach ($statuses as $name) {
-            ShipStatus::create([
-                'name' => $name,
-            ]);
+        foreach ($data as $item) {
+            ShipStatus::create($item);
         }
     }
 }

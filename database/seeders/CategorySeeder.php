@@ -18,11 +18,7 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($data as $item) {
-            Category::create([
-                'name' => $item['name'],
-                'slug' => $item['slug'],
-                'status' => 1,
-            ]);
+            Category::create($item);
         }
     }
 }

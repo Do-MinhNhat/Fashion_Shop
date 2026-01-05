@@ -10,17 +10,15 @@ class ColorSeeder extends Seeder
 {
     public function run(): void
     {
-        $colors = [
-            'Đen',
-            'Trắng',
-            'Đỏ',
-            'Xanh dương',
+        $data = [
+            ['name' => 'Đen'],
+            ['name' => 'Trắng'],
+            ['name' => 'Đỏ'],
+            ['name' => 'Xanh dương'],
         ];
 
-        foreach ($colors as $name) {
-            Color::create([
-                'name' => $name,
-            ]);
+        foreach ($data as $item) {
+            Color::create($item);
         }
     }
 }

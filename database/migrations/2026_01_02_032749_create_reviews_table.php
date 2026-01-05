@@ -14,10 +14,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reviews', function (Blueprint $table) {
+            $table->id();
             $table->tinyInteger('rating')->default(0)->index();
             $table->text('comment')->nullable();
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Product::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(User::class, 'replier')->nullable();
+            $table->text('reply')->nullable();
+            $table->timestamp('reply_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->unique(['user_id', 'product_id']);

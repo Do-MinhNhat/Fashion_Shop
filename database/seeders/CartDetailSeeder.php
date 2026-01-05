@@ -22,6 +22,5 @@ class CartDetailSeeder extends Seeder
         foreach ($data as $item) {
             CartDetail::create($item);
         }
-
     }
 }

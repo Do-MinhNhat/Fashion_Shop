@@ -16,64 +16,51 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $products = [
+        $data = [
             [
                 'name' => 'Áo thun nam basic',
+                'slug' => 'ao-thun-nam-basic',
                 'description' => 'Áo thun cotton 100%, thoáng mát, dễ phối đồ.',
                 'thumbnail' => 'tee.jpg',
                 'rating' => 4.5,
                 'view' => 120,
-                'category_slug' => 'tee',
-                'brand_slug' => 'canifa',
+                'category_id' => 1,
+                'brand_id' => 1,
             ],
             [
                 'name' => 'Quần jean slimfit',
+                'slug' => 'quan-jean-slimfit',
                 'description' => 'Quần jean dáng slimfit, co giãn nhẹ.',
                 'thumbnail' => 'jean.jpg',
                 'rating' => 4.3,
                 'view' => 90,
-                'category_slug' => 'pants',
-                'brand_slug' => 'ivy-moda',
+                'category_id' => 2,
+                'brand_id' => 2,
             ],
             [
                 'name' => 'Áo khoác hoodie',
+                'slug' => 'ao-khoac-hoodie',
                 'description' => 'Áo khoác hoodie trẻ trung, giữ ấm tốt.',
                 'thumbnail' => 'hoodie.jpg',
                 'rating' => 4.7,
                 'view' => 150,
-                'category_slug' => 'jacket',
-                'brand_slug' => 'gucci',
+                'category_id' => 3,
+                'brand_id' => 3,
             ],
             [
                 'name' => 'Giày sneaker thể thao',
+                'slug' => 'giay-sneaker-the-thao',
                 'description' => 'Giày sneaker năng động, phù hợp đi học và đi chơi.',
                 'thumbnail' => 'sneaker.jpg',
                 'rating' => 4.6,
                 'view' => 200,
-                'category_slug' => 'shoes',
-                'brand_slug' => 'chanel',
+                'category_id' => 4,
+                'brand_id' => 4,
             ],
         ];
 
-        foreach ($products as $item) {
-            $category = Category::where('slug', $item['category_slug'])->first();
-            $brand = Brand::where('slug', $item['brand_slug'])->first();
-
-            if (!$category || !$brand) {
-                continue;
-            }
-
-            Product::create([
-                'name' => $item['name'],
-                'slug' => Str::slug($item['name']),
-                'description' => $item['description'],
-                'thumbnail' => $item['thumbnail'],
-                'rating' => $item['rating'],
-                'status' => 1,
-                'view' => $item['view'],
-                'category_id' => $category->id,
-                'brand_id' => $brand->id,
-            ]);
+        foreach ($data as $item) {
+            Product::create($item);
         }
     }
 }
