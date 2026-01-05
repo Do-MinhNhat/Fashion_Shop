@@ -16,59 +16,47 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Nguyen Hoang Huy',
                 'email' => 'huy@gmail.com',
+                'password' => Hash::make('12345678'),
                 'role_id' => 1,
                 'phone' => '0123456789',
-                'gender' => 'male',
+                'gender' => 1,
                 'address' => 'TP Hồ Chí Minh',
-                'review' => null,
-                'status' => 1,
+                'review' => 0,
             ],
             [
                 'name' => 'Do Minh Nhat',
                 'email' => 'nhat@gmail.com',
+                'password' => Hash::make('12345678'),
                 'role_id' => 1,
                 'phone' => '0912345678',
-                'gender' => 'male',
+                'gender' => 1,
                 'address' => 'TP Hồ Chí Minh',
-                'review' => null,
-                'status' => 1,
+                'review' => 1,
             ],
             [
                 'name' => 'Truong Manh Cuong',
                 'email' => 'cuong@gmail.com',
+                'password' => Hash::make('12345678'),
                 'role_id' => 1,
                 'phone' => '0912345678',
-                'gender' => 'male',
+                'gender' => 1,
                 'address' => 'TP Hồ Chí Minh',
-                'review' => null,
-                'status' => 1,
+                'review' => 1,
             ],
             [
                 'name' => 'Nguyen Thanh Duong',
                 'email' => 'duong@gmail.com',
+                'password' => Hash::make('12345678'),
                 'role_id' => 1,
                 'phone' => '0912345678',
-                'gender' => 'male',
+                'gender' => 1,
                 'address' => 'TP Hồ Chí Minh',
-                'review' => null,
-                'status' => 1,
+                'review' => 1,
             ],
         ];
 
         foreach ($users as $item) {
-            User::create([
-                'name' => $item['name'],
-                'email' => $item['email'],
-                'email_verified_at' => Carbon::now(),
-                'password' => Hash::make('1'),
-                'remember_token' => Str::random(10),
-                'role_id' => $item['role_id'],
-                'phone' => $item['phone'],
-                'gender' => $item['gender'],
-                'address' => $item['address'],
-                'review' => $item['review'],
-                'status' => $item['status'],
-            ]);
+            User::create($item);
         }
     }
 }

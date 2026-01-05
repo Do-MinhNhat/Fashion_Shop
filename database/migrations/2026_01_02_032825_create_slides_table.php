@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('image')->default('default.png');
             $table->string('url');
-            $table->boolean('status')->index();
+            $table->boolean('status')->default(1)->index();
             $table->timestamps();
             $table->softDeletes();
         });

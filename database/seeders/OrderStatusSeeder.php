@@ -9,18 +9,16 @@ class OrderStatusSeeder extends Seeder
 {
     public function run(): void
     {
-        $statuses = [
-            'Chờ xác nhận',
-            'Đã xác nhận',
-            'Đang xử lý',
-            'Hoàn thành',
-            'Đã hủy',
+        $data = [
+            ['name' => 'Chờ xác nhận'],
+            ['name' => 'Đã xác nhận'],
+            ['name' => 'Đang xử lý'],
+            ['name' => 'Hoàn thành'],
+            ['name' => 'Đã hủy'],
         ];
 
-        foreach ($statuses as $name) {
-            OrderStatus::create([
-                'name' => $name,
-            ]);
+        foreach ($data as $item) {
+            OrderStatus::create($item);
         }
     }
 }

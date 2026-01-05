@@ -9,26 +9,27 @@ class SlideSeeder extends Seeder
 {
     public function run(): void
     {
-        $slides = [
+        $data = [
             [
                 'image' => 'slide-1.jpg',
                 'url' => '/products',
-                'status' => 1,
             ],
             [
                 'image' => 'slide-2.jpg',
                 'url' => '/category/tee',
-                'status' => 1,
             ],
             [
                 'image' => 'slide-3.jpg',
                 'url' => '/category/shoes',
-                'status' => 1,
+            ],
+            [
+                'image' => 'slide-4.jpg',
+                'url' => '/category/stuff',
             ],
         ];
 
-        foreach ($slides as $slide) {
-            Slide::create($slide);
+        foreach ($data as $item) {
+            Slide::create($item);
         }
     }
 }
