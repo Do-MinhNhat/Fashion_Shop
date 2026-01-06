@@ -22,7 +22,18 @@ class UpdateContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'name'     => 'nullable|string|max:255',
+        'url'      => 'nullable|string|max:255',
+        'status'   => 'nullable|boolean',
         ];
     }
+     public function messages(): array
+     {
+        return[
+        'name.max' => 'Tên liên hệ không được vượt quá 255 ký tự',
+        'url.max' => 'Đường dẫn không được vượt quá 255 ký tự',
+        'status.boolean' => 'Trạng thái không hợp lệ',
+        ];
+     }
+
 }

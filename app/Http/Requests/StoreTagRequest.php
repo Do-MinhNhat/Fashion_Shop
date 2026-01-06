@@ -22,13 +22,20 @@ class StoreTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+          'name' => 'required|string|max:255|unique:tags,name',
+            'slug' => 'required|string|max:255|unique:tags,slug',
         ];
     }
     public function messages(): array
     {
         return [
-            //
+            'name.required' => 'Tên tag không được để trống',
+            'name.max'      => 'Tên tag tối đa 255 ký tự',
+            'name.unique'   => 'Tên tag đã tồn tại',
+
+            'slug.required' => 'Slug không được để trống',
+            'slug.max'      => 'Slug tối đa 255 ký tự',
+            'slug.unique'   => 'Slug đã tồn tại',
         ];
     }
 }

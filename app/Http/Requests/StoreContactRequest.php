@@ -22,7 +22,22 @@ class StoreContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+        'name'     => 'required|string|max:255',
+        'url'=> 'required|string|max:255',
+        'status' => 'required|boolean',
         ];
     }
+     public function messages(): array
+     {
+        return [
+        'name.required' => 'Tên liên hệ không được để trống',
+        'name.max' => 'Tên liên hệ không được vượt quá 255 ký tự',
+
+        'url.required' => 'Tên đường dẫn không được để trống',
+        'url.max' => 'Đường dẫn không được vượt quá 255 ký tự',
+
+        'status.required' => 'Trạng thái không được để trống',
+        'status.boolean' => 'Trạng thái không hợp lệ',
+        ];
+     }
 }
