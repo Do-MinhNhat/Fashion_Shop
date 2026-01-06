@@ -22,13 +22,19 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'    => 'required|string|max:255',
+             'phone'   => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+             'address' => 'required|string|max:500',
         ];
     }
     public function messages(): array
     {
         return [
-            //
+            'name.required'    => 'Vui lòng nhập tên người nhận.',
+            'phone.required'   => 'Vui lòng nhập số điện thoại.',
+            'phone.regex'      => 'Số điện thoại không đúng định dạng.',
+            'phone.min'        => 'Số điện thoại phải có ít nhất 10 chữ số.',
+             'address.required' => 'Vui lòng nhập địa chỉ giao hàng.',
         ];
     }
 }

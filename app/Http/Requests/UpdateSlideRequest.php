@@ -22,13 +22,19 @@ class UpdateSlideRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'image'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'url'    => 'required|string|max:255',
+        'status' => 'required|in:0,1',
         ];
     }
     public function messages(): array
     {
         return [
-            //
+            'image.image'    => 'File tải lên phải là hình ảnh.',
+        'image.max'      => 'Dung lượng ảnh không được vượt quá 2MB.',
+        'url.required'   => 'Đường dẫn liên kết không được để trống.',
+        'status.required'=> 'Vui lòng chọn trạng thái hiển thị.',
+        'status.in'      => 'Trạng thái chọn không hợp lệ.',
         ];
     }
 }

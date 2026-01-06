@@ -21,14 +21,16 @@ class UpdateShipStatusRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->route('ship_status');
         return [
-            //
+            'name' => 'required|string|max:100|unique:ship_statuses,name,' . $id
         ];
     }
     public function messages(): array
     {
         return [
-            //
+            'name.required' => 'Tên trạng thái giao hàng không được để trống.',
+        'name.unique'   => 'Tên trạng thái giao hàng này đã tồn tại.',
         ];
     }
 }
