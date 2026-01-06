@@ -22,13 +22,17 @@ class UpdateTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'nullable|string|max:255|unique:tags,name',
+            'slug' => 'nullable|string|max:255|unique:tags,slug',
         ];
     }
     public function messages(): array
     {
         return [
-            //
+            'name.max'      => 'Tên tag tối đa 255 ký tự',
+            'name.unique'   => 'Tên tag đã tồn tại',
+            'slug.max'      => 'Slug tối đa 255 ký tự',
+            'slug.unique'   => 'Slug đã tồn tại',
         ];
     }
 }
