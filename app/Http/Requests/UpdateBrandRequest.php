@@ -8,18 +8,17 @@ class UpdateBrandRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->isAdmin();
     }
 
     public function rules(): array
     {
-        $brandId = $this->route('brand');
-        // hoặc: $this->brand->id (Route Model Binding)
+        $id = $this->route('brand')->id;
 
         return [
-            'name'  => 'required|string|max:255',
-            'slug'  => 'required|string|max:255|unique:brands,slug,' . $brandId,
-            'image' => 'nullable|string|max:255',
+            'name'  => 'required|string|max:255|unique:brands,name' ,
+            'slug'  => 'required|string|max:255|unique:brands,slug,' . $id,
+            'image' => 'nullable|shop_image',
         ];
     }
 
@@ -27,8 +26,10 @@ class UpdateBrandRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên thương hiệu không được để trống',
-            'slug.unique'   => 'Slug đã tồn tại',
-            'image.string'  => 'Image phải là chuỗi (URL hoặc path)',
+            'name.unique' => 'Tên thương hiệu đã tồn tại',
+            'slug.required' => 'Slug không được để trống',
+            'slug.unique' => 'Slug đã tồn tại',
+            'image.shop_image' => 'File phải là ảnh (jpeg, jpg, png) và không quá 2MB.'
         ];
     }
 }

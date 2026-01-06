@@ -8,32 +8,35 @@ class UpdateProductRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->isAdmin();
     }
 
     public function rules(): array
     {
-        $productId = $this->route('product');
+        $$id = $this->route('product')->id;
 
         return [
-            'name'        => 'required|string|max:255',
-            'slug'        => 'required|string|max:255|unique:products,slug,' . $productId,
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:products,slug,' . $id,
             'description' => 'nullable|string',
-            'thumbnail'   => 'nullable|string|max:255',
-            'rating'      => 'nullable|numeric|min:0|max:5',
-            'status'      => 'required|in:0,1',
-            'view'        => 'nullable|integer|min:0',
+            'thumbnail' => 'nullable|shop_image',
+            'status' => 'required|boolean',
             'category_id' => 'required|exists:categories,id',
-            'brand_id'    => 'required|exists:brands,id',
+            'brand_id' => 'required|exists:brands,id',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required'    => 'Tên sản phẩm không được để trống',
-            'slug.unique'      => 'Slug đã tồn tại',
-            'thumbnail.string' => 'Thumbnail phải là chuỗi (URL hoặc path)',
+            'name.required' => 'Tên sản phẩm không được để trống',
+            'slug.required' => 'Slug không được để trống',
+            'slug.unique' => 'Slug đã tồn tại',
+            'thumbnail.shop_image' => 'File phải là ảnh (jpeg, jpg, png) và không quá 2MB.',
+            'status.required' => 'Vui lòng chọn trạng thái.',
+            'status.boolean' => 'Trạng thái không hợp lệ.',
+            'brand_id.exists' => 'Vui lòng chọn nhãn hiệu',
+            'category_id.exists' => "Vui lòng chọn danh mục",
         ];
     }
 }

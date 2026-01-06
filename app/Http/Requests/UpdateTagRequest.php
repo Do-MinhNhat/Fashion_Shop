@@ -11,7 +11,7 @@ class UpdateTagRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -21,9 +21,10 @@ class UpdateTagRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->route('tag')->id;
         return [
-            'name' => 'nullable|string|max:255|unique:tags,name',
-            'slug' => 'nullable|string|max:255|unique:tags,slug',
+            'name' => 'required|string|max:255|unique:tags,name,' . $id,
+            'slug' => 'required|string|max:255|unique:tags,slug,' . $id,
         ];
     }
     public function messages(): array

@@ -11,7 +11,7 @@ class UpdateContactRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -21,19 +21,21 @@ class UpdateContactRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->route('contact')->id;
         return [
-        'name'     => 'nullable|string|max:255',
-        'url'      => 'nullable|string|max:255',
-        'status'   => 'nullable|boolean',
+            'name' => 'required|string|max:255|unique:contacts,name,' . $id,
+            'url' => 'required|string|max:255',
+            'status' => 'required|boolean',
         ];
     }
-     public function messages(): array
-     {
-        return[
-        'name.max' => 'Tên liên hệ không được vượt quá 255 ký tự',
-        'url.max' => 'Đường dẫn không được vượt quá 255 ký tự',
-        'status.boolean' => 'Trạng thái không hợp lệ',
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Tên trạng thái giao hàng không được để trống.',
+            'name.unique' => 'Tên liên hệ này đã tồn tại.',
+            'url.required' => 'Đường dẫn không được để trống',
+            'status.required' => 'Trạng thái không được để trống',
+            'status.boolean' => 'Trạng thái không hợp lệ',
         ];
-     }
-
+    }
 }

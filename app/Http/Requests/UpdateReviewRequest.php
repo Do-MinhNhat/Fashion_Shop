@@ -11,7 +11,7 @@ class UpdateReviewRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,6 +24,7 @@ class UpdateReviewRequest extends FormRequest
         return [
             'rating'  => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
+            'status' => 'required|boolean',
         ];
     }
     public function messages(): array
@@ -33,8 +34,9 @@ class UpdateReviewRequest extends FormRequest
             'rating.integer'  => 'Đánh giá phải là số nguyên.',
             'rating.min'      => 'Đánh giá thấp nhất là 1 sao.',
             'rating.max'      => 'Đánh giá cao nhất là 5 sao.',
-            'comment.string'  => 'Nội dung bình luận phải là chuỗi ký tự.',
             'comment.max'     => 'Nội dung bình luận không được vượt quá 1000 ký tự.',
+            'status.required' => 'Vui lòng chọn trạng thái.',
+            'status.boolean' => 'Trạng thái không hợp lệ.',
         ];
     }
 }
