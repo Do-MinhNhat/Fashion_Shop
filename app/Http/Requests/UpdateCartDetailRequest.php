@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Variant;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCartDetailRequest extends FormRequest
@@ -11,7 +12,7 @@ class UpdateCartDetailRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -21,17 +22,19 @@ class UpdateCartDetailRequest extends FormRequest
      */
     public function rules(): array
     {
+        $stock = Variant::find($this->variant_id)?->quantity ?? 0;
         return [
-            'quantity' => 'required|integer|min:1|max:100',
+            'variant_id' => 'required|exists:variants,id',
+            'quantity' => 'required|integer|min:1|max:' . $stock,
         ];
     }
     public function messages(): array
     {
         return [
             'quantity.required' => 'Số lượng không được để trống.',
-            'quantity.integer'  => 'Số lượng phải là một con số.',
+            'quantity.integer'  => 'Số lượng phải là số nguyên.',
             'quantity.min'      => 'Số lượng sản phẩm tối thiểu phải là 1.',
-            'quantity.max'      => 'Số lượng sản phẩm tối đa cho mỗi mục là 100.',
+            'quantity.max'      => 'Số lượng sản phẩm không được vượt số lượng tồn kho',
         ];
     }
 }

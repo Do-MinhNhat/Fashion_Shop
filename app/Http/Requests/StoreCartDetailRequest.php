@@ -22,7 +22,7 @@ class StoreCartDetailRequest extends FormRequest
     public function rules(): array
     {
         return [
-             'cart_id'    => 'required|exists:carts,id',
+            'cart_id'    => 'required|exists:carts,id',
             'variant_id' => 'required|exists:variants,id',
             'quantity'   => 'required|integer|min:1',
         ];
@@ -30,7 +30,7 @@ class StoreCartDetailRequest extends FormRequest
     public function messages(): array
     {
         return [
-           'cart_id.required'    => 'Giỏ hàng không được để trống',
+            'cart_id.required'    => 'Giỏ hàng không được để trống',
             'cart_id.exists'      => 'Giỏ hàng không tồn tại',
 
             'variant_id.required' => 'Biến thể sản phẩm không được để trống',
