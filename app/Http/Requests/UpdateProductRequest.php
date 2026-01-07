@@ -16,13 +16,15 @@ class UpdateProductRequest extends FormRequest
         $$id = $this->route('product')->id;
 
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:products,slug,' . $id,
             'slug' => 'required|string|max:255|unique:products,slug,' . $id,
             'description' => 'nullable|string',
             'thumbnail' => 'nullable|shop_image',
             'status' => 'required|boolean',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
+            'view' => 'prohibited',
+            'rating' => 'prohibited',
         ];
     }
 
@@ -30,9 +32,9 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên sản phẩm không được để trống',
+            'name.unique' => 'Tên sản phẩm đã tồn tại',
             'slug.required' => 'Slug không được để trống',
             'slug.unique' => 'Slug đã tồn tại',
-            'thumbnail.shop_image' => 'File phải là ảnh (jpeg, jpg, png) và không quá 2MB.',
             'status.required' => 'Vui lòng chọn trạng thái.',
             'status.boolean' => 'Trạng thái không hợp lệ.',
             'brand_id.exists' => 'Vui lòng chọn nhãn hiệu',

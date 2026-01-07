@@ -25,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
             return $validator->validateImage($attribute, $value) &&
                 $validator->validateMax($attribute, $value, [2048]) &&
                 $validator->validateMimes($attribute, $value, ['jpeg', 'png', 'jpg']);
-        });
+        }, 'Hình ảnh phải là định dạng jpeg, png, jpg và không quá 2MB.');
     }
 }

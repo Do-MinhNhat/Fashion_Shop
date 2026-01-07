@@ -8,18 +8,18 @@ class StoreVariantRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->isAdmin();
     }
 
     public function rules(): array
     {
         return [
-            'product_id'   => 'required|exists:products,id',
-            'color_id'     => 'required|exists:colors,id',
-            'size_id'      => 'required|exists:sizes,id',
-            'price'        => 'required|numeric|min:0',
-            'sale_price'   => 'nullable|numeric|min:0|lte:price',
-            'quantity'     => 'required|integer|min:0',
+            'product_id' => 'required|exists:products,id',
+            'color_id' => 'required|exists:colors,id',
+            'size_id' => 'required|exists:sizes,id',
+            'price' => 'required|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0|lte:price',
+            'quantity' => 'required|integer|min:0',
         ];
     }
 
@@ -27,10 +27,20 @@ class StoreVariantRequest extends FormRequest
     {
         return [
             'product_id.required' => 'Sản phẩm không được để trống',
-            'color_id.required'   => 'Màu sắc không được để trống',
-            'size_id.required'    => 'Size không được để trống',
-            'sale_price.lte'      => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc',
-            'quantity.min'        => 'Số lượng không hợp lệ',
+            'product_id.exists' => 'Sản phẩm cha không tồn tại',
+            'color_id.required' => 'Vui lòng chọn màu sắc',
+            'color_id.exists' => 'Màu sắc không tồn tại',
+            'size_id.required' => 'Vui lòng chọn size',
+            'size_id.exists' => 'Size không tồn tại',
+            'price.required' => 'Giá sản phẩm không được để trống',
+            'price.numeric' => 'Giá sản phẩm phải là số',
+            'price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0',
+            'sale_price.numeric' => 'Giá khuyến mãi phải là số',
+            'sale_price.min' => 'Giá khuyến mãi phải lớn hơn hoặc bằng 0',
+            'sale_price.lte' => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc',
+            'quantity.required' => 'Số lượng không được để trống',
+            'quantity.integer' => 'Số lượng phải là số nguyên',
+            'quantity.min' => 'Số lượng phải lớn hơn hoặc bằng 0',
         ];
     }
 }

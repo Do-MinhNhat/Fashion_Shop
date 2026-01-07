@@ -11,7 +11,7 @@ class StoreImportRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -22,19 +22,25 @@ class StoreImportRequest extends FormRequest
     public function rules(): array
     {
         return [
-          'user_id'     => 'required|exists:users,id',
-            'total_price' => 'required|numeric|min:0',
+            'products' => 'required|array|min:1',
+            'products.*.variant_id' => 'required|distinct|exists:variants,id',
+            'products.*.quantity' => 'required|integer|min:1',
+            'products.*.price' => 'required|numeric|min:0',
         ];
     }
     public function messages(): array
     {
         return [
-            'user_id.required' => 'Người tạo phiếu nhập không được để trống',
-            'user_id.exists'   => 'Người dùng không tồn tại',
-
-            'total_price.required' => 'Tổng tiền không được để trống',
-            'total_price.numeric'  => 'Tổng tiền phải là số',
-            'total_price.min'      => 'Tổng tiền phải lớn hơn hoặc bằng 0',
+            'products.required' => 'Danh sách sản phẩm không được để trống',
+            'products.array' => 'Danh sách sản phẩm phải là 1 mảng',
+            'products.min' => 'Danh sách sản phẩm phải có ít nhất 1 sản phẩm',
+            'products.*.variant_id.required' => 'Sản phẩm không được để trống',
+            'products.*.variant_id.exists' => 'Sản phẩm không tồn tại',
+            'products.*.quantity.required' => 'Số lượng không được để trống.',
+            'products.*.quantity.integer' => 'Số lượng phải là số nguyên.',
+            'products.*.quantity.min' => 'Số lượng sản phẩm tối thiểu phải là 1.',
+            'products.*.price.numeric' => 'Giá nhập phải là số',
+            'products.*.price.min' => 'Giá nhập phải lớn hơn hoặc bằng 0',
         ];
     }
 }

@@ -11,7 +11,7 @@ class StoreOrderStatusRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -28,8 +28,9 @@ class StoreOrderStatusRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Tên trạng thái không được để trống.',
-             'name.unique'   => 'Tên trạng thái này đã tồn tại.',
+            'name.required' => 'Tên trạng thái đơn hàng không được để trống.',
+            'name.unique' => 'Tên trạng thái đơn hàng này đã tồn tại.',
+            'name.max' => 'Tên trạng thái có tối đa 255 ký tự',
         ];
     }
 }

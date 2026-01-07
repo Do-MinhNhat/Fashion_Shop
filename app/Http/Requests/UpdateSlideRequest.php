@@ -30,7 +30,6 @@ class UpdateSlideRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'image.shop_image' => 'File phải là ảnh (jpeg, jpg, png) và không quá 2MB.',
             'url.required' => 'Đường dẫn liên kết không được để trống.',
             'status.required' => 'Vui lòng chọn trạng thái hiển thị.',
             'status.boolean' => 'Trạng thái chọn không hợp lệ.',

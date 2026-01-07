@@ -11,7 +11,7 @@ class StoreTagRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -29,13 +29,12 @@ class StoreTagRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Tên tag không được để trống',
-            'name.max'      => 'Tên tag tối đa 255 ký tự',
-            'name.unique'   => 'Tên tag đã tồn tại',
+            'name.required' => 'Tên nhãn không được để trống',
+            'name.unique' => 'Tên nhãn đã tồn tại',
 
             'slug.required' => 'Slug không được để trống',
-            'slug.max'      => 'Slug tối đa 255 ký tự',
-            'slug.unique'   => 'Slug đã tồn tại',
+            'slug.max' => 'Slug tối đa 255 ký tự',
+            'slug.unique' => 'Slug đã tồn tại',
         ];
     }
 }

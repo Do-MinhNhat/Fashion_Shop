@@ -8,13 +8,13 @@ class StoreSizeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->isAdmin();
     }
 
     public function rules(): array
     {
         return [
-            'name'        => 'required|string|max:50',
+            'name'        => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
         ];
     }
@@ -22,7 +22,7 @@ class StoreSizeRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'        => 'Tên size không được để trống',
+            'name.required'        => 'Tên kích cỡ không được để trống',
             'category_id.required' => 'Danh mục không được để trống',
             'category_id.exists'   => 'Danh mục không tồn tại',
         ];

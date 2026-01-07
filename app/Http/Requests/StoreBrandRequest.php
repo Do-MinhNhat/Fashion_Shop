@@ -14,9 +14,9 @@ class StoreBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'  => 'required|string|max:255',
+            'name'  => 'required|string|max:255|unique:brands,name',
             'slug'  => 'required|string|max:255|unique:brands,slug',
-            'image' => 'nullable|string|max:255',
+            'image' => 'required|shop_image',
         ];
     }
 
@@ -24,9 +24,10 @@ class StoreBrandRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên thương hiệu không được để trống',
+            'name.unique' => 'Tên thương hiệu đã tồn tại',
             'slug.required' => 'Slug không được để trống',
-            'slug.unique'   => 'Slug đã tồn tại',
-            'image.string'  => 'Image phải là chuỗi (URL hoặc path)',
+            'slug.unique' => 'Slug đã tồn tại',
+            'image.required' => 'Hình ảnh không được để trống',
         ];
     }
 }
