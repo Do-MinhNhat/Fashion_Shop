@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Variant;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCartDetailRequest extends FormRequest
@@ -21,24 +22,19 @@ class StoreCartDetailRequest extends FormRequest
      */
     public function rules(): array
     {
+        $stock = Variant::find($this->variant_id)?->quantity ?? 0;
         return [
-            'cart_id'    => 'required|exists:carts,id',
             'variant_id' => 'required|exists:variants,id',
-            'quantity'   => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1|max:' . $stock,
         ];
     }
     public function messages(): array
     {
         return [
-            'cart_id.required'    => 'Giỏ hàng không được để trống',
-            'cart_id.exists'      => 'Giỏ hàng không tồn tại',
-
-            'variant_id.required' => 'Biến thể sản phẩm không được để trống',
-            'variant_id.exists'   => 'Biến thể sản phẩm không tồn tại',
-
-            'quantity.required'   => 'Số lượng không được để trống',
-            'quantity.integer'    => 'Số lượng phải là số nguyên',
-            'quantity.min'        => 'Số lượng phải lớn hơn hoặc bằng 1',
+            'quantity.required' => 'Số lượng không được để trống.',
+            'quantity.integer' => 'Số lượng phải là số nguyên.',
+            'quantity.min' => 'Số lượng sản phẩm tối thiểu phải là 1.',
+            'quantity.max' => 'Số lượng sản phẩm không được vượt số lượng tồn kho',
         ];
     }
 }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->foreignIdFor(Role::class)->constrained();
-            $table->string('phone');
+            $table->string('phone')->unique();
             $table->boolean('gender')->default(1);
             $table->string('address')->nullable();
             $table->boolean('review')->default(1)->index();

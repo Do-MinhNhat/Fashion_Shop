@@ -11,7 +11,7 @@ class StoreSlideRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -22,20 +22,18 @@ class StoreSlideRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image'  => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'url'    => 'required|url',
+            'image' => 'required|shop_image',
+            'url' => 'required|string|max:255',
             'status' => 'required|boolean',
-            //
         ];
     }
     public function messages(): array
     {
         return [
             'image.required' => 'Vui lòng chọn ảnh cho slide.',
-             'image.image'    => 'Định dạng tệp phải là hình ảnh.',
-             'url.required'   => 'Đường dẫn liên kết không được để trống.',
-                'url.url'        => 'Đường dẫn không đúng định dạng (ví dụ: https://...).',
-                'status.required' => 'Vui lòng chọn trạng thái hiển thị.',
+            'url.required' => 'Đường dẫn liên kết không được để trống.',
+            'status.required' => 'Vui lòng chọn trạng thái hiển thị.',
+            'status.boolean' => 'Trạng thái không hợp lệ',
         ];
     }
 }

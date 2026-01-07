@@ -14,20 +14,18 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'   => 'required|string|max:255',
-            'slug'   => 'required|string|max:255|unique:categories,slug',
-            'status' => 'required|in:0,1',
+            'name' => 'required|string|max:255|unique:categories,slug',
+            'slug' => 'required|string|max:255|unique:categories,slug',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required'   => 'Tên danh mục không được để trống',
-            'slug.required'   => 'Slug không được để trống',
-            'slug.unique'     => 'Slug đã tồn tại',
-            'status.required' => 'Trạng thái không được để trống',
-            'status.in'       => 'Trạng thái không hợp lệ',
+            'name.required' => 'Tên danh mục không được để trống',
+            'name.unique' => 'Tên danh mục đã tồn tại',
+            'slug.required' => 'Slug không được để trống',
+            'slug.unique' => 'Slug đã tồn tại',
         ];
     }
 }

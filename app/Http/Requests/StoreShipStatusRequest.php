@@ -11,7 +11,7 @@ class StoreShipStatusRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -22,14 +22,14 @@ class StoreShipStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:order_statuses,name',
+            'name' => 'required|string|max:255|unique:ship_statuses,name',
         ];
     }
     public function messages(): array
     {
         return [
             'name.required' => 'Tên trạng thái không được để trống.',
-             'name.unique'   => 'Tên trạng thái này đã tồn tại.',
+            'name.unique'   => 'Tên trạng thái này đã tồn tại.',
         ];
     }
 }

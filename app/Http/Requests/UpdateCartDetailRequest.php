@@ -12,7 +12,7 @@ class UpdateCartDetailRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->isAdmin();
+        return true;
     }
 
     /**
@@ -24,6 +24,7 @@ class UpdateCartDetailRequest extends FormRequest
     {
         $stock = Variant::find($this->variant_id)?->quantity ?? 0;
         return [
+            'user_id' => 'prohibited',
             'variant_id' => 'required|exists:variants,id',
             'quantity' => 'required|integer|min:1|max:' . $stock,
         ];
@@ -31,10 +32,11 @@ class UpdateCartDetailRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'user_id.prohibited' => 'Bạn không được phép thay đổi chủ giỏ hàng',
             'quantity.required' => 'Số lượng không được để trống.',
-            'quantity.integer'  => 'Số lượng phải là số nguyên.',
-            'quantity.min'      => 'Số lượng sản phẩm tối thiểu phải là 1.',
-            'quantity.max'      => 'Số lượng sản phẩm không được vượt số lượng tồn kho',
+            'quantity.integer' => 'Số lượng phải là số nguyên.',
+            'quantity.min' => 'Số lượng sản phẩm tối thiểu phải là 1.',
+            'quantity.max' => 'Số lượng sản phẩm không được vượt số lượng tồn kho',
         ];
     }
 }

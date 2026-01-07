@@ -15,7 +15,7 @@ class UpdateSizeRequest extends FormRequest
     {
         $id = $this->route('size')->id;
         return [
-            'name' => 'required|string|max:255|unique:sizes,name,' . $id,
+            'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|boolean',
         ];
@@ -24,7 +24,7 @@ class UpdateSizeRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Tên size không được để trống',
+            'name.required' => 'Tên kích cỡ không được để trống',
             'category_id.required' => 'Danh mục không được để trống',
             'category_id.exists' => 'Danh mục không tồn tại',
             'status.required' => 'Vui lòng chọn trạng thái hiển thị.',

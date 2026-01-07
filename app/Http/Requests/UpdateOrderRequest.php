@@ -22,6 +22,7 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id' => 'prohibited',
             'name' => 'required|string|max:255',
             'phone' => 'required|regex:/^(03|05|07|08|09)+([0-9]{8})$/',
             'address' => 'required|string|max:255',
@@ -34,6 +35,7 @@ class UpdateOrderRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'user_id.prohibited' => 'Bạn không được phép thay đổi chủ sở hữu hóa đơn',
             'name.required' => 'Tên người nhận không được để trống.',
             'phone.required' => 'Số điện thoại không được để trống.',
             'phone.regex' => 'Số điện thoại không đúng định dạng.',

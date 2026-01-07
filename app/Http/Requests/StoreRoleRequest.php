@@ -11,7 +11,7 @@ class StoreRoleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()->isAdmin();
     }
 
     /**
@@ -22,20 +22,13 @@ class StoreRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                'unique:roles,name',
-            ],
+            'name' => 'required|string|max:255|unique:roles,name',
         ];
     }
     public function messages(): array
     {
         return [
             'name.required' => 'Tên vai trò không được để trống.',
-            'name.string'   => 'Tên vai trò phải là chuỗi ký tự.',
-            'name.max'      => 'Tên vai trò không được vượt quá 255 ký tự.',
             'name.unique'   => 'Tên vai trò này đã tồn tại trong hệ thống.',
         ];
     }

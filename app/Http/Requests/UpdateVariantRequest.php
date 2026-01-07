@@ -14,7 +14,7 @@ class UpdateVariantRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id'   => 'required|exists:products,id',
+            'product_id'   => 'prohibited',
             'color_id'     => 'required|exists:colors,id',
             'size_id'      => 'required|exists:sizes,id',
             'price'        => 'required|numeric|min:0',
@@ -26,8 +26,7 @@ class UpdateVariantRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'product_id.required' => 'Vui lòng chọn sản phẩm',
-            'product_id.exists'   => 'Sản phẩm không tồn tại',
+            'product_id.prohibited' => 'Bạn không được phép chỉnh sửa Product Id',
             'color_id.required'   => 'Vui lòng chọn màu sắc',
             'color_id.exists'     => 'Màu sắc không tồn tại',
             'size_id.required'    => 'Vui lòng chọn size',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Variant;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOrderRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,38 +23,32 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-       'name'     => 'required|string|max:255',
-       'phone'     => 'required|digits:10',
-       'address'     => 'required|string|max:255',
-       'total_price'     => 'required|numeric|min:0',
-       'user_id' => 'required|exists:users,id',
-       'admin_id' => 'exists:users,id',
-       'shipper_id'=>'exists:users,id',
-       'order_status_id'=> 'required|exists:orderstatus',
-       'ship_status_id'=> 'required|exists:shipstatus',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|regex:/^(03|05|07|08|09)+([0-9]{8})$/',
+            'address' => 'required|string|max:255',
+            'products' => 'required|array|min:1',
+            'products.*.variant_id' => 'required|distinct|exists:variants,id',
+            'products.*.quantity' => 'required|integer|min:1',
         ];
     }
     public function messages(): array
     {
-           return [
-        'name.required' => 'Tên không được để trống',
-        'name.max' => 'Tên không được vượt quá 255 ký tự',
-        'phone.required' => 'Số điện thoại không được để trống',
-        'phone.digits' => 'Số điện thoại phải gồm đúng 10 chữ số',
-        'address.required' => 'Địa chỉ không được để trống',
-        'address.max' => 'Địa chỉ không được vượt quá 255 ký tự',
-        'total_price.required' => 'Tổng tiền không được để trống',
-        'total_price.numeric' => 'Tổng tiền phải là số',
-        'total_price.min' => 'Tổng tiền phải lớn hơn hoặc bằng 0',
-        'user_id.required' => 'Người dùng không được để trống',
-        'user_id.exists' => 'Người dùng không tồn tại',
-        'admin_id.exists' => 'Admin không tồn tại',
-        'shipper_id.exists' => 'Shipper không tồn tại',
-        'order_status_id.required' => 'Trạng thái đơn hàng không được để trống',
-        'order_status_id.exists' => 'Trạng thái đơn hàng không hợp lệ',
-        'ship_status_id.required' => 'Trạng thái giao hàng không được để trống',
-        'ship_status_id.exists' => 'Trạng thái giao hàng không hợp lệ',
-
+        return [
+            'name.required' => 'Tên không được để trống',
+            'name.max' => 'Tên không được vượt quá 255 ký tự',
+            'phone.required' => 'Số điện thoại không được để trống',
+            'phone.regex' => 'Số điện thoại không hợp lệ',
+            'address.required' => 'Địa chỉ không được để trống',
+            'address.max' => 'Địa chỉ không được vượt quá 255 ký tự',
+            'products.required' => 'Danh sách sản phẩm không được để trống',
+            'products.array' => 'Danh sách sản phẩm phải là 1 mảng',
+            'products.min' => 'Danh sách sản phẩm phải có ít nhất 1 sản phẩm',
+            'products.*.variant_id.required' => 'Sản phẩm không được để trống',
+            'products.*.variant_id.exists' => 'Sản phẩm không tồn tại',
+            'products.*.variant_id.distinct' => 'Sản phẩm trùng, hãy cộng dồn',
+            'products.*.quantity.required' => 'Số lượng không được để trống.',
+            'products.*.quantity.integer' => 'Số lượng phải là số nguyên.',
+            'products.*.quantity.min' => 'Số lượng sản phẩm tối thiểu phải là 1.',
         ];
     }
 }
