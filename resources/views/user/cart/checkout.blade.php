@@ -1,6 +1,5 @@
-<!DOCTYPE html>
-<html lang="vi">
-    <head>
+@extends('layouts.app')
+    @section('head')
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Thanh Toán - CDHN</title>
@@ -20,8 +19,9 @@
                 font-family: "Inter", sans-serif;
             }
         </style>
-    </head>
-    <body class="bg-white  text-gray-800">
+    @endsection
+    @section('content')
+    <div class="bg-white  text-gray-800">
         <div class="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
             <div class="p-8 lg:p-20 order-2 lg:order-1">
                 <a href="/Client/index.html" class="text-2xl font-serif font-bold tracking-widest uppercase mb-10 block">CDHN.</a>
@@ -108,5 +108,6 @@
                 </div>
             </div>
         </div>
-    </body>
+        </div>
+    @endsection
 </html>

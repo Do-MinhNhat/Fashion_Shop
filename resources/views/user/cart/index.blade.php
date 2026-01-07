@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
+@extends('layouts.app')
+@section('head')
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giỏ hàng - MUSE</title>
@@ -27,8 +27,9 @@
             }
         }
     </script>
-</head>
-<body class="text-gray-900 bg-white">
+@endsection
+@section('content')
+<div class="text-gray-900 bg-white">
     <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <button class="lg:hidden"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
@@ -81,7 +82,6 @@
             </div>
         </div>
     </nav>
-
     <div class="pt-24 pb-20 max-w-7xl mx-auto px-6">
         <div class="text-center mb-16 animate-fade-in-up">
             <h1 class="text-4xl font-serif font-bold mb-2">Giỏ hàng của bạn</h1>
@@ -294,5 +294,5 @@
         </div>
 
     </div>
-</body>
-</html>
+    </div>
+    @endsection

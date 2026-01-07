@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
+@extends('layouts.app')
+@section('head')
+<div>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi tiết sản phẩm - CDHN</title>
@@ -20,9 +20,10 @@
             font-family: "Inter", sans-serif;
         }
     </style>
-</head>
-<body class=" text-gray-900 bg-white">
-
+</div>
+@endsection
+@section('content')
+<div class=" text-gray-900 bg-white">
     <nav class="fixed w-full z-50 bg-white/90 backdrop-blur border-b border-gray-100 px-6 py-4 flex justify-between items-center">
         <a href="/Client/index.html" class="text-2xl font-serif font-bold tracking-widest uppercase">CDHN.</a>
         <div class="flex gap-4">
@@ -115,5 +116,4 @@
             <div></div>
         </div>
     </div>
-</body>
-</html>
+@endsection

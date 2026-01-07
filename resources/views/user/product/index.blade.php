@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
+@extends('layouts.app')
+@section('head')
+<div>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cửa hàng - MUSE</title>
@@ -27,27 +27,10 @@
             font-family: "Inter", sans-serif;
         }
     </style>
-</head>
-<body class=" text-art-black bg-white">
-
-    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-4">
-            <button class="lg:hidden text-2xl"><i class="fas fa-bars"></i></button>
-            <a href="index.html" class="text-2xl font-serif font-bold tracking-widest uppercase">Muse.</a>
-        </div>
-        <div class="hidden md:flex flex-1 max-w-md mx-auto relative border-b border-gray-300 focus-within:border-black transition">
-            <input type="text" placeholder="Tìm kiếm sản phẩm..." class="w-full py-2 bg-transparent outline-none text-sm placeholder-gray-400">
-            <button class="absolute right-0 top-2 text-gray-400 hover:text-black"><i class="fas fa-search"></i></button>
-        </div>
-        <div class="flex gap-6">
-            <a href="#" class="hover:text-gray-600"><i class="far fa-heart"></i></a>
-            <a href="#" class="hover:text-gray-600 relative">
-                <i class="fas fa-shopping-bag"></i>
-                <span class="absolute -top-1 -right-2 bg-black text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">2</span>
-            </a>
-        </div>
-    </nav>
-
+</div>
+@endsection
+@section('content')
+<div class=" text-art-black bg-white">
     <div class="max-w-[1440px] mx-auto flex min-h-screen">
         <!-- Filter -->
         <aside class="w-72 hidden lg:block border-r border-gray-100 p-8 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto custom-scrollbar">
@@ -315,5 +298,5 @@
         </main>
     </div>
 
-</body>
-</html>
+    </div>
+@endsection

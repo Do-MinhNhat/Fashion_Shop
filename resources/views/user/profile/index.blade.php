@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html lang="vi">
-    <head>
+@extends(layouts.app)
+@section('head')
+    <div>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Profile - CDHN</title>
@@ -20,9 +20,10 @@
                 font-family: "Inter", sans-serif;
             }
         </style>
-    </head>
-
-    <body class="bg-gray-50  text-gray-800">
+    </div>
+@endsection
+@section('content')
+    <div class="bg-gray-50  text-gray-800">
         <div class="max-w-6xl mx-auto py-10 px-4 flex flex-col md:flex-row gap-8">
             <!-- Sidebar -->
             <aside class="w-full md:w-64 bg-white p-6 shadow-sm h-fit">
@@ -199,6 +200,7 @@
             </main>
         </div>
 
+
         <script>
             const modal = document.getElementById('pass-modal');
             const modalBackdrop = document.getElementById('modal-backdrop');
@@ -226,5 +228,6 @@
 
             modalBackdrop.addEventListener('click', closeModal);
         </script>
-    </body>
-</html>
+       
+        </div>
+@endsection
