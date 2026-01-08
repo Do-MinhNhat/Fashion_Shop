@@ -173,8 +173,9 @@
                 @foreach ($products as $product)
                 <div class="group cursor-pointer">
                     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
-                        <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
-
+                        <a href="{{ route('user.product.show',$product) }}">
+                            <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
+                        </a>
                         <div class="absolute top-4 left-4 flex flex-col gap-2">
                             <span class="bg-white px-2 py-1 text-[10px] uppercase tracking-wide font-bold shadow-sm">New In</span>
                         </div>
@@ -189,30 +190,38 @@
                         </div>
                     </div>
                     <div>
-                        <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">{{ $product->name }}</h4>
-                        <div class="flex justify-between items-center mt-1">
-                            <p class="text-gray-500 text-sm"><x-money :value="$product->price" /></p>
-                            <div class="flex -space-x-1">
-                                <span class="w-3 h-3 rounded-full bg-black border border-white"></span>
-                                <span class="w-3 h-3 rounded-full bg-blue-900 border border-white"></span>
-                            </div>
+                        <a href="{{ route('user.product.show',$product) }}">
+                            <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">{{ $product->name }}</h4>
+                            <div class="flex justify-between items-center mt-1">
+                                @if ($product->sale_price > 0)
+                                <p class="text-red-600 text-sm">
+                                    <span class="text-gray-500 text-sm line-through mr-1">
+                                        <x-money :value="$product->price" />
+                                    </span>
+                                    <x-money :value="$product->sale_price" />
+                                </p>
+                                @else
+                                <p class="text-gray-500 text-sm">
+                                    <x-money :value="$product->price" />
+                                </p>
+                                @endif
+                        </a>
+                        <div class="flex-space-x-1">
+                            <span class="w-3 h-3 rounded-full bg-black border border-white"></span>
+                            <span class="w-3 h-3 rounded-full bg-blue-900 border border-white"></span>
                         </div>
                     </div>
                 </div>
-                @endforeach
             </div>
-            <!-- Pagination -->
-            <div class="mt-20 flex justify-center">
-                <nav class="flex gap-2">
-                    <a href="#" class="w-10 h-10 flex items-center justify-center border border-gray-200 hover:border-black transition text-gray-400 hover:text-black"><i class="fas fa-chevron-left"></i></a>
-                    <a href="#" class="w-10 h-10 flex items-center justify-center bg-black text-white border border-black font-bold text-sm">1</a>
-                    <a href="#" class="w-10 h-10 flex items-center justify-center border border-gray-200 hover:border-black transition text-sm">2</a>
-                    <a href="#" class="w-10 h-10 flex items-center justify-center border border-gray-200 hover:border-black transition text-sm">3</a>
-                    <span class="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
-                    <a href="#" class="w-10 h-10 flex items-center justify-center border border-gray-200 hover:border-black transition text-gray-400 hover:text-black"><i class="fas fa-chevron-right"></i></a>
-                </nav>
-            </div>
+            @endforeach
+    </div>
+    <!-- Pagination -->
+    <div class="mt-20 flex justify-center">
+        <nav class="flex gap-2">
+            {{ $products->links() }}
+        </nav>
+    </div>
 
-        </main>
+    </main>
     </div>
     @endsection

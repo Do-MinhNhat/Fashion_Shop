@@ -44,9 +44,15 @@ class Product extends Model
     {
         return Attribute::make(
             get: function () {
-                if ($this->variants->min('sale_price') > 0)
-                    return $this->variants->min('sale_price');
                 return $this->variants->min('price');
+            }
+        );
+    }
+    protected function salePrice(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->variants->where('sale_price', '>', '0')->min('sale_price') ?? 0;
             }
         );
     }
