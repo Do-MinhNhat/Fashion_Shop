@@ -14,7 +14,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $viewData = [];
+        $viewData['title'] = 'Danh sách sản phẩm - Fasion Shop';
+        $product = Product::where('status', true);
+        return view('product.index', compact('product', 'viewData'));
     }
 
     /**
@@ -38,7 +41,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return view('user.product.show', compact('product'));
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,5 +57,15 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function index(){
+        $profile = User::find(Auth::id());
+        return view('profile.index', compact('profile'));
+    }
+    public function order(){
+        $user = User::find(Auth::id());
+        $order = $user->orders()->with('orderDetails')->lasted()->get();
+        return view('profile.order', compact('orders'));
     }
 }

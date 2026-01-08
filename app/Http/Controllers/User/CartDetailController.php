@@ -6,6 +6,8 @@ use App\Models\CartDetail;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCartDetailRequest;
 use App\Http\Requests\UpdateCartDetailRequest;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class CartDetailController extends Controller
 {
@@ -14,9 +16,17 @@ class CartDetailController extends Controller
      */
     public function index()
     {
-        //
+        $user = User::find(Auth::id());
+        $items = $user->cart_details()->get();
+        return view('user.cart.index', compact('items'));
     }
 
+    public function checkout()
+    {
+        $user = User::find(Auth::id());
+        $items = $user->cart_details()->get();
+        return view('user.cart.index', compact('items'));
+    }
     /**
      * Show the form for creating a new resource.
      */
