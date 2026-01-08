@@ -170,6 +170,7 @@
 
             <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
                 <!-- Product List -->
+                @foreach ($products as $product)
                 <div class="group cursor-pointer">
                     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
                         <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
@@ -188,9 +189,9 @@
                         </div>
                     </div>
                     <div>
-                        <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">Midnight Silk Dress</h4>
+                        <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">{{ $product->name }}</h4>
                         <div class="flex justify-between items-center mt-1">
-                            <p class="text-gray-500 text-sm">2.100.000 ₫</p>
+                            <p class="text-gray-500 text-sm"><x-money :value="$product->price" /></p>
                             <div class="flex -space-x-1">
                                 <span class="w-3 h-3 rounded-full bg-black border border-white"></span>
                                 <span class="w-3 h-3 rounded-full bg-blue-900 border border-white"></span>
@@ -198,108 +199,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="group cursor-pointer">
-                    <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
-                        <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
-
-                        <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
-                                <i class="far fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">Midnight Silk Dress</h4>
-                        <div class="flex justify-between items-center mt-1">
-                            <p class="text-gray-500 text-sm">2.100.000 ₫</p>
-                            <div class="flex -space-x-1">
-                                <span class="w-3 h-3 rounded-full bg-black border border-white"></span>
-                                <span class="w-3 h-3 rounded-full bg-blue-900 border border-white"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="group cursor-pointer">
-                    <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
-                        <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
-
-                        <div class="absolute top-4 left-4 flex flex-col gap-2">
-                            <span class="bg-white px-2 py-1 text-[10px] uppercase tracking-wide font-bold shadow-sm">New In</span>
-                        </div>
-
-                        <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
-                                <i class="far fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">Midnight Silk Dress</h4>
-                        <div class="flex justify-between items-center mt-1">
-                            <p class="text-gray-500 text-sm">2.100.000 ₫</p>
-                            <div class="flex -space-x-1">
-                                <span class="w-3 h-3 rounded-full bg-black border border-white"></span>
-                                <span class="w-3 h-3 rounded-full bg-blue-900 border border-white"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="group cursor-pointer">
-                    <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
-                        <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
-
-                        <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
-                                <i class="far fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">Midnight Silk Dress</h4>
-                        <div class="flex justify-between items-center mt-1">
-                            <p class="text-gray-500 text-sm">2.100.000 ₫</p>
-                            <div class="flex -space-x-1">
-                                <span class="w-3 h-3 rounded-full bg-black border border-white"></span>
-                                <span class="w-3 h-3 rounded-full bg-blue-900 border border-white"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="group cursor-pointer">
-                    <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
-                        <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
-
-                        <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
-                                <i class="far fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">Midnight Silk Dress</h4>
-                        <div class="flex justify-between items-center mt-1">
-                            <p class="text-gray-500 text-sm">2.100.000 ₫</p>
-                            <div class="flex -space-x-1">
-                                <span class="w-3 h-3 rounded-full bg-black border border-white"></span>
-                                <span class="w-3 h-3 rounded-full bg-blue-900 border border-white"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
-
             <!-- Pagination -->
             <div class="mt-20 flex justify-center">
                 <nav class="flex gap-2">

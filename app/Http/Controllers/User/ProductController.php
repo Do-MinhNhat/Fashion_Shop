@@ -17,8 +17,8 @@ class ProductController extends Controller
         $viewData = [];
         $viewData['title'] = 'Sản phẩm - Fasion Shop';
         $viewData['header'] = 'Danh sách sản phẩm';
-        $product = Product::where('status', true);
-        return view('user.product.index', compact('product', 'viewData'));
+        $products = Product::where('status', true)->with('variants')->get();
+        return view('user.product.index', compact('products', 'viewData'));
     }
 
     /**

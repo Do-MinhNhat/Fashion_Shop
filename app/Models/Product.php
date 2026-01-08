@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -29,7 +30,24 @@ class Product extends Model
         return 'slug';
     }
 
-    public function tags(): BelongsToMany {
+    public function variants(): HasMany
+    {
+        return $this->hasMany(Variant::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
         return $this->belongsToMany(Tag::class);
+    }
+
+    protected function price(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->variants->min('sale_price') > 0)
+                    return $this->variants->min('sale_price');
+                return $this->variants->min('price');
+            }
+        );
     }
 }

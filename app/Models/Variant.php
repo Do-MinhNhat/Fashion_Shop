@@ -9,4 +9,13 @@ class Variant extends Model
 {
     /** @use HasFactory<\Database\Factories\VariantFactory> */
     use HasFactory;
+
+    protected static function booted()
+    {
+        static::saved(function ($variant) {
+            $minPrice = $variant->product->variants()->min('price');
+            $variant->product->update(['price' => $minPrice]);
+        });
+    }
 }
+
