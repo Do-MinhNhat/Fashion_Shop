@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\CartDetailController;
+use App\Http\Controllers\User\CartDetailController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -31,11 +31,13 @@ Route::middleware('auth')->group(function () {
 
     //User ^^^^^^^^^^^^^^^^^^^^^^^^^^
     //Admin vvvvvvvvvvvvvvvvvvvvvvvvv
-    Route::middleware('AuthAdmin')->prefix('admin')->group(function () {
-        Route::get('/dashboard', [AdminHomeController::class, 'index'])->name('admin.home.index');
-        Route::middleware(['role:admin-user,admin-head'])->group(function () {});
+    Route::middleware('AuthAdmin')->prefix('quan-ly')->group(function () {
+        Route::get('/', [AdminHomeController::class, 'index'])->name('admin.home.index');
+        Route::middleware(['role:admin-user,admin-head'])->group(function () {
+            Route::get('/nguoi-dung', [AdminProductController::class, 'index'])->name('admin.product.index');
+        });
         Route::middleware(['role:admin-shipper,admin-head'])->group(function () {
-            Route::get('/dashboard', [AdminHomeController::class, 'index'])->name('admin.home.index');
+            Route::get('/giao-hang', [AdminHomeController::class, 'index'])->name('admin.home.index');
         });
         Route::middleware(['role:admin-product,admin-head'])->group(function () {
             Route::get('/san-pham', [AdminProductController::class, 'index'])->name('admin.product.index');
