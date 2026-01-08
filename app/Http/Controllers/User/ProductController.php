@@ -15,7 +15,8 @@ class ProductController extends Controller
     public function index()
     {
         $viewData = [];
-        $viewData['title'] = 'Danh sách sản phẩm - Fasion Shop';
+        $viewData['title'] = 'Sản phẩm - Fasion Shop';
+        $viewData['header'] = 'Danh sách sản phẩm';
         $product = Product::where('status', true);
         return view('user.product.index', compact('product', 'viewData'));
     }
@@ -41,7 +42,10 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return view('user.product.show', compact('product'));
+        $viewData = [];
+        $viewData['title'] = $product->name;
+        $viewData['header'] = $product->name;
+        return view('user.product.show', compact('product', 'viewData'));
     }
 
     /**

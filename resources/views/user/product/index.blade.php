@@ -1,53 +1,53 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cửa hàng - MUSE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { serif: ['"Playfair Display"', 'serif'], sans: ['"Lato"', 'sans-serif'] },
-                    colors: { 'art-black': '#1a1a1a' }
+@extends('user.layouts.app')
+@section('title', $viewData['title'])
+@section('header', $viewData['header'])
+@section('head-script')
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    serif: ['"Playfair Display"', 'serif'],
+                    sans: ['"Lato"', 'sans-serif']
+                },
+                colors: {
+                    'art-black': '#1a1a1a'
                 }
             }
         }
-    </script>
-    <style>
-        /* Tùy chỉnh thanh cuộn cho đẹp hơn */
-        details > summary { list-style: none; }
-        details > summary::-webkit-details-marker { display: none; }
-        .checkbox-artist:checked + div { background-color: black; border-color: black; }
-        .checkbox-artist:checked + div svg { display: block; }
-        body {
-            font-family: "Inter", sans-serif;
-        }
-    </style>
-</head>
+    }
+</script>
+@endsection
+@section('style')
+<style>
+    /* Tùy chỉnh thanh cuộn cho đẹp hơn */
+    details>summary {
+        list-style: none;
+    }
+
+    details>summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .checkbox-artist:checked+div {
+        background-color: black;
+        border-color: black;
+    }
+
+    .checkbox-artist:checked+div svg {
+        display: block;
+    }
+
+    body {
+        font-family: "Inter", sans-serif;
+    }
+</style>
+@endsection
+@section('content')
+
+
 <body class=" text-art-black bg-white">
-
-    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-4">
-            <button class="lg:hidden text-2xl"><i class="fas fa-bars"></i></button>
-            <a href="index.html" class="text-2xl font-serif font-bold tracking-widest uppercase">Muse.</a>
-        </div>
-        <div class="hidden md:flex flex-1 max-w-md mx-auto relative border-b border-gray-300 focus-within:border-black transition">
-            <input type="text" placeholder="Tìm kiếm sản phẩm..." class="w-full py-2 bg-transparent outline-none text-sm placeholder-gray-400">
-            <button class="absolute right-0 top-2 text-gray-400 hover:text-black"><i class="fas fa-search"></i></button>
-        </div>
-        <div class="flex gap-6">
-            <a href="#" class="hover:text-gray-600"><i class="far fa-heart"></i></a>
-            <a href="#" class="hover:text-gray-600 relative">
-                <i class="fas fa-shopping-bag"></i>
-                <span class="absolute -top-1 -right-2 bg-black text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">2</span>
-            </a>
-        </div>
-    </nav>
-
+@endsection()
     <div class="max-w-[1440px] mx-auto flex min-h-screen">
         <!-- Filter -->
         <aside class="w-72 hidden lg:block border-r border-gray-100 p-8 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto custom-scrollbar">
@@ -91,7 +91,7 @@
                         <span class="text-xs font-bold uppercase tracking-widest text-gray-500">Đánh giá</span>
                         <span class="text-xs transform group-open:rotate-180 transition"><i class="fas fa-chevron-down"></i></span>
                     </summary>
-                    
+
                     <div class="space-y-3">
                         <label class="flex items-center gap-3 cursor-pointer group">
                             <input type="checkbox" class="w-4 h-4 border-gray-300 rounded-none focus:ring-0 accent-black">
@@ -120,7 +120,7 @@
                                 <span class="text-gray-500 text-[10px] uppercase font-bold">Trở lên</span>
                             </div>
                         </label>
-                        
+
                         <label class="flex items-center gap-3 cursor-pointer group">
                             <input type="checkbox" class="w-4 h-4 border-gray-300 rounded-none focus:ring-0 accent-black">
                             <div class="flex text-yellow-500 text-xs items-center gap-2">
@@ -144,14 +144,14 @@
                 </details>
             </div>
         </aside>
-        
+
         <main class="flex-1 p-6 lg:p-10">
             <div class="flex flex-col md:flex-row justify-between items-end mb-10 pb-4 border-b border-gray-100">
                 <div>
                     <span class="text-xs text-gray-400 uppercase tracking-widest">Kết quả tìm kiếm cho</span>
                     <h1 class="text-3xl font-serif mt-1 italic">"Váy dạ hội" <span class="text-lg not-italic text-gray-400 ">(12 kết quả)</span></h1>
                 </div>
-                
+
                 <div class="flex gap-4 mt-4 md:mt-0 w-full md:w-auto">
                     <button class="lg:hidden flex-1 border border-gray-300 px-4 py-2 text-sm uppercase font-bold flex items-center justify-center gap-2">
                         <i class="fas fa-filter"></i> Lọc
@@ -167,19 +167,19 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
                 <!-- Product List -->
                 <div class="group cursor-pointer">
                     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
                         <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
-                        
+
                         <div class="absolute top-4 left-4 flex flex-col gap-2">
                             <span class="bg-white px-2 py-1 text-[10px] uppercase tracking-wide font-bold shadow-sm">New In</span>
                         </div>
 
                         <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
+                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
                                 <i class="fas fa-plus"></i>
                             </button>
                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
@@ -203,7 +203,7 @@
                         <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
 
                         <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
+                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
                                 <i class="fas fa-plus"></i>
                             </button>
                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
@@ -225,13 +225,13 @@
                 <div class="group cursor-pointer">
                     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
                         <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
-                        
+
                         <div class="absolute top-4 left-4 flex flex-col gap-2">
                             <span class="bg-white px-2 py-1 text-[10px] uppercase tracking-wide font-bold shadow-sm">New In</span>
                         </div>
 
                         <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
+                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
                                 <i class="fas fa-plus"></i>
                             </button>
                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
@@ -253,9 +253,9 @@
                 <div class="group cursor-pointer">
                     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
                         <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
-                        
+
                         <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
+                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
                                 <i class="fas fa-plus"></i>
                             </button>
                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
@@ -277,9 +277,9 @@
                 <div class="group cursor-pointer">
                     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
                         <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
-                        
+
                         <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
+                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
                                 <i class="fas fa-plus"></i>
                             </button>
                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
@@ -314,6 +314,4 @@
 
         </main>
     </div>
-
-</body>
-</html>
+@endsection()

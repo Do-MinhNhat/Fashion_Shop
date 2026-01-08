@@ -1,45 +1,40 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết sản phẩm - CDHN</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: { extend: { fontFamily: { serif: ['"Playfair Display"', 'serif'], sans: ['"Lato"', 'sans-serif'] } } }
+@extends('user.layouts.app')
+@section('title', $viewData['title'])
+@section('header', $viewData['header'])
+@section('head-script')
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    serif: ['"Playfair Display"', 'serif'],
+                    sans: ['"Lato"', 'sans-serif']
+                }
+            }
         }
-    </script>
-    <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    }
+</script>
+@endsection
+@section('style')
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
 
-        body {
-            font-family: "Inter", sans-serif;
-        }
-    </style>
-</head>
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    body {
+        font-family: "Inter", sans-serif;
+    }
+</style>
+@endsection
+@section('content')
+@section('body-class')
 <body class=" text-gray-900 bg-white">
-
-    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur border-b border-gray-100 px-6 py-4 flex justify-between items-center">
-        <a href="/Client/index.html" class="text-2xl font-serif font-bold tracking-widest uppercase">CDHN.</a>
-        <div class="flex gap-4">
-            <button class="hover:scale-110 transition-transform">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            </button>
-            <button class="hover:scale-110 transition-transform">
-                <a href="Profile/Profile.html">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                </a>
-            </button>
-            <button class="hover:scale-110 transition-transform">
-                <a href="/Client/Cart/Cart.html" class="hover:text-gray-600"><i class="fas fa-shopping-bag"></i></a>
-            </button>
-        </div>
-    </nav>
-
+@endsection
     <div class="pt-20 lg:pt-28 max-w-7xl mx-auto px-6">
         <div class="flex flex-col lg:flex-row lg:h-screen lg:overflow-hidden">
             <!-- Image -->
@@ -60,7 +55,7 @@
                 <div class="max-w-md mx-auto"> <span class="text-sm text-gray-400 tracking-widest uppercase">Collection 2024</span>
                     <h1 class="text-4xl font-serif mt-2 mb-4">Silk Elegance Dress</h1>
                     <p class="text-2xl font-light mb-6">1.200.000 ₫</p>
-                    
+
                     <p class="text-gray-500 text-sm leading-relaxed mb-8">
                         Thiết kế lụa tơ tằm cao cấp với đường cắt may thủ công tinh xảo. Một sự lựa chọn hoàn hảo cho những buổi tiệc tối sang trọng, tôn lên vẻ đẹp thanh lịch và bí ẩn.
                     </p>
@@ -108,12 +103,12 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Reviews -->
         <div class="py-20 border-t border-gray-100">
             <h3 class="text-2xl font-serif mb-6">Đánh giá khách hàng (2)</h3>
             <div></div>
         </div>
     </div>
-</body>
-</html>
+@endsection
+
