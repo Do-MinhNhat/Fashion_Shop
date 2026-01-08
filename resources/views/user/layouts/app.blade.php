@@ -16,7 +16,7 @@
     @yield('style')
 </head>
 
-@yield('body-class', '<body>')
+@yield('body-class')
     @include('user.layouts.navigation')
     </header>
     @yield('header', 'Fasion Shop')

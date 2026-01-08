@@ -44,10 +44,10 @@
 </style>
 @endsection
 @section('content')
-
+@section('body-class')
 
 <body class=" text-art-black bg-white">
-@endsection()
+    @endsection
     <div class="max-w-[1440px] mx-auto flex min-h-screen">
         <!-- Filter -->
         <aside class="w-72 hidden lg:block border-r border-gray-100 p-8 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto custom-scrollbar">
@@ -314,4 +314,4 @@
 
         </main>
     </div>
-@endsection()
+    @endsection
