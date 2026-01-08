@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Models\Product;
 use App\Http\Controllers\Controller;
@@ -17,7 +17,7 @@ class ProductController extends Controller
         $viewData = [];
         $viewData['title'] = 'Danh sách sản phẩm - Fasion Shop';
         $product = Product::where('status', true);
-        return view('product.index', compact('product', 'viewData'));
+        return view('user.product.index', compact('product', 'viewData'));
     }
 
     /**
