@@ -1,6 +1,6 @@
 @extends('user.layouts.app')
 @section('title', $viewData['title'])
-@section('header', $viewData['header'])
+@section('subtitle', $viewData['subtitle'])
 @section('head-script')
 <script>
     tailwind.config = {

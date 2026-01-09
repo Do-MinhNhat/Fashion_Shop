@@ -1,6 +1,6 @@
 @extends('user.layouts.app')
 @section('title', $viewData['title'])
-@section('header', $viewData['header'])
+@section('subtitle', $viewData['subtitle'])
 @section('head-script')
 <script>
     tailwind.config = {
@@ -33,8 +33,9 @@
 @endsection
 @section('content')
 @section('body-class')
+
 <body class=" text-gray-900 bg-white">
-@endsection
+    @endsection
     <div class="pt-20 lg:pt-28 max-w-7xl mx-auto px-6">
         <div class="flex flex-col lg:flex-row lg:h-screen lg:overflow-hidden">
             <!-- Image -->
@@ -110,5 +111,4 @@
             <div></div>
         </div>
     </div>
-@endsection
-
+    @endsection

@@ -17,13 +17,13 @@
 </head>
 
 @yield('body-class')
-    @include('user.layouts.navigation')
-    </header>
-    @yield('header', 'Fasion Shop')
-    </header>
-    @yield('content')
-    @include('user.layouts.footer')
-    @yield('script')
+@include('user.layouts.navigation')
+</header>
+@yield('subtitle', 'Fasion Shop')
+</header>
+@yield('content')
+@include('user.layouts.footer')
+@yield('script')
 </body>
 
 </html>

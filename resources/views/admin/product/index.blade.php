@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Management - Optimized</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
@@ -35,7 +30,7 @@
         <div class="h-16 flex items-center justify-center border-b border-slate-700 shadow-md">
             <span class="text-2xl font-bold tracking-wider">ADMIN STORE</span>
         </div>
-        
+
         <nav class="flex-1 overflow-y-auto py-4 no-scrollbar">
             <div class="px-4 mb-2 text-xs text-gray-400 uppercase tracking-wider">Tổng quan</div>
             <a href="/Admin/index.html" class="flex items-center px-6 py-3 bg-slate-800 border-r-4 border-blue-500 text-blue-400 transition-all">
@@ -235,7 +230,7 @@
 
         <div class="flex-1 overflow-y-auto p-6 bg-gray-50 custom-scrollbar">
             <form id="product-form" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
+
                 <div class="lg:col-span-2 space-y-6">
                     <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
                         <h3 class="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wide">Thông tin chung</h3>
@@ -336,7 +331,7 @@
             } else {
                 backdrop.classList.add('opacity-0');
                 panel.classList.add('translate-x-full');
-                
+
                 setTimeout(() => {
                     backdrop.classList.add('hidden');
                 }, 300);
