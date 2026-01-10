@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Variant;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreCartDetailRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class StoreCartDetailRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return Auth::check();
     }
 
     /**

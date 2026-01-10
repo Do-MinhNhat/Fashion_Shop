@@ -18,7 +18,7 @@
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black opacity-50 z-20 hidden md:hidden"></div>
         <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white transition-transform duration-300 transform -translate-x-full md:translate-x-0 md:static md:inset-0 flex flex-col">
             <div class="h-16 flex items-center justify-center border-b border-slate-700 shadow-md">
-                <span class="text-2xl font-bold tracking-wider">ADMIN FASHION SHOP</span>
+                <span class="text-2xl font-bold tracking-wider">ADMIN STORE</span>
             </div>
             @include('admin.layouts.navigation')
         </aside>
@@ -27,6 +27,7 @@
             @include('admin.layouts.header')
             @yield('content')
         </main>
+            @yield('pop')
     </div>
     @yield('script')
 </body>

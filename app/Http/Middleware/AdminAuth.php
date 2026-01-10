@@ -17,8 +17,7 @@ class AdminAuth
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        $user = User::find(Auth::id());
-        if (!in_array($user->role->name, $roles)) {
+        if (!in_array(Auth::user()->role->name, $roles)) {
             abort(403, 'Trang này không thuộc quyền hạn của bạn.');
         }
         return $next($request);

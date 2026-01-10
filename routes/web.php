@@ -35,15 +35,23 @@ Route::middleware('auth')->group(function () {
     Route::middleware('is_admin')->prefix('quan-ly')->group(function () {
         Route::get('/', [AdminHomeController::class, 'index'])->name('admin.home.index');
         Route::middleware('role:admin-user,admin-head')->group(function () {
-            Route::get('/nguoi-dung', [AdminProductController::class, 'index'])->name('admin.product.index');
+            Route::get('/nguoi-dung', [AdminHomeController::class, 'index'])->name('admin.user.index');
         });
         Route::middleware('role:admin-shipper,admin-head')->group(function () {
-            Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
+            Route::get('/giao-hang', [AdminOrderController::class, 'index'])->name('admin.ship.index');
         });
         Route::middleware('role:admin-product,admin-head')->group(function () {
             Route::get('/san-pham', [AdminProductController::class, 'index'])->name('admin.product.index');
+            Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
+            Route::get('/nhap-hang', [AdminOrderController::class, 'index'])->name('admin.import.index');
+        });
+        Route::middleware('role:admin-head')->group(function () {
+            Route::get('/cau-hinh', [AdminHomeController::class, 'index'])->name('admin.setting.index');
         });
     });
 });
+
+Route::permanentRedirect('/admin', '/quan-ly');
+Route::permanentRedirect('/product', '/san-pham');
 
 require __DIR__ . '/auth.php';

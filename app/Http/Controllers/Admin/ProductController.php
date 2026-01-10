@@ -14,9 +14,13 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('admin.product.index');
-    }
+        $viewData = [];
+        $viewData['title'] = 'Admin - Sản phẩm';
+        $viewData['subtitle'] = 'Quản lý sản phẩm';
 
+        $products = Product::with('variants')->Paginate(2)->withQueryString();
+        return view('admin.product.index', compact('products', 'viewData'));
+    }
     /**
      * Show the form for creating a new resource.
      */

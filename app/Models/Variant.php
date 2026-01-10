@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Variant extends Model
 {
@@ -17,5 +18,14 @@ class Variant extends Model
             $variant->product->update(['price' => $minPrice]);
         });
     }
-}
 
+    public function color(): BelongsTo
+    {
+        return $this->belongsTo(Color::class);
+    }
+
+    public function size(): BelongsTo
+    {
+        return $this->belongsTo(Size::class);
+    }
+}
