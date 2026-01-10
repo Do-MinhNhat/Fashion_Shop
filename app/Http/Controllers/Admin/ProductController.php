@@ -6,6 +6,8 @@ use App\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Brand;
+use App\Models\Category;
 
 class ProductController extends Controller
 {
@@ -18,8 +20,11 @@ class ProductController extends Controller
         $viewData['title'] = 'Admin - Sản phẩm';
         $viewData['subtitle'] = 'Quản lý sản phẩm';
 
-        $products = Product::with('variants')->Paginate(2)->withQueryString();
-        return view('admin.product.index', compact('products', 'viewData'));
+        $products = Product::where('status', true)->with('variants')->Paginate(2)->withQueryString();
+
+        $brands = Brand::where('status', true)->get();
+        $categories = Category::where('status', true)->get();
+        return view('admin.product.index', compact('products', 'viewData', 'brands', 'categories'));
     }
     /**
      * Show the form for creating a new resource.

@@ -19,8 +19,17 @@
             }
         }
     }
+    window.axios = axios;
+    window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+    let token = document.head.querySelector('meta[name="csrf-token"]');
+    if (token) {
+        window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    }
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 @endsection
 @section('style')
 <style>
@@ -214,8 +223,9 @@
 @section('pop')
 <!-- Popup Add Product -->
 <div id="product-modal" class="fixed inset-0 z-50 hidden">
-    <div id="modal-backdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0"></div>
+    <div id="modal-backdrop" class=" absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0"></div>
     <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="absolute inset-0" aria-hidden="true" onclick="closeModal()"></div>
         <div id="modal-panel" class="bg-white w-full max-w-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 rounded-lg flex flex-col max-h-[90vh]">
 
             <!-- Header -->
@@ -244,12 +254,24 @@
                     <!-- Danh mục -->
                     <div>
                         <label class="text-xs font-semibold uppercase text-gray-500">Danh mục</label>
-                        <select name="category" class="w-full p-2.5 border rounded text-sm cursor-pointer">
-                            <option>Chọn danh mục</option>
-                            <option>Áo thun</option>
-                            <option>Áo sơ mi</option>
-                            <option>Váy đầm</option>
-                            <option>Quần jeans</option>
+                        <span id="category-error" class="text-red-500 italic"></span>
+                        <select id="category-select" name="category_id" class="cursor-pointer">
+                            <option value="" disabled selected hidden>Chọn danh mục...</option>
+                            @foreach ($categories as $category)
+                            <option value="{{$category->id}}">{{$category->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Nhãn hiệu -->
+                    <div>
+                        <label class="text-xs font-semibold uppercase text-gray-500">Nhãn hiệu</label>
+                        <span id="brand-error" class="italic"></span>
+                        <select id="brand-select" name="brand_id" class="cursor-pointer">
+                            <option value="" disabled selected hidden>Chọn nhãn hiệu...</option>
+                            @foreach ($brands as $brand)
+                            <option value="{{$brand->id}}">{{$brand->name}}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -297,16 +319,81 @@
                         <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
                         <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu sản phẩm</button>
                     </div>
-
                 </form>
             </div>
-
         </div>
     </div>
 </div>
 @endsection
 @section('script')
 <script>
+    new TomSelect("#category-select", {
+        create: true,
+        create: async function(input, callback) {
+            const data = {
+                name: input
+            };
+            const msg = document.getElementById('category-error');
+            try {
+                msg.innerHTML = "...";
+                const res = await axios.post("{{ route('admin.category.store') }}", data)
+                const result = res.data;
+                callback({
+                    value: result.data.id,
+                    text: result.data.name,
+                });
+                msg.className = 'text-green-500 italic'
+                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
+            } catch (error) {
+                callback(false);
+                if (error.response) {
+                    msg.className = 'text-red-500 italic';
+                    msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
+                } else {
+                    console.log('Fetch error:', error);
+                    alert('Không thể kết nối đến server');
+                }
+            }
+        },
+        sortField: {
+            field: "text",
+            order: "asc"
+        }
+    });
+    new TomSelect("#brand-select", {
+        create: true,
+        create: async function(input, callback) {
+            const data = {
+                name: input
+            };
+            const msg = document.getElementById('brand-error');
+            try {
+                msg.innerHTML = "...";
+                const res = await axios.post("{{ route('admin.brand.store') }}", data)
+                const result = res.data;
+                callback({
+                    value: result.data.id,
+                    text: result.data.name,
+                });
+                msg.className = 'text-green-500 italic'
+                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
+            } catch (error) {
+                callback(false);
+                if (error.response) {
+                    msg.className = 'text-red-500 italic';
+                    msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
+                } else {
+                    console.log('Fetch error:', error);
+                    alert('Không thể kết nối đến server');
+                }
+            }
+        },
+        sortField: {
+            field: "text",
+            order: "asc"
+        }
+    });
+
     function openModal() {
         const modal = document.getElementById('product-modal');
         const panel = document.getElementById('modal-panel');

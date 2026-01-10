@@ -46,12 +46,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function role(): BelongsTo{
+    public function role(): BelongsTo
+    {
         return $this->belongsTo(Role::class);
     }
 
     public function isAdmin(): bool
     {
-        return $this->role()->where('name','like','admin%')->exists();
+        return $this->role()->where('name', 'like', 'admin%')->exists();
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\User\CartDetailController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\User\HomeController;
@@ -42,6 +44,13 @@ Route::middleware('auth')->group(function () {
         });
         Route::middleware('role:admin-product,admin-head')->group(function () {
             Route::get('/san-pham', [AdminProductController::class, 'index'])->name('admin.product.index');
+
+            //Category Route
+            Route::post('/danh-muc/them', [CategoryController::class, 'store'])->name('admin.category.store');
+
+            //Brand Route
+            Route::post('/nhan-hieu/them', [BrandController::class, 'store'])->name('admin.brand.store');
+
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
             Route::get('/nhap-hang', [AdminOrderController::class, 'index'])->name('admin.import.index');
         });
