@@ -1,6 +1,9 @@
 @extends('admin.layouts.app')
 @section('title', $viewData['title'])
 @section('subtitle', $viewData['subtitle'])
+@section('link')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
+@endsection
 @section('head-script')
 <script>
     tailwind.config = {
@@ -27,6 +30,7 @@
         window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
     }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -315,7 +319,7 @@
                     </div>
 
                     <!-- Trạng thái -->
-                    <div>
+                    <div class="border ">
                         <label class="text-xs font-semibold uppercase text-gray-500">Trạng thái</label>
                         <select class="w-full p-2.5 border rounded text-sm cursor-pointer">
                             <option value="active">Đang bán</option>
@@ -326,9 +330,109 @@
 
                     <!-- Upload ảnh -->
                     <div>
-                        <label class="text-xs font-semibold uppercase text-gray-500">Hình ảnh</label>
-                        <input type="file" id="productImage" accept="image/*" class="w-full border p-2.5 text-sm rounded cursor-pointer" onchange="previewImage(event)">
-                        <img id="productPreview" class="mt-3 w-20 h-24 object-cover rounded hidden border">
+                        <label class="text-xs font-semibold uppercase text-gray-500">Hình hiển thị</label>
+                        <div>
+                            <div id="crop-area" class="hidden mx-auto ">
+                                <div id="upload-crop"></div>
+                                <div class="flex justify-center gap-1">
+                                    <button type="button" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200" id="crop-cancel-button">Hủy</button>
+                                    <button type="button" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800" id="crop-button">Cắt ảnh</button>
+                                </div>
+                            </div>
+                            <div id="image-area" class="max-w-4xl mx-auto p-4">
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 h-[400px]">
+
+                                    <div class="md:col-span-2 relative group overflow-hidden rounded-2xl shadow-lg">
+                                        <div id="image-1" class="flex items-center justify-center w-full h-full">
+                                            <label for="upload-1" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+                                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                    <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                                    <p class="mb-2 text-sm text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
+                                                    <p class="text-xs text-gray-400 font-medium">PNG, JPG hoặc JPEG (Tỉ lệ 3:4)</p>
+                                                    <p class="text-xs text-gray-400 font-medium">Tối đa: 2MB</p>
+                                                </div>
+                                                <input id="upload-1" data-index="1" type="file" class="hidden image-upload" />
+                                            </label>
+                                        </div>
+                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-1" src="" style="display:none;">
+                                        <button type="button" onclick="removeImage(1)" id="btn-delete-1"
+                                            class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
+                                            <i class="fas fa-trash-alt text-xs"></i>
+                                        </button>
+                                        <div class="absolute bottom-4 left-4 bg-white/80 backdrop-blur px-3 py-1 rounded-full text-sm font-semibold shadow-sm">
+                                            Ảnh chính
+                                        </div>
+                                    </div>
+
+                                    <div class="md:col-span-2 grid grid-cols-4 md:grid-cols-2 gap-3 h-full">
+                                        <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
+                                            <div id="image-2" class="flex items-center justify-center w-full h-full">
+                                                <label for="upload-2" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+                                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                                        <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
+                                                    </div>
+                                                    <input id="upload-2" data-index="2" type="file" class="hidden image-upload" />
+                                                </label>
+                                            </div>
+                                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-2" src="" style="display:none;">
+                                            <button type="button" onclick="removeImage(2)" id="btn-delete-2"
+                                                class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
+                                        </div>
+                                        <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
+                                            <div id="image-3" class="flex items-center justify-center w-full h-full">
+                                                <label for="upload-3" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+                                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                                        <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
+                                                    </div>
+                                                    <input id="upload-3" data-index="3" type="file" class="hidden image-upload" />
+                                                </label>
+                                            </div>
+                                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-3" src="" style="display:none;">
+                                            <button type="button" onclick="removeImage(3)" id="btn-delete-3"
+                                                class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
+                                        </div>
+                                        <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
+                                            <div id="image-4" class="flex items-center justify-center w-full h-full">
+                                                <label for="upload-4" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+                                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                                        <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
+                                                    </div>
+                                                    <input id="upload-4" data-index="4" type="file" class="hidden image-upload" />
+                                                </label>
+                                            </div>
+                                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-4" src="" style="display:none;">
+                                            <button type="button" onclick="removeImage(4)" id="btn-delete-4"
+                                                class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
+                                        </div>
+                                        <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
+                                            <div id="image-5" class="flex items-center justify-center w-full h-full">
+                                                <label for="upload-5" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+                                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                                        <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
+                                                    </div>
+                                                    <input id="upload-5" data-index="5" type="file" class="hidden image-upload" />
+                                                </label>
+                                            </div>
+                                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-5" src="" style="display:none;">
+                                            <button type="button" onclick="removeImage(5)" id="btn-delete-5"
+                                                class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
+                                                <i class="fas fa-trash-alt text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Mô tả -->
@@ -350,6 +454,112 @@
 @endsection
 @section('script')
 <script>
+    // 1. Khởi tạo Croppie
+    window.croppedImages = {};
+    var el = document.getElementById('upload-crop');
+    var uploadCrop = new Croppie(el, {
+        viewport: {
+            width: 300,
+            height: 400,
+            type: 'square'
+        }, // Khung cắt
+        boundary: {
+            width: 500,
+            height: 400,
+        }, // Vùng bao ngoài
+        showZoomer: true, // Hiện thanh trượt zoom
+    });
+
+    // 2. Khi chọn ảnh từ máy tính
+    const uploadInputs = document.querySelectorAll('.image-upload');
+
+    uploadInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const index = this.getAttribute('data-index'); // Lấy số 1, 2, 3...
+
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    // Hiển thị vùng cắt ảnh
+                    document.getElementById('crop-area').classList.remove('hidden');
+                    //Ẩn vùng thêm ảnh
+                    document.getElementById('image-area').classList.add('hidden');
+                    // Nạp ảnh vào Croppie
+                    uploadCrop.bind({
+                        url: e.target.result
+                    });
+
+                    // Lưu lại index hiện tại vào nút "Cắt" để biết đang cắt cho input nào
+                    document.getElementById('crop-button').setAttribute('data-target', index);
+                    document.getElementById('crop-cancel-button').setAttribute('data-target', index);
+                }
+
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    });
+
+    // Khi nhấn nút hủy cắt ảnh
+    document.getElementById('crop-cancel-button').addEventListener('click', function() {
+        const targetIndex = this.getAttribute('data-target');
+        if (confirm('Xác nhận hủy?')) {
+            //xóa input
+            document.getElementById('upload-' + targetIndex).value="";
+            //Ẩn vùng cắt ảnh
+            document.getElementById('crop-area').classList.add('hidden');
+            //Hiển thị vùng thêm ảnh
+            document.getElementById('image-area').classList.remove('hidden');
+        }
+    });
+    // 3. Khi nhấn nút "Cắt ảnh"
+    document.getElementById('crop-button').addEventListener('click', function() {
+        // 1. Lấy index (1, 2, 3...) mà input đang xử lý
+        const targetIndex = this.getAttribute('data-target');
+
+        uploadCrop.result({
+            type: 'blob',
+            size: {
+                width: 3000,
+                height: 4000
+            } // Tỉ lệ 3:4 chất lượng cao
+        }).then(function(blob) {
+            // 2. Hiển thị xem trước vào đúng ô
+            const previewElement = document.getElementById('preview-' + targetIndex);
+
+            if (previewElement) {
+                var url = URL.createObjectURL(blob);
+                previewElement.src = url;
+                previewElement.style.display = 'block';
+                //Ẩn vùng thêm ảnh
+                document.getElementById('image-' + targetIndex).style.display = 'none';
+                //Hiển thị nút xóa
+                document.getElementById('btn-delete-' + targetIndex).classList.remove('hidden');
+                //Hiển thị vùng thêm ảnh
+                document.getElementById('image-area').classList.remove('hidden');
+            }
+            // 3. Lưu blob vào mảng toàn cục theo Index
+            window.croppedImages[targetIndex] = blob;
+
+            //Ẩn vùng cắt ảnh
+            document.getElementById('crop-area').classList.add('hidden');
+        });
+    });
+
+    // Nút xóa ảnh
+    window.removeImage = function(index) {
+        if (confirm('Xóa ảnh này?')) {
+            document.getElementById('preview-' + index).classList.add('hidden');
+            document.getElementById('btn-delete-' + index).classList.add('hidden');
+            document.getElementById('upload-' + index).value = ""; // Reset input
+            document.getElementById('preview-' + index).src = ""; // Reset image
+            document.getElementById('image-' + index).style.display = 'block'; //Hiện vùng thêm ảnh
+            delete window.croppedImages[index];
+        }
+    };
+
+    document.getElementById('')
+
     new TomSelect("#category-select", {
         create: async function(input, callback) {
             const data = {

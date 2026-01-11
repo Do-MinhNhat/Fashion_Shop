@@ -44,7 +44,7 @@ class ProductController extends Controller
     {
         $viewData = [];
         $viewData['title'] = $product->name;
-        $viewData['header'] = $product->name;
+        $viewData['subtitle'] = $product->name;
         return view('user.product.show', compact('product', 'viewData'));
     }
 
