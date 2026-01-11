@@ -239,40 +239,63 @@
             <!-- Content -->
             <div class="p-6 overflow-y-auto custom-scrollbar">
                 <form id="productForm" class="space-y-6">
-                    <!-- Tên + SKU -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Tên -->
+                    <div class="grid grid-cols-1 md:grid-cols-1">
                         <div>
                             <label class="text-xs font-semibold uppercase text-gray-500">Tên sản phẩm</label>
                             <input type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" required>
                         </div>
+
+                    </div>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Danh mục -->
                         <div>
-                            <label class="text-xs font-semibold uppercase text-gray-500">Mã SKU</label>
-                            <input type="text" name="sku" class="w-full p-2.5 border rounded text-sm" placeholder="SKU-001">
+                            <label class="text-xs font-semibold uppercase text-gray-500">Danh mục</label>
+                            <span id="category-error" class="text-xs text-red-500 italic"></span>
+                            <select id="category-select" name="category_id" class="cursor-pointer">
+                                <option value="" disabled selected hidden>Chọn danh mục...</option>
+                                @foreach ($categories as $category)
+                                <option value="{{$category->id}}">{{$category->name}}</option>
+                                @endforeach
+                            </select>
                         </div>
+                        <!-- Nhãn hiệu -->
+                        <div>
+                            <label class="text-xs font-semibold uppercase text-gray-500">Nhãn hiệu</label>
+                            <span id="brand-error" class="text-xs text-500-red italic"></span>
+                            <select id="brand-select" name="brand_id" class="cursor-pointer">
+                                <option value="" disabled selected hidden>Chọn nhãn hiệu...</option>
+                                @foreach ($brands as $brand)
+                                <option value="{{$brand->id}}">{{$brand->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                     </div>
 
-                    <!-- Danh mục -->
-                    <div>
-                        <label class="text-xs font-semibold uppercase text-gray-500">Danh mục</label>
-                        <span id="category-error" class="text-red-500 italic"></span>
-                        <select id="category-select" name="category_id" class="cursor-pointer">
-                            <option value="" disabled selected hidden>Chọn danh mục...</option>
-                            @foreach ($categories as $category)
-                            <option value="{{$category->id}}">{{$category->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
 
-                    <!-- Nhãn hiệu -->
-                    <div>
-                        <label class="text-xs font-semibold uppercase text-gray-500">Nhãn hiệu</label>
-                        <span id="brand-error" class="italic"></span>
-                        <select id="brand-select" name="brand_id" class="cursor-pointer">
-                            <option value="" disabled selected hidden>Chọn nhãn hiệu...</option>
-                            @foreach ($brands as $brand)
-                            <option value="{{$brand->id}}">{{$brand->name}}</option>
-                            @endforeach
-                        </select>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Kích thước -->
+                        <div>
+                            <label class="text-xs font-semibold uppercase text-gray-500">Kích thước</label>
+                            <span id="size-error" class="text-xs text-red-500 italic">Vui lòng chọn danh mục!</span>
+                            <select id="size-select" name="sizes[]" class="cursor-pointer" multiple>
+                                <option value="" disabled selected hidden>Chọn nhiều kích thước...</option>
+                            </select>
+                        </div>
+                        <!-- Màu sắc -->
+                        <div>
+                            <label for="color_picker" class="text-xs font-semibold uppercase text-gray-500">Màu sắc</label>
+                            <span id="color-error" class="text-xs text-red-500 italic"></span>
+                            <select id="color-select" name="colors[]" class="cursor-pointer" multiple>
+                                <option value="" disabled selected hidden>Chọn nhiều màu sắc...</option>
+                                @foreach ($colors as $color)
+                                <option value="{{$color->id}}" data-hex="{{$color->hex_code}}">{{$color->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Giá + Tồn kho -->
@@ -328,7 +351,6 @@
 @section('script')
 <script>
     new TomSelect("#category-select", {
-        create: true,
         create: async function(input, callback) {
             const data = {
                 name: input
@@ -342,12 +364,12 @@
                     value: result.data.id,
                     text: result.data.name,
                 });
-                msg.className = 'text-green-500 italic'
+                msg.className = 'text-xs text-green-500 italic'
                 msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
             } catch (error) {
                 callback(false);
                 if (error.response) {
-                    msg.className = 'text-red-500 italic';
+                    msg.className = 'text-xs text-red-500 italic';
                     msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
                 } else {
                     console.log('Fetch error:', error);
@@ -361,7 +383,6 @@
         }
     });
     new TomSelect("#brand-select", {
-        create: true,
         create: async function(input, callback) {
             const data = {
                 name: input
@@ -375,12 +396,12 @@
                     value: result.data.id,
                     text: result.data.name,
                 });
-                msg.className = 'text-green-500 italic'
+                msg.className = 'text-xs text-green-500 italic'
                 msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
             } catch (error) {
                 callback(false);
                 if (error.response) {
-                    msg.className = 'text-red-500 italic';
+                    msg.className = 'text-xs text-red-500 italic';
                     msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
                 } else {
                     console.log('Fetch error:', error);
@@ -393,6 +414,139 @@
             order: "asc"
         }
     });
+
+    new TomSelect("#color-select", {
+
+        create: async function(input, callback) {
+            const pick = this.dropdown.querySelector('#color-picker');
+            const data = {
+                name: input,
+                hex_code: pick.value,
+            }
+            if (data.hex_code === '#000000') {
+                const confirmBlack = confirm("Bạn đang chọn màu đen mặc định, tiếp tục?");
+                if (!confirmBlack) return callback(false);
+            }
+            const msg = document.getElementById('color-error');
+            try {
+                msg.innerHTML = "...";
+                const res = await axios.post("{{ route('admin.color.store') }}", data)
+                const result = res.data;
+                callback({
+                    value: result.data.id,
+                    text: result.data.name,
+                    hex: result.data.hex_code,
+                });
+                msg.className = 'text-xs text-green-500 italic'
+                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
+            } catch (error) {
+                callback(false);
+                if (error.response) {
+                    msg.className = 'text-xs text-red-500 italic';
+                    msg.innerHTML = error.response.data.message;
+                } else {
+                    console.log('Fetch error:', error);
+                    alert('Không thể kết nối đến server');
+                }
+            }
+        },
+        plugins: ['remove_button'],
+        render: {
+            option_create: function(data, escape) {
+                return `
+                <div class="create flex items-center justify-between p-2">
+                    <span>Thêm màu: <strong>${escape(data.input)}</strong></span>
+                    <div class="flex items-center gap-2" onclick="event.stopPropagation();">
+                        <input type="color" id="color-picker"
+                               class="w-6 h-6 border-none cursor-pointer" value='NULL'>
+                        <span class="text-xs text-blue-600 font-bold">Chọn màu</span>
+                    </div>
+                </div>`;
+            },
+            item: function(data, escape) {
+                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
+                <span class="w-4 h-4 rounded-full bg-[${escape(data.hex)}] mr-1 border"></span>
+                ${escape(data.text)}
+            </span>`;
+            },
+            option: function(data, escape) {
+                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
+                <span class="w-4 h-4 rounded-full bg-[${escape(data.hex)}] mr-1 border"></span>
+                ${escape(data.text)}
+            </span>`;
+            }
+            // Cách hiển thị trong DANH SÁCH THẢ XUỐNG
+        },
+        sortField: {
+            field: "text",
+            order: "asc",
+        },
+    });
+
+    const size = new TomSelect("#size-select", {
+        valueField: 'id',
+        labelField: 'name',
+        options: [],
+        create: async function(input, callback) {
+            const data = {
+                name: input,
+                category_id: document.getElementById('category-select').value,
+            }
+            const msg = document.getElementById('size-error');
+            try {
+                msg.innerHTML = "...";
+                const res = await axios.post("{{ route('admin.size.store') }}", data)
+                const result = res.data;
+                callback({
+                    id: result.data.id,
+                    name: result.data.name,
+                });
+                msg.className = 'text-xs text-green-500 italic'
+                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
+            } catch (error) {
+                callback(false);
+                if (error.response) {
+                    msg.className = 'text-xs text-red-500 italic';
+                    msg.innerHTML = error.response.data.message;
+                } else {
+                    console.log('Fetch error:', error);
+                    alert('Không thể kết nối đến server');
+                }
+            }
+        },
+        plugins: ['remove_button'],
+        searchField: 'name',
+        sortField: {
+            field: "name",
+            order: "asc",
+        },
+    });
+
+    const cate = document.getElementById('category-select');
+    cate.onchange = async function() {
+        size.clear();
+        size.clearOptions();
+        const msg = document.getElementById('size-error');
+        try {
+            msg.innerHTML = 'Đang tải...'
+            const res = await axios.get("{{ route('admin.category.size') }}", {
+                params: {
+                    id: this.value
+                }
+            })
+            msg.innerHTML = ''
+            size.addOptions(res.data);
+            size.refreshOptions(false);
+        } catch (error) {
+            if (error.response) {
+                msg.className = 'text-xs text-red-500 italic';
+                msg.innerHTML = error.response.data.message;
+            } else {
+                console.log('Fetch error:', error);
+                alert('Không thể kết nối đến server');
+            }
+        }
+    }
 
     function openModal() {
         const modal = document.getElementById('product-modal');

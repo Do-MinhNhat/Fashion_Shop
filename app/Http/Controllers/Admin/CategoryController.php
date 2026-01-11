@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\Size;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -70,5 +72,18 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         //
+    }
+
+    public function getSizes(Request $request)
+    {
+        $sizes = Size::where('category_id', $request->id)->where('status', true)->get(['id', 'name']);
+        if ($sizes->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Danh mục chưa có kích thước!',
+                'data' => [],
+            ], 404); // Trả về mảng rỗng và mã lỗi 404 (tùy chọn)
+        }
+        return response()->json($sizes);
     }
 }

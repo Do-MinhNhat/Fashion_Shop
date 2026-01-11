@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreSizeRequest extends FormRequest
 {
@@ -14,7 +15,14 @@ class StoreSizeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'        => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('sizes')->where(function ($query) {
+                    return $query->where('category_id', $this->category_id);
+                })
+            ],
             'category_id' => 'required|exists:categories,id',
         ];
     }
@@ -22,9 +30,10 @@ class StoreSizeRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'        => 'Tên kích cỡ không được để trống',
+            'name.unique' => 'Kích cỡ này đã tồn tại!',
+            'name.required' => 'Tên kích cỡ không được để trống',
             'category_id.required' => 'Danh mục không được để trống',
-            'category_id.exists'   => 'Danh mục không tồn tại',
+            'category_id.exists' => 'Danh mục không tồn tại',
         ];
     }
 }

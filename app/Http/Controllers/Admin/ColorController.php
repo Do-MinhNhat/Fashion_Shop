@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Color;
 use App\Http\Controllers\Controller;
@@ -30,7 +30,14 @@ class ColorController extends Controller
      */
     public function store(StoreColorRequest $request)
     {
-        //
+        $color = Color::create($request->validated());
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $color,
+            ], 201);
+        }
+        return redirect()->back()->with('success', 'Đã thêm màu sắc:' . $color->name . '!');
     }
 
     /**

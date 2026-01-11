@@ -8,6 +8,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Color;
 
 class ProductController extends Controller
 {
@@ -24,7 +25,10 @@ class ProductController extends Controller
 
         $brands = Brand::where('status', true)->get();
         $categories = Category::where('status', true)->get();
-        return view('admin.product.index', compact('products', 'viewData', 'brands', 'categories'));
+
+        $colors = Color::where('status', true)->get();
+
+        return view('admin.product.index', compact('products', 'viewData', 'brands', 'categories', 'colors'));
     }
     /**
      * Show the form for creating a new resource.
