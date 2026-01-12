@@ -231,7 +231,7 @@
     <div id="modal-backdrop" class=" absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0"></div>
     <div class="absolute inset-0 flex items-center justify-center p-4">
         <div class="absolute inset-0" aria-hidden="true" onclick="closeModal()"></div>
-        <div id="modal-panel" class="bg-white w-full max-w-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 rounded-lg flex max-h-[90vh]" :class="isExpanded ? 'max-w-7xl' : 'max-w-2xl'">
+        <div x-data="variantManager()" id="modal-panel" class="bg-white w-full max-w-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 rounded-lg flex max-h-[90vh]" :class="isExpanded ? 'max-w-7xl' : 'max-w-2xl'">
             <div class="overflow-y-auto flex-col max-w-2xl shrink-0">
                 <!-- Header -->
                 <div class="flex justify-between items-center p-6 border-b">
@@ -257,8 +257,8 @@
                                 <div>
                                     <label for="category-select" class="text-xs font-semibold uppercase text-gray-500">Danh mục</label>
                                     <span id="category-error" class="text-xs text-red-500 italic"></span>
-                                    <select id="category-select" name="category_id" class="cursor-pointer">
-                                        <option value="" disabled selected hidden required>Chọn danh mục...</option>
+                                    <select x-ref="categorySelect" id="category-select" name="category_id" class="cursor-pointer" required>
+                                        <option value="" disabled selected hidden>Chọn danh mục...</option>
                                         @foreach ($categories as $category)
                                         <option value="{{$category->id}}">{{$category->name}}</option>
                                         @endforeach
@@ -268,8 +268,8 @@
                                 <div>
                                     <label for="brand-select" class="text-xs font-semibold uppercase text-gray-500">Nhãn hiệu</label>
                                     <span id="brand-error" class="text-xs text-500-red italic"></span>
-                                    <select id="brand-select" name="brand_id" class="cursor-pointer">
-                                        <option value="" disabled selected hidden required>Chọn nhãn hiệu...</option>
+                                    <select x-ref="brandSelect" id="brand-select" name="brand_id" class="cursor-pointer" required>
+                                        <option value="" disabled selected hidden>Chọn nhãn hiệu...</option>
                                         @foreach ($brands as $brand)
                                         <option value="{{$brand->id}}">{{$brand->name}}</option>
                                         @endforeach
@@ -283,8 +283,8 @@
                                 <!-- Kích thước -->
                                 <div>
                                     <label class="text-xs font-semibold uppercase text-gray-500">Kích thước</label>
-                                    <span id="size-error" class="text-xs text-red-500 italic">Vui lòng chọn danh mục!</span>
-                                    <select id="size-select" name="sizes[]" class="cursor-pointer" multiple required>
+                                    <span id="size-error" class="text-xs text-red-500 italic">Vui lòng chọn danh mục trước!</span>
+                                    <select x-ref="sizeSelect" id="size-select" name="sizes[]" class="cursor-pointer" multiple>
                                         <option value="" disabled selected hidden>Chọn nhiều kích thước...</option>
                                     </select>
                                 </div>
@@ -292,7 +292,7 @@
                                 <div>
                                     <label for="color-select" class="text-xs font-semibold uppercase text-gray-500">Màu sắc</label>
                                     <span id="color-error" class="text-xs text-red-500 italic"></span>
-                                    <select id="color-select" name="colors[]" class="cursor-pointer" multiple required>
+                                    <select x-ref="colorSelect" id="color-select" name="colors[]" class="cursor-pointer" multiple>
                                         <option value="" disabled selected hidden>Chọn nhiều màu sắc...</option>
                                         @foreach ($colors as $color)
                                         <option value="{{$color->id}}" data-hex="{{$color->hex_code}}">{{$color->name}}</option>
@@ -305,15 +305,15 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="text-xs font-semibold uppercase text-gray-500">Giá gốc</label>
-                                    <input type="number" class="w-full p-2.5 border rounded text-sm" value="0" min="0" step="1" required>
+                                    <input id="inputPrice" type="number" class="w-full p-2.5 border rounded text-sm" placeholder="0" min="0" step="1">
                                 </div>
                                 <div>
                                     <label class="text-xs font-semibold uppercase text-gray-500">Giá đã giảm</label>
-                                    <input type="number" class="w-full p-2.5 border rounded text-sm" value="0" min="0" step="1" required>
+                                    <input id="inputSalePrice" type="number" class="w-full p-2.5 border rounded text-sm" placeholder="0" min="0" step="1">
                                 </div>
                                 <div>
                                     <label class="text-xs font-semibold uppercase text-gray-500">Số lượng</label>
-                                    <input type="number" class="w-full p-2.5 border rounded text-sm" value="0" min="0" step="1" required>
+                                    <input id="inputStock" type="number" class="w-full p-2.5 border rounded text-sm" placeholder="0" min="0" step="1">
                                 </div>
                             </div>
 
@@ -454,12 +454,13 @@
                             <div>
                                 <label for="tag-select" class="text-xs font-semibold uppercase text-gray-500">Nhãn</label>
                                 <span id="tag-error" class="text-xs text-red-500 italic"></span>
-                                <select id="tag-select" name="tags[]" multiple required>
+                                <select x-ref="tagSelect" id="tag-select" name="tags[]" multiple>
                                     <option value="" disabled selected hidden>Chọn nhiều nhãn...</option>
                                     @foreach ($tags as $tag)
                                     <option value="{{$tag->id}}">{{$tag->name}}</option>
                                     @endforeach
                                 </select>
+                                <span class="text-xs italic">(Các thông tin như Danh mục, Nhãn hiệu, Màu sắc... sẽ được thêm tự động)</span>
                             </div>
 
                             <!-- Mô tả -->
@@ -472,10 +473,9 @@
                             <div class="flex justify-end gap-3 pt-3 border-t">
                                 <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
                                 <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu sản phẩm</button>
-                                <button type="button" @click="isExpanded = !isExpanded" class="mt-4 w-full p-2 bg-blue-600 text-white rounded">
-                                    Toggle Chi Tiết
-                                </button>
+                                <button @click="handleGenerateClick()" type="button">Tạo các biến thể</button>
                             </div>
+                            <input type="hidden" name="variants_data" :value="JSON.stringify(variants)">
                         </form>
                     </div>
                 </div>
@@ -490,48 +490,41 @@
                     <table class="w-full text-sm bg-white rounded-xl shadow-xl">
                         <thead class="bg-blue-50 border-b border-gray-200">
                             <tr class="text-center">
-                                <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">STT</th>
                                 <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Màu sắc</th>
                                 <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Kích cỡ</th>
                                 <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giá gốc</th>
                                 <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giá giảm</th>
                                 <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tồn kho</th>
                                 <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Hoạt động</th>
+                                <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Xóa</th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="(variant, index) in variants" :key="variant.id">
                                 <tr class="border-b text-center">
-                                    <td class="p-2 font-medium" x-text="variant.name"></td>
-                                    <td class="p-2">
-                                        <input type="number" x-model="variant.name"
-                                            class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1">
-                                    </td>
                                     <td>
-                                        <span class="px-2 rounded-full bg-[{{$variant->color->hex_code}}] mr-1"></span>1
+                                        <span class="px-2 rounded-full mr-1 border" :style="`background-color: ${variant.color.hex_code}`"></span>
                                     </td>
                                     <td class="p-2">
-                                        <input type="text" x-model="variant.sku"
+                                        <span x-text="variant.size.name"></span>
+                                    </td>
+                                    <td class="p-2">
+                                        <input type="number" placeholder="0" x-model="variant.price"
                                             class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
                                     </td>
                                     <td class="p-2">
-                                        <input type="text" x-model="variant.sku"
+                                        <input type="number" placeholder="0" x-model="variant.sale_price"
                                             class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
                                     </td>
                                     <td class="p-2">
-                                        <input type="text" x-model="variant.sku"
+                                        <input type="number" placeholder="0" x-model="variant.stock"
                                             class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
                                     </td>
                                     <td class="p-2">
-                                        <input type="text" x-model="variant.sku"
-                                            class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
+                                        <input type="checkbox" x-model="variant.status">
                                     </td>
-                                    <td class="p-3">
-                                        <button @click="removeRow(variant.id)" class="text-red-400 hover:text-red-600">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                        </button>
+                                    <td class="p-3 text-center">
+                                        <button @click="removeRow(index)" class="text-red-500 font-bold">Xóa</button>
                                     </td>
                                 </tr>
                             </template>
@@ -545,6 +538,351 @@
 @endsection
 @section('script')
 <script>
+    function variantManager() {
+        return {
+            isExpanded: false,
+            variants: [],
+            colors: [],
+            sizes: [],
+
+            init() {
+                this.tsCategory = new TomSelect(this.$refs.categorySelect, {
+                    create: async function(input, callback) {
+                        if (confirm('Xác nhận thêm?')) {
+                            const data = {
+                                name: input
+                            };
+                            const msg = document.getElementById('category-error');
+                            try {
+                                msg.innerHTML = "...";
+                                const res = await axios.post("{{ route('admin.category.store') }}", data)
+                                const result = res.data;
+                                callback({
+                                    value: result.data.id,
+                                    text: result.data.name,
+                                });
+                                msg.className = 'text-xs text-green-500 italic'
+                                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
+                            } catch (error) {
+                                callback(false);
+                                if (error.response) {
+                                    msg.className = 'text-xs text-red-500 italic';
+                                    msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
+                                } else {
+                                    console.log('Fetch error:', error);
+                                    alert('Không thể kết nối đến server');
+                                }
+                            }
+                        } else {
+                            callback(false);
+                        }
+                    },
+                    sortField: {
+                        field: "text",
+                        order: "asc"
+                    },
+                    onChange: async (value) => {
+                        if (!value) {
+                            document.getElementById('size-error').innerHTML = "Vui lòng chọn danh mục!";
+                            return
+                        };
+                        await this.loadSizesByCategory(value);
+                    }
+                });
+
+                this.tsBrand = new TomSelect(this.$refs.brandSelect, {
+                    create: async function(input, callback) {
+                        if (confirm('Xác nhận thêm?')) {
+                            const data = {
+                                name: input
+                            };
+                            const msg = document.getElementById('brand-error');
+                            try {
+                                msg.innerHTML = "...";
+                                const res = await axios.post("{{ route('admin.brand.store') }}", data)
+                                const result = res.data;
+                                callback({
+                                    value: result.data.id,
+                                    text: result.data.name,
+                                });
+                                msg.className = 'text-xs text-green-500 italic'
+                                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
+                            } catch (error) {
+                                callback(false);
+                                if (error.response) {
+                                    msg.className = 'text-xs text-red-500 italic';
+                                    msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
+                                } else {
+                                    console.log('Fetch error:', error);
+                                    alert('Không thể kết nối đến server');
+                                }
+                            }
+                        } else {
+                            callback(false);
+                        }
+                    },
+                    sortField: {
+                        field: "text",
+                        order: "asc"
+                    }
+                });
+
+                this.tsColor = new TomSelect(this.$refs.colorSelect, {
+                    create: async function(input, callback) {
+                        if (confirm('Xác nhận thêm?')) {
+                            const pick = this.dropdown.querySelector('#color-picker');
+                            const data = {
+                                name: input,
+                                hex_code: pick.value,
+                            }
+                            if (data.hex_code === '#000000') {
+                                const confirmBlack = confirm("Bạn đang chọn màu đen mặc định, tiếp tục?");
+                                if (!confirmBlack) return callback(false);
+                            }
+                            const msg = document.getElementById('color-error');
+                            try {
+                                msg.innerHTML = "...";
+                                const res = await axios.post("{{ route('admin.color.store') }}", data)
+                                const result = res.data;
+                                callback({
+                                    value: result.data.id,
+                                    text: result.data.name,
+                                    hex: result.data.hex_code,
+                                });
+                                msg.className = 'text-xs text-green-500 italic'
+                                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
+                            } catch (error) {
+                                callback(false);
+                                if (error.response) {
+                                    msg.className = 'text-xs text-red-500 italic';
+                                    msg.innerHTML = error.response.data.message;
+                                } else {
+                                    console.log('Fetch error:', error);
+                                    alert('Không thể kết nối đến server');
+                                }
+                            }
+                        } else {
+                            callback(false);
+                        }
+                    },
+                    onChange: (val) => {
+                        this.colors = val.map(id => {
+                            const data = this.tsColor.options[id];
+                            return {
+                                id: id,
+                                name: data.text,
+                                hex_code: data.hex,
+                            };
+                        });
+                    },
+                    plugins: ['remove_button'],
+                    render: {
+                        option_create: function(data, escape) {
+                            return `
+                            <div class="create flex items-center justify-between p-2">
+                                <span>Thêm màu: <strong>${escape(data.input)}</strong></span>
+                                <div class="flex items-center gap-2" onclick="event.stopPropagation();">
+                                    <input type="color" id="color-picker"
+                                        class="w-6 h-6 border-none cursor-pointer" value='NULL'>
+                                    <span class="text-xs text-blue-600 font-bold">Chọn màu</span>
+                                </div>
+                            </div>`;
+                        },
+                        item: function(data, escape) {
+                            return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
+                            <span class="w-4 h-4 rounded-full bg-[${escape(data.hex)}] mr-1 border"></span>
+                            ${escape(data.text)}
+                            </span>`;
+                        },
+                        option: function(data, escape) {
+                            return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
+                            <span class="w-4 h-4 rounded-full bg-[${escape(data.hex)}] mr-1 border"></span>
+                            ${escape(data.text)}
+                            </span>`;
+                        }
+                    },
+                    sortField: {
+                        field: "text",
+                        order: "asc",
+                    },
+                });
+
+                this.tsSize = new TomSelect(this.$refs.sizeSelect, {
+                    valueField: 'id',
+                    labelField: 'name',
+                    options: [],
+                    create: async function(input, callback) {
+                        if (confirm('Xác nhận thêm?')) {
+                            const data = {
+                                name: input,
+                                category_id: document.getElementById('category-select').value,
+                            }
+                            const msg = document.getElementById('size-error');
+                            try {
+                                msg.innerHTML = "...";
+                                const res = await axios.post("{{ route('admin.size.store') }}", data)
+                                const result = res.data;
+                                callback({
+                                    id: result.data.id,
+                                    name: result.data.name,
+                                });
+                                msg.className = 'text-xs text-green-500 italic'
+                                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
+                            } catch (error) {
+                                callback(false);
+                                if (error.response) {
+                                    msg.className = 'text-xs text-red-500 italic';
+                                    msg.innerHTML = error.response.data.message;
+                                } else {
+                                    console.log('Fetch error:', error);
+                                    alert('Không thể kết nối đến server');
+                                }
+                            }
+                        } else {
+                            callback(false);
+                        }
+                    },
+                    render: {
+                        option: function(data, escape) {
+                            return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
+                            ${escape(data.name)}
+                            </span>`;
+                        }
+                    },
+                    onChange: (val) => {
+                        this.sizes = val.map(id => {
+                            const data = this.tsSize.options[id];
+                            return {
+                                id: id,
+                                name: data.name,
+                            };
+                        });
+                    },
+                    plugins: ['remove_button'],
+                    searchField: 'name',
+                    sortField: {
+                        field: "name",
+                        order: "asc",
+                    },
+                });
+
+                this.tsTag = new TomSelect(this.$refs.tagSelect, {
+                    create: async function(input, callback) {
+                        if (confirm('Xác nhận thêm?')) {
+                            const data = {
+                                name: input
+                            };
+                            const msg = document.getElementById('tag-error');
+                            try {
+                                msg.innerHTML = "...";
+                                const res = await axios.post("{{ route('admin.tag.store') }}", data)
+                                const result = res.data;
+                                callback({
+                                    value: result.data.id,
+                                    text: result.data.name,
+                                });
+                                msg.className = 'text-xs text-green-500 italic'
+                                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
+                            } catch (error) {
+                                callback(false);
+                                if (error.response) {
+                                    msg.className = 'text-xs text-red-500 italic';
+                                    msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
+                                } else {
+                                    console.log('Fetch error:', error);
+                                    alert('Không thể kết nối đến server');
+                                }
+                            }
+                        } else {
+                            callback(false);
+                        }
+                    },
+                    render: {
+                        option: function(data, escape) {
+                            return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
+                            ${escape(data.text)}
+                            </span>`;
+                        }
+                    },
+                    plugins: ['remove_button'],
+                    sortField: {
+                        field: "text",
+                        order: "asc"
+                    }
+                });
+            },
+
+            async loadSizesByCategory(categoryId) {
+                this.tsSize.clear();
+                this.tsSize.clearOptions();
+                const msg = document.getElementById('size-error');
+                try {
+                    msg.innerHTML = 'Đang tải...'
+                    const res = await axios.get("{{ route('admin.category.size') }}", {
+                        params: {
+                            id: categoryId
+                        }
+                    })
+                    msg.innerHTML = ''
+                    this.tsSize.addOptions(res.data);
+                    this.tsSize.refreshOptions(false);
+                } catch (error) {
+                    if (error.response) {
+                        msg.className = 'text-xs text-red-500 italic';
+                        msg.innerHTML = error.response.data.message;
+                    } else {
+                        console.log('Fetch error:', error);
+                        alert('Không thể kết nối đến server');
+                    }
+                }
+            },
+
+            // Hàm này phải nằm TRONG object trả về
+            handleGenerateClick() {
+                this.generateVariants();
+
+                if (this.variants.length > 0) {
+                    this.isExpanded = true;
+                }
+            },
+
+            generateVariants() {
+                if (this.colors.length === 0 && this.sizes.length === 0) {
+                    alert("Vui lòng nhập ít nhất một màu hoặc size");
+                    return;
+                }
+
+                if (this.variants.length > 0 && !confirm("Dữ liệu bảng hiện tại sẽ bị thay thế. Bạn có chắc chắn?")) {
+                    return;
+                }
+                // Logic tạo tích Descartes
+                let results = []
+                this.colors.forEach(c => {
+                    this.sizes.forEach(s => {
+                        results.push({
+                            id: Date.now() + Math.random(),
+                            // Lưu object để hiển thị
+                            color: c,
+                            size: s,
+
+                            // Các trường nhập liệu
+                            price: document.getElementById('inputPrice').value,
+                            sale_price: document.getElementById('inputSalePrice').value,
+                            stock: document.getElementById('inputStock').value,
+                            status: true,
+                        });
+                    });
+                });
+                this.variants = results;
+            },
+            removeRow(index) {
+                if (confirm('Xóa biến thể này?')) {
+                    this.variants.splice(index, 1);
+                }
+            }
+        }
+    }
+
     // 1. Khởi tạo Croppie
     window.croppedImages = {};
     var el = document.getElementById('upload-crop');
@@ -651,271 +989,6 @@
         }
     };
 
-    new TomSelect("#category-select", {
-        create: async function(input, callback) {
-            if (confirm('Xác nhận thêm?')) {
-                const data = {
-                    name: input
-                };
-                const msg = document.getElementById('category-error');
-                try {
-                    msg.innerHTML = "...";
-                    const res = await axios.post("{{ route('admin.category.store') }}", data)
-                    const result = res.data;
-                    callback({
-                        value: result.data.id,
-                        text: result.data.name,
-                    });
-                    msg.className = 'text-xs text-green-500 italic'
-                    msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
-                } catch (error) {
-                    callback(false);
-                    if (error.response) {
-                        msg.className = 'text-xs text-red-500 italic';
-                        msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
-                    } else {
-                        console.log('Fetch error:', error);
-                        alert('Không thể kết nối đến server');
-                    }
-                }
-            } else {
-                callback(false);
-            }
-        },
-        sortField: {
-            field: "text",
-            order: "asc"
-        }
-    });
-
-    new TomSelect("#brand-select", {
-        create: async function(input, callback) {
-            if (confirm('Xác nhận thêm?')) {
-                const data = {
-                    name: input
-                };
-                const msg = document.getElementById('brand-error');
-                try {
-                    msg.innerHTML = "...";
-                    const res = await axios.post("{{ route('admin.brand.store') }}", data)
-                    const result = res.data;
-                    callback({
-                        value: result.data.id,
-                        text: result.data.name,
-                    });
-                    msg.className = 'text-xs text-green-500 italic'
-                    msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
-                } catch (error) {
-                    callback(false);
-                    if (error.response) {
-                        msg.className = 'text-xs text-red-500 italic';
-                        msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
-                    } else {
-                        console.log('Fetch error:', error);
-                        alert('Không thể kết nối đến server');
-                    }
-                }
-            } else {
-                callback(false);
-            }
-        },
-        sortField: {
-            field: "text",
-            order: "asc"
-        }
-    });
-
-    new TomSelect("#color-select", {
-        create: async function(input, callback) {
-            if (confirm('Xác nhận thêm?')) {
-                const pick = this.dropdown.querySelector('#color-picker');
-                const data = {
-                    name: input,
-                    hex_code: pick.value,
-                }
-                if (data.hex_code === '#000000') {
-                    const confirmBlack = confirm("Bạn đang chọn màu đen mặc định, tiếp tục?");
-                    if (!confirmBlack) return callback(false);
-                }
-                const msg = document.getElementById('color-error');
-                try {
-                    msg.innerHTML = "...";
-                    const res = await axios.post("{{ route('admin.color.store') }}", data)
-                    const result = res.data;
-                    callback({
-                        value: result.data.id,
-                        text: result.data.name,
-                        hex: result.data.hex_code,
-                    });
-                    msg.className = 'text-xs text-green-500 italic'
-                    msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
-                } catch (error) {
-                    callback(false);
-                    if (error.response) {
-                        msg.className = 'text-xs text-red-500 italic';
-                        msg.innerHTML = error.response.data.message;
-                    } else {
-                        console.log('Fetch error:', error);
-                        alert('Không thể kết nối đến server');
-                    }
-                }
-            } else {
-                callback(false);
-            }
-        },
-        plugins: ['remove_button'],
-        render: {
-            option_create: function(data, escape) {
-                return `
-                <div class="create flex items-center justify-between p-2">
-                    <span>Thêm màu: <strong>${escape(data.input)}</strong></span>
-                    <div class="flex items-center gap-2" onclick="event.stopPropagation();">
-                        <input type="color" id="color-picker"
-                               class="w-6 h-6 border-none cursor-pointer" value='NULL'>
-                        <span class="text-xs text-blue-600 font-bold">Chọn màu</span>
-                    </div>
-                </div>`;
-            },
-            item: function(data, escape) {
-                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
-                <span class="w-4 h-4 rounded-full bg-[${escape(data.hex)}] mr-1 border"></span>
-                ${escape(data.text)}
-            </span>`;
-            },
-            option: function(data, escape) {
-                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
-                <span class="w-4 h-4 rounded-full bg-[${escape(data.hex)}] mr-1 border"></span>
-                ${escape(data.text)}
-            </span>`;
-            }
-        },
-        sortField: {
-            field: "text",
-            order: "asc",
-        },
-    });
-
-    const size = new TomSelect("#size-select", {
-        valueField: 'id',
-        labelField: 'name',
-        options: [],
-        create: async function(input, callback) {
-            if (confirm('Xác nhận thêm?')) {
-                const data = {
-                    name: input,
-                    category_id: document.getElementById('category-select').value,
-                }
-                const msg = document.getElementById('size-error');
-                try {
-                    msg.innerHTML = "...";
-                    const res = await axios.post("{{ route('admin.size.store') }}", data)
-                    const result = res.data;
-                    callback({
-                        id: result.data.id,
-                        name: result.data.name,
-                    });
-                    msg.className = 'text-xs text-green-500 italic'
-                    msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
-                } catch (error) {
-                    callback(false);
-                    if (error.response) {
-                        msg.className = 'text-xs text-red-500 italic';
-                        msg.innerHTML = error.response.data.message;
-                    } else {
-                        console.log('Fetch error:', error);
-                        alert('Không thể kết nối đến server');
-                    }
-                }
-            } else {
-                callback(false);
-            }
-        },
-        render: {
-            option: function(data, escape) {
-                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
-                ${escape(data.name)}
-            </span>`;
-            }
-        },
-        plugins: ['remove_button'],
-        searchField: 'name',
-        sortField: {
-            field: "name",
-            order: "asc",
-        },
-    });
-
-    new TomSelect("#tag-select", {
-        create: async function(input, callback) {
-            if (confirm('Xác nhận thêm?')) {
-                const data = {
-                    name: input
-                };
-                const msg = document.getElementById('tag-error');
-                try {
-                    msg.innerHTML = "...";
-                    const res = await axios.post("{{ route('admin.tag.store') }}", data)
-                    const result = res.data;
-                    callback({
-                        value: result.data.id,
-                        text: result.data.name,
-                    });
-                    msg.className = 'text-xs text-green-500 italic'
-                    msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
-                } catch (error) {
-                    callback(false);
-                    if (error.response) {
-                        msg.className = 'text-xs text-red-500 italic';
-                        msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
-                    } else {
-                        console.log('Fetch error:', error);
-                        alert('Không thể kết nối đến server');
-                    }
-                }
-            } else {
-                callback(false);
-            }
-        },
-        render: {
-            option: function(data, escape) {
-                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border">
-                ${escape(data.text)}
-            </span>`;
-            }
-        },
-        plugins: ['remove_button'],
-        sortField: {
-            field: "text",
-            order: "asc"
-        }
-    });
-
-    const cate = document.getElementById('category-select');
-    cate.onchange = async function() {
-        size.clear();
-        size.clearOptions();
-        const msg = document.getElementById('size-error');
-        try {
-            msg.innerHTML = 'Đang tải...'
-            const res = await axios.get("{{ route('admin.category.size') }}", {
-                params: {
-                    id: this.value
-                }
-            })
-            msg.innerHTML = ''
-            size.addOptions(res.data);
-            size.refreshOptions(false);
-        } catch (error) {
-            if (error.response) {
-                msg.className = 'text-xs text-red-500 italic';
-                msg.innerHTML = error.response.data.message;
-            } else {
-                console.log('Fetch error:', error);
-                alert('Không thể kết nối đến server');
-            }
-        }
-    }
-
     function openModal() {
         const modal = document.getElementById('product-modal');
         const panel = document.getElementById('modal-panel');
@@ -958,11 +1031,24 @@
         }
     }
 
-    //Xử lý ảnh khi submit
+    //Hàm lằng nghe submit
     document.getElementById('productForm').addEventListener('submit', function(e) {
+        const formData = new FormData(this); // 'this' chính là cái form
+        const variantsRaw = formData.get('variants_data'); // Lấy chuỗi JSON từ input ẩn
+
+        // Kiểm tra rỗng
+        if (!variantsRaw || variantsRaw === '[]') {
+            alert('Danh sách biến thể không được để trống!');
+            e.preventDefault(); // Dừng submit lại
+            return;
+        }
+
+        //Xử lý ảnh khi submit
         if (!window.croppedImages || !window.croppedImages[1]) {
             e.preventDefault();
-            document.getElementById('image-error').innerHTML = 'Hình ảnh chính là bắt buộc!';
+            const img = document.getElementById('image-error');
+            img.innerHTML = 'Hình ảnh chính là bắt buộc!';
+            img.scrollIntoView();
             return;
         }
         //Chia hình ảnh thumbnail và hình ảnh con
