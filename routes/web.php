@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
+use App\Http\Controllers\Admin\TagController as AdminTagController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 //User Checkout Route
@@ -45,7 +46,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/giao-hang', [AdminOrderController::class, 'index'])->name('admin.ship.index');
         });
         Route::middleware('role:admin-product,admin-head')->group(function () {
+            //Product
             Route::get('/san-pham', [AdminProductController::class, 'index'])->name('admin.product.index');
+            Route::post('/san-pham/them', [AdminProductController::class, 'store'])->name('admin.product.store');
 
             //Category Route
             Route::post('/danh-muc/them', [AdminCategoryController::class, 'store'])->name('admin.category.store');
@@ -59,6 +62,9 @@ Route::middleware('auth')->group(function () {
 
             //Size
             Route::post('/kich-co/them', [AdminSizeController::class, 'store'])->name('admin.size.store');
+
+            //Tag
+            Route::post('/nhan/them', [AdminTagController::class, 'store'])->name('admin.tag.store');
 
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
             Route::get('/nhap-hang', [AdminOrderController::class, 'index'])->name('admin.import.index');
