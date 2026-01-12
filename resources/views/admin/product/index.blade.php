@@ -227,260 +227,317 @@
 @endsection
 @section('pop')
 <!-- Popup Add Product -->
-<div id="product-modal" class="fixed inset-0 z-50 hidden" x-data="{ expanded: false }">
+<div id="product-modal" class="fixed inset-0 z-50 hidden" x-data="{ isExpanded: false }">
     <div id="modal-backdrop" class=" absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0"></div>
     <div class="absolute inset-0 flex items-center justify-center p-4">
         <div class="absolute inset-0" aria-hidden="true" onclick="closeModal()"></div>
-        <div id="modal-panel" class="bg-white w-full max-w-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 rounded-lg flex flex-col max-h-[90vh]">
+        <div id="modal-panel" class="bg-white w-full max-w-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 rounded-lg flex max-h-[90vh]" :class="isExpanded ? 'max-w-7xl' : 'max-w-2xl'">
+            <div class="overflow-y-auto flex-col max-w-2xl shrink-0">
+                <!-- Header -->
+                <div class="flex justify-between items-center p-6 border-b">
+                    <h3 class="text-xl font-bold">Thêm sản phẩm mới</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-red-500 transition text-xl px-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="overflow-y-auto max-h-[79vh]">
+                    <!-- Content -->
+                    <div class="p-6 overflow-y-auto custom-scrollbar">
+                        <form method="POST" action="{{ route('admin.product.store') }}" id="productForm" class="space-y-6" enctype="multipart/form-data">
+                            @csrf
+                            <!-- Tên -->
+                            <div class="grid grid-cols-1 md:grid-cols-1">
+                                <div>
+                                    <label class="text-xs font-semibold uppercase text-gray-500">Tên sản phẩm</label>
+                                    <input type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255" required>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Danh mục -->
+                                <div>
+                                    <label for="category-select" class="text-xs font-semibold uppercase text-gray-500">Danh mục</label>
+                                    <span id="category-error" class="text-xs text-red-500 italic"></span>
+                                    <select id="category-select" name="category_id" class="cursor-pointer">
+                                        <option value="" disabled selected hidden required>Chọn danh mục...</option>
+                                        @foreach ($categories as $category)
+                                        <option value="{{$category->id}}">{{$category->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <!-- Nhãn hiệu -->
+                                <div>
+                                    <label for="brand-select" class="text-xs font-semibold uppercase text-gray-500">Nhãn hiệu</label>
+                                    <span id="brand-error" class="text-xs text-500-red italic"></span>
+                                    <select id="brand-select" name="brand_id" class="cursor-pointer">
+                                        <option value="" disabled selected hidden required>Chọn nhãn hiệu...</option>
+                                        @foreach ($brands as $brand)
+                                        <option value="{{$brand->id}}">{{$brand->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-            <!-- Header -->
-            <div class="flex justify-between items-center p-6 border-b">
-                <h3 class="text-xl font-bold">Thêm sản phẩm mới</h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-red-500 transition text-xl px-2">
-                    <i class="fas fa-times"></i>
-                </button>
+                            </div>
+
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Kích thước -->
+                                <div>
+                                    <label class="text-xs font-semibold uppercase text-gray-500">Kích thước</label>
+                                    <span id="size-error" class="text-xs text-red-500 italic">Vui lòng chọn danh mục!</span>
+                                    <select id="size-select" name="sizes[]" class="cursor-pointer" multiple required>
+                                        <option value="" disabled selected hidden>Chọn nhiều kích thước...</option>
+                                    </select>
+                                </div>
+                                <!-- Màu sắc -->
+                                <div>
+                                    <label for="color-select" class="text-xs font-semibold uppercase text-gray-500">Màu sắc</label>
+                                    <span id="color-error" class="text-xs text-red-500 italic"></span>
+                                    <select id="color-select" name="colors[]" class="cursor-pointer" multiple required>
+                                        <option value="" disabled selected hidden>Chọn nhiều màu sắc...</option>
+                                        @foreach ($colors as $color)
+                                        <option value="{{$color->id}}" data-hex="{{$color->hex_code}}">{{$color->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Giá + Tồn kho -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="text-xs font-semibold uppercase text-gray-500">Giá gốc</label>
+                                    <input type="number" class="w-full p-2.5 border rounded text-sm" value="0" min="0" step="1" required>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-semibold uppercase text-gray-500">Giá đã giảm</label>
+                                    <input type="number" class="w-full p-2.5 border rounded text-sm" value="0" min="0" step="1" required>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-semibold uppercase text-gray-500">Số lượng</label>
+                                    <input type="number" class="w-full p-2.5 border rounded text-sm" value="0" min="0" step="1" required>
+                                </div>
+                            </div>
+
+                            <!-- Trạng thái -->
+                            <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+                                <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+                                    <span class="text-xs font-semibold uppercase text-gray-500">Trạng thái của sản phẩm</span>
+                                    <div class="inline-flex p-1 bg-gray-100 rounded-lg">
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="status" value="1" class="peer hidden" checked>
+                                            <span class="flex items-center px-4 py-2 text-xs font-bold rounded-md transition-all peer-checked:bg-white peer-checked:text-green-600 peer-checked:shadow-sm text-gray-400 hover:text-gray-600">
+                                                <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                                                Hoạt động
+                                            </span>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="status" value="0" class="peer hidden">
+                                            <span class="flex items-center px-4 py-2 text-xs font-bold rounded-md transition-all peer-checked:bg-white peer-checked:text-red-500 peer-checked:shadow-sm text-gray-400 hover:text-gray-600">
+                                                <span class="w-2 h-2 rounded-full bg-red-400 mr-2"></span>
+                                                Tạm ẩn
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload ảnh -->
+                            <div>
+                                <input type="hidden" name="cropped-thumbnail">
+                                <input type="hidden" name="cropped-images[]" multiple>
+                                <label class="text-xs font-semibold uppercase text-gray-500">Hình ảnh</label>
+                                <span id="image-error" class="text-xs text-red-500 italic"></span>
+                                <div>
+                                    <div id="crop-area" class="hidden mx-auto ">
+                                        <div id="upload-crop"></div>
+                                        <div class="flex justify-center gap-1">
+                                            <button type="button" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200" id="crop-cancel-button">Hủy</button>
+                                            <button type="button" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800" id="crop-button">Cắt ảnh</button>
+                                        </div>
+                                    </div>
+                                    <div id="image-area" class="max-w-4xl mx-auto p-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 h-[400px]">
+
+                                            <div class="md:col-span-2 relative group overflow-hidden rounded-2xl shadow-lg">
+                                                <div id="image-1" class="flex items-center justify-center w-full h-full">
+                                                    <label for="upload-1" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+                                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                            <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                                            <p class="mb-2 text-sm text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
+                                                            <p class="text-xs text-gray-400 font-medium">PNG, JPG hoặc JPEG (Tỉ lệ 3:4)</p>
+                                                            <p class="text-xs text-gray-400 font-medium">Tối đa: 2MB</p>
+                                                        </div>
+                                                        <input id="upload-1" data-index="1" type="file" class="hidden image-upload" />
+                                                    </label>
+                                                </div>
+                                                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-1" src="" style="display:none;">
+                                                <button type="button" onclick="removeImage(1)" id="btn-delete-1"
+                                                    class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
+                                                    <i class="fas fa-trash-alt text-xs"></i>
+                                                </button>
+                                                <div class="absolute bottom-4 left-4 bg-white/80 backdrop-blur px-3 py-1 rounded-full text-sm font-semibold shadow-sm">
+                                                    Ảnh chính
+                                                </div>
+                                            </div>
+
+                                            <div class="md:col-span-2 grid grid-cols-4 md:grid-cols-2 gap-3 h-full">
+                                                <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
+                                                    <div id="image-2" class="flex items-center justify-center w-full h-full">
+                                                        <label for="upload-2" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+                                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                                <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                                                <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
+                                                            </div>
+                                                            <input id="upload-2" data-index="2" type="file" class="hidden image-upload" />
+                                                        </label>
+                                                    </div>
+                                                    <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-2" src="" style="display:none;">
+                                                    <button type="button" onclick="removeImage(2)" id="btn-delete-2"
+                                                        class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
+                                                        <i class="fas fa-trash-alt text-xs"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
+                                                    <div id="image-3" class="flex items-center justify-center w-full h-full">
+                                                        <label for="upload-3" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+                                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                                <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                                                <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
+                                                            </div>
+                                                            <input id="upload-3" data-index="3" type="file" class="hidden image-upload" />
+                                                        </label>
+                                                    </div>
+                                                    <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-3" src="" style="display:none;">
+                                                    <button type="button" onclick="removeImage(3)" id="btn-delete-3"
+                                                        class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
+                                                        <i class="fas fa-trash-alt text-xs"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
+                                                    <div id="image-4" class="flex items-center justify-center w-full h-full">
+                                                        <label for="upload-4" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+                                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                                <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                                                <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
+                                                            </div>
+                                                            <input id="upload-4" data-index="4" type="file" class="hidden image-upload" />
+                                                        </label>
+                                                    </div>
+                                                    <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-4" src="" style="display:none;">
+                                                    <button type="button" onclick="removeImage(4)" id="btn-delete-4"
+                                                        class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
+                                                        <i class="fas fa-trash-alt text-xs"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
+                                                    <div id="image-5" class="flex items-center justify-center w-full h-full">
+                                                        <label for="upload-5" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
+                                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                                <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
+                                                                <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
+                                                            </div>
+                                                            <input id="upload-5" data-index="5" type="file" class="hidden image-upload" />
+                                                        </label>
+                                                    </div>
+                                                    <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-5" src="" style="display:none;">
+                                                    <button type="button" onclick="removeImage(5)" id="btn-delete-5"
+                                                        class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
+                                                        <i class="fas fa-trash-alt text-xs"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nhãn -->
+                            <div>
+                                <label for="tag-select" class="text-xs font-semibold uppercase text-gray-500">Nhãn</label>
+                                <span id="tag-error" class="text-xs text-red-500 italic"></span>
+                                <select id="tag-select" name="tags[]" multiple required>
+                                    <option value="" disabled selected hidden>Chọn nhiều nhãn...</option>
+                                    @foreach ($tags as $tag)
+                                    <option value="{{$tag->id}}">{{$tag->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!-- Mô tả -->
+                            <div>
+                                <label class="text-xs font-semibold uppercase text-gray-500">Mô tả</label>
+                                <textarea rows="3" class="w-full p-2.5 border rounded text-sm" placeholder="Mô tả ngắn sản phẩm..."></textarea>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="flex justify-end gap-3 pt-3 border-t">
+                                <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
+                                <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu sản phẩm</button>
+                                <button type="button" @click="isExpanded = !isExpanded" class="mt-4 w-full p-2 bg-blue-600 text-white rounded">
+                                    Toggle Chi Tiết
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
-            <!-- Content -->
-            <div class="p-6 overflow-y-auto custom-scrollbar">
-                <form method="POST" action="{{ route('admin.product.store') }}" id="productForm" class="space-y-6" enctype="multipart/form-data">
-                    @csrf
-                    <!-- Tên -->
-                    <div class="grid grid-cols-1 md:grid-cols-1">
-                        <div>
-                            <label class="text-xs font-semibold uppercase text-gray-500">Tên sản phẩm</label>
-                            <input type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255" required>
-                        </div>
-
+            <div class="overflow-y-auto flex-col flex-1">
+                <div class="w-full h-full p-6 overflow-y-auto bg-gray-50 transition-all duration-500"
+                    :class="isExpanded ? 'opacity-100' : 'w-0 opacity-0'">
+                    <div class="flex justify-between items-center p-6 border-b bg-white rounded-tl-xl rounded-tr-xl">
+                        <h3 class="text-xl font-bold">Chi tiết các biến thể</h3>
                     </div>
-
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Danh mục -->
-                        <div>
-                            <label for="category-select" class="text-xs font-semibold uppercase text-gray-500">Danh mục</label>
-                            <span id="category-error" class="text-xs text-red-500 italic"></span>
-                            <select id="category-select" name="category_id" class="cursor-pointer">
-                                <option value="" disabled selected hidden required>Chọn danh mục...</option>
-                                @foreach ($categories as $category)
-                                <option value="{{$category->id}}">{{$category->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <!-- Nhãn hiệu -->
-                        <div>
-                            <label for="brand-select" class="text-xs font-semibold uppercase text-gray-500">Nhãn hiệu</label>
-                            <span id="brand-error" class="text-xs text-500-red italic"></span>
-                            <select id="brand-select" name="brand_id" class="cursor-pointer">
-                                <option value="" disabled selected hidden required>Chọn nhãn hiệu...</option>
-                                @foreach ($brands as $brand)
-                                <option value="{{$brand->id}}">{{$brand->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                    </div>
-
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Kích thước -->
-                        <div>
-                            <label class="text-xs font-semibold uppercase text-gray-500">Kích thước</label>
-                            <span id="size-error" class="text-xs text-red-500 italic">Vui lòng chọn danh mục!</span>
-                            <select id="size-select" name="sizes[]" class="cursor-pointer" multiple required>
-                                <option value="" disabled selected hidden>Chọn nhiều kích thước...</option>
-                            </select>
-                        </div>
-                        <!-- Màu sắc -->
-                        <div>
-                            <label for="color-select" class="text-xs font-semibold uppercase text-gray-500">Màu sắc</label>
-                            <span id="color-error" class="text-xs text-red-500 italic"></span>
-                            <select id="color-select" name="colors[]" class="cursor-pointer" multiple required>
-                                <option value="" disabled selected hidden>Chọn nhiều màu sắc...</option>
-                                @foreach ($colors as $color)
-                                <option value="{{$color->id}}" data-hex="{{$color->hex_code}}">{{$color->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Giá + Tồn kho -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="text-xs font-semibold uppercase text-gray-500">Giá gốc</label>
-                            <input type="number" class="w-full p-2.5 border rounded text-sm" value="0" min="0" step="1" required>
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold uppercase text-gray-500">Giá đã giảm</label>
-                            <input type="number" class="w-full p-2.5 border rounded text-sm" value="0" min="0" step="1" required>
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold uppercase text-gray-500">Số lượng</label>
-                            <input type="number" class="w-full p-2.5 border rounded text-sm" value="0" min="0" step="1" required>
-                        </div>
-                    </div>
-
-                    <!-- Trạng thái -->
-                    <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
-                        <div class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
-                            <span class="text-xs font-semibold uppercase text-gray-500">Trạng thái của sản phẩm</span>
-                            <div class="inline-flex p-1 bg-gray-100 rounded-lg">
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="status" value="1" class="peer hidden" checked>
-                                    <span class="flex items-center px-4 py-2 text-xs font-bold rounded-md transition-all peer-checked:bg-white peer-checked:text-green-600 peer-checked:shadow-sm text-gray-400 hover:text-gray-600">
-                                        <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                                        Hoạt động
-                                    </span>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="status" value="0" class="peer hidden">
-                                    <span class="flex items-center px-4 py-2 text-xs font-bold rounded-md transition-all peer-checked:bg-white peer-checked:text-red-500 peer-checked:shadow-sm text-gray-400 hover:text-gray-600">
-                                        <span class="w-2 h-2 rounded-full bg-red-400 mr-2"></span>
-                                        Tạm ẩn
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Upload ảnh -->
-                    <div>
-                        <input type="hidden" name="cropped-thumbnail">
-                        <input type="hidden" name="cropped-images[]" multiple>
-                        <label class="text-xs font-semibold uppercase text-gray-500">Hình ảnh</label>
-                        <span id="image-error" class="text-xs text-red-500 italic"></span>
-                        <div>
-                            <div id="crop-area" class="hidden mx-auto ">
-                                <div id="upload-crop"></div>
-                                <div class="flex justify-center gap-1">
-                                    <button type="button" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200" id="crop-cancel-button">Hủy</button>
-                                    <button type="button" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800" id="crop-button">Cắt ảnh</button>
-                                </div>
-                            </div>
-                            <div id="image-area" class="max-w-4xl mx-auto p-4">
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 h-[400px]">
-
-                                    <div class="md:col-span-2 relative group overflow-hidden rounded-2xl shadow-lg">
-                                        <div id="image-1" class="flex items-center justify-center w-full h-full">
-                                            <label for="upload-1" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
-                                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                                    <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
-                                                    <p class="mb-2 text-sm text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
-                                                    <p class="text-xs text-gray-400 font-medium">PNG, JPG hoặc JPEG (Tỉ lệ 3:4)</p>
-                                                    <p class="text-xs text-gray-400 font-medium">Tối đa: 2MB</p>
-                                                </div>
-                                                <input id="upload-1" data-index="1" type="file" class="hidden image-upload" />
-                                            </label>
-                                        </div>
-                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-1" src="" style="display:none;">
-                                        <button type="button" onclick="removeImage(1)" id="btn-delete-1"
-                                            class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
-                                            <i class="fas fa-trash-alt text-xs"></i>
+                    <table class="w-full text-sm bg-white rounded-xl shadow-xl">
+                        <thead class="bg-blue-50 border-b border-gray-200">
+                            <tr class="text-center">
+                                <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">STT</th>
+                                <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Màu sắc</th>
+                                <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Kích cỡ</th>
+                                <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giá gốc</th>
+                                <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giá giảm</th>
+                                <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tồn kho</th>
+                                <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Hoạt động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="(variant, index) in variants" :key="variant.id">
+                                <tr class="border-b text-center">
+                                    <td class="p-2 font-medium" x-text="variant.name"></td>
+                                    <td class="p-2">
+                                        <input type="number" x-model="variant.name"
+                                            class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1">
+                                    </td>
+                                    <td>
+                                        <span class="px-2 rounded-full bg-[{{$variant->color->hex_code}}] mr-1"></span>1
+                                    </td>
+                                    <td class="p-2">
+                                        <input type="text" x-model="variant.sku"
+                                            class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
+                                    </td>
+                                    <td class="p-2">
+                                        <input type="text" x-model="variant.sku"
+                                            class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
+                                    </td>
+                                    <td class="p-2">
+                                        <input type="text" x-model="variant.sku"
+                                            class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
+                                    </td>
+                                    <td class="p-2">
+                                        <input type="text" x-model="variant.sku"
+                                            class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
+                                    </td>
+                                    <td class="p-3">
+                                        <button @click="removeRow(variant.id)" class="text-red-400 hover:text-red-600">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
                                         </button>
-                                        <div class="absolute bottom-4 left-4 bg-white/80 backdrop-blur px-3 py-1 rounded-full text-sm font-semibold shadow-sm">
-                                            Ảnh chính
-                                        </div>
-                                    </div>
-
-                                    <div class="md:col-span-2 grid grid-cols-4 md:grid-cols-2 gap-3 h-full">
-                                        <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
-                                            <div id="image-2" class="flex items-center justify-center w-full h-full">
-                                                <label for="upload-2" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
-                                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
-                                                        <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
-                                                    </div>
-                                                    <input id="upload-2" data-index="2" type="file" class="hidden image-upload" />
-                                                </label>
-                                            </div>
-                                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-2" src="" style="display:none;">
-                                            <button type="button" onclick="removeImage(2)" id="btn-delete-2"
-                                                class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
-                                                <i class="fas fa-trash-alt text-xs"></i>
-                                            </button>
-                                        </div>
-                                        <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
-                                            <div id="image-3" class="flex items-center justify-center w-full h-full">
-                                                <label for="upload-3" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
-                                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
-                                                        <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
-                                                    </div>
-                                                    <input id="upload-3" data-index="3" type="file" class="hidden image-upload" />
-                                                </label>
-                                            </div>
-                                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-3" src="" style="display:none;">
-                                            <button type="button" onclick="removeImage(3)" id="btn-delete-3"
-                                                class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
-                                                <i class="fas fa-trash-alt text-xs"></i>
-                                            </button>
-                                        </div>
-                                        <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
-                                            <div id="image-4" class="flex items-center justify-center w-full h-full">
-                                                <label for="upload-4" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
-                                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
-                                                        <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
-                                                    </div>
-                                                    <input id="upload-4" data-index="4" type="file" class="hidden image-upload" />
-                                                </label>
-                                            </div>
-                                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-4" src="" style="display:none;">
-                                            <button type="button" onclick="removeImage(4)" id="btn-delete-4"
-                                                class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
-                                                <i class="fas fa-trash-alt text-xs"></i>
-                                            </button>
-                                        </div>
-                                        <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
-                                            <div id="image-5" class="flex items-center justify-center w-full h-full">
-                                                <label for="upload-5" class="flex flex-col items-center justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all">
-                                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
-                                                        <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
-                                                    </div>
-                                                    <input id="upload-5" data-index="5" type="file" class="hidden image-upload" />
-                                                </label>
-                                            </div>
-                                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-5" src="" style="display:none;">
-                                            <button type="button" onclick="removeImage(5)" id="btn-delete-5"
-                                                class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
-                                                <i class="fas fa-trash-alt text-xs"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Nhãn -->
-                    <div>
-                        <label for="tag-select" class="text-xs font-semibold uppercase text-gray-500">Nhãn</label>
-                        <span id="tag-error" class="text-xs text-red-500 italic"></span>
-                        <select id="tag-select" name="tags[]" multiple required>
-                            <option value="" disabled selected hidden>Chọn nhiều nhãn...</option>
-                            @foreach ($tags as $tag)
-                            <option value="{{$tag->id}}">{{$tag->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Mô tả -->
-                    <div>
-                        <label class="text-xs font-semibold uppercase text-gray-500">Mô tả</label>
-                        <textarea rows="3" class="w-full p-2.5 border rounded text-sm" placeholder="Mô tả ngắn sản phẩm..."></textarea>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="flex justify-end gap-3 pt-3 border-t">
-                        <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
-                        <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu sản phẩm</button>
-                        <button type='button' @click="expanded = !expanded"
-                            class="mt-6 w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors">
-                            <span x-text="expanded ? ' Thu gọn' : 'Mở rộng bảng bên phải'"></span>
-                        </button>
-                    </div>
-                </form>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
