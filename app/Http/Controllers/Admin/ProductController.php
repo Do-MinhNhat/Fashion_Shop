@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Size;
 use App\Models\Tag;
 use App\Models\Variant;
 
@@ -27,13 +28,15 @@ class ProductController extends Controller
 
         $brands = Brand::where('status', true)->get();
 
-        $categories = Category::where('status', true)->get();
+        $categories = Category::where('status', true)->with('sizes')->get();
 
         $colors = Color::where('status', true)->get();
 
         $tags = Tag::where('status', true)->get();
 
-        return view('admin.product.index', compact('products', 'viewData', 'brands', 'categories', 'colors', 'tags'));
+        $sizes = Size::where('status', true)->get();
+
+        return view('admin.product.index', compact('products', 'viewData', 'brands', 'categories', 'colors', 'tags', 'sizes'));
     }
     /**
      * Show the form for creating a new resource.

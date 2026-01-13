@@ -25,7 +25,7 @@ class StoreProductRequest extends FormRequest
             'name' => 'required|string|max:255|unique:products,name',
             'description' => 'nullable|string|max:10000',
             'thumbnail' => 'nullable|shop_image',
-            'status' => 'required|boolean',
+            'status' => 'nullable|boolean',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
             //Variant
@@ -38,7 +38,7 @@ class StoreProductRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     //Kiểm tra trùng lặp
                     $duplicates = collect($value)->map(function ($item) {
-                        return $item['color']['id'] . '-' . $item['size']['id'];
+                        return $item['color_id'] . '-' . $item['size_id'];
                     });
 
                     if ($duplicates->unique()->count() < $duplicates->count()) {
@@ -49,7 +49,7 @@ class StoreProductRequest extends FormRequest
             'variants.*.color_id' => 'required|exists:colors,id',
             'variants.*.size_id' => 'required|exists:sizes,id',
             'variants.*.price' => 'required|numeric|min:0',
-            'variants.*.sale_price' => 'nullable|numeric|min:0|lte:price',
+            'variants.*.sale_price' => 'nullable|numeric|min:0|lte:variants.*.price',
             'variants.*.quantity' => 'required|integer|min:0',
         ];
     }
@@ -60,7 +60,6 @@ class StoreProductRequest extends FormRequest
             'name.required' => 'Tên sản phẩm không được để trống',
             'name.unique' => 'Tên sản phẩm đã tồn tại',
             'description.max' => 'mô tả sản phẩm không quá 10000 ký tự',
-            'status.required' => 'Trạng thái không được để trống',
             'status.boolean' => 'Trạng thái không hợp lệ',
             'category_id.exists' => 'Danh mục không tồn tại',
             'brand_id.exists' => 'Thương hiệu không tồn tại',

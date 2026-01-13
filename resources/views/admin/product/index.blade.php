@@ -289,7 +289,7 @@
                                         {{ $message }}
                                     </span>
                                     @enderror
-                                    <span id="brand-error" class="text-xs text-500-red italic"></span>
+                                    <span id="brand-error" class="text-xs text-red-500 italic"></span>
                                     <select value="{{ old('brand_id') }}" x-ref="brandSelect" id="brand-select" name="brand_id" class="cursor-pointer">
                                         <option value="" disabled selected hidden>Chọn nhãn hiệu...</option>
                                         @foreach ($brands as $brand)
@@ -317,7 +317,7 @@
                                         <select x-ref="colorSelect" id="color-select" name="colors[]" class="cursor-pointer" multiple>
                                             <option value="" disabled selected hidden>Chọn nhiều màu sắc...</option>
                                             @foreach ($colors as $color)
-                                            <option value="{{$color->id}}" data-hex="{{$color->hex_code}}">{{$color->name}}</option>
+                                            <option value="{{$color->id}}" data-hex="{{$color->hex_code}}" {{ (is_array(old('colors')) && in_array($color->id, old('colors'))) ? 'selected' : '' }}>{{$color->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -516,6 +516,7 @@
                     <table class="w-full text-sm bg-white rounded-xl shadow-xl">
                         <thead class="bg-blue-50 border-b border-gray-200">
                             <tr class="text-center">
+                                <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">STT</th>
                                 <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Màu sắc</th>
                                 <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Kích cỡ</th>
                                 <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giá gốc</th>
@@ -528,22 +529,24 @@
                         <tbody>
                             <template x-for="(variant, index) in variants" :key="variant.id">
                                 <tr class="border-b text-center">
+                                    <td x-text="index + 1">
+                                    </td>
                                     <td>
-                                        <span class="px-2 rounded-full mr-1 border" :style="`background-color: ${variant.color.hex_code}`"></span>
+                                        <span class="px-2 rounded-full mr-1 border" :style="`background-color: ${getHex(variant.color_id)}`"></span>
                                     </td>
                                     <td class="p-2">
                                         <span x-text="variant.size.name"></span>
                                     </td>
                                     <td class="p-2">
-                                        <input type="number" placeholder="0" x-model="variant.price"
+                                        <input type="number" x-model.number="variant.price" min="0"
                                             class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
                                     </td>
                                     <td class="p-2">
-                                        <input type="number" placeholder="0" x-model="variant.sale_price"
+                                        <input type="number" x-model.number="variant.sale_price" min="0"
                                             class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
                                     </td>
                                     <td class="p-2">
-                                        <input type="number" placeholder="0" x-model="variant.stock"
+                                        <input type="number" x-model.number="variant.quantity" min="0"
                                             class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
                                     </td>
                                     <td class="p-2">
@@ -568,8 +571,9 @@
         return {
             isExpanded: false,
             variants: JSON.parse(`{!! old('variants_data', '[]') !!}`),
-            colors: [],
-            sizes: [],
+            colors: @json(old('colors', '[]')),
+            sizes: @json(old('sizes', '[]')),
+            colorMap: JSON.parse('@json($colors -> pluck("hex_code", "id"))'),
 
             init() {
                 this.tsCategory = new TomSelect(this.$refs.categorySelect, {
@@ -607,11 +611,12 @@
                         field: "text",
                         order: "asc"
                     },
-                    onChange: async (value) => {
+                    onChange: async (value, callback) => {
                         if (!value) {
                             document.getElementById('size-error').innerHTML = "Vui lòng chọn danh mục!";
                             return
                         };
+                        this.variants = [];
                         await this.loadSizesByCategory(value);
                     }
                 });
@@ -675,6 +680,7 @@
                                     text: result.data.name,
                                     hex: result.data.hex_code,
                                 });
+                                this.colorMap[result.data.id] = result.data.hex_code;
                                 msg.className = 'text-xs text-green-500 italic'
                                 msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
                             } catch (error) {
@@ -692,14 +698,7 @@
                         }
                     },
                     onChange: (val) => {
-                        this.colors = val.map(id => {
-                            const data = this.tsColor.options[id];
-                            return {
-                                id: id,
-                                name: data.text,
-                                hex_code: data.hex,
-                            };
-                        });
+                        this.colors = val;
                     },
                     plugins: ['remove_button'],
                     render: {
@@ -836,6 +835,11 @@
                         order: "asc"
                     }
                 });
+                if (this.tsCategory.getValue()) {
+                    document.getElementById('size-error').innerHTML = '';
+                    this.loadSizesByCategory(this.tsCategory.getValue());
+                }
+                console.table(this.colors);
             },
 
             async loadSizesByCategory(categoryId) {
@@ -851,7 +855,7 @@
                     })
                     msg.innerHTML = ''
                     this.tsSize.addOptions(res.data);
-                    this.tsSize.refreshOptions(false);
+                    this.tsSize.refreshOptions(false); //Refresh lại option để không cần reload lại trang
                 } catch (error) {
                     if (error.response) {
                         msg.className = 'text-xs text-red-500 italic';
@@ -861,6 +865,13 @@
                         alert('Không thể kết nối đến server');
                     }
                 }
+                if (this.sizes) {
+                    this.tsSize.setValue(this.sizes);
+                }
+            },
+
+            getHex(id) {
+                return this.colorMap[id];
             },
 
             // Hàm này phải nằm TRONG object trả về
@@ -888,14 +899,17 @@
                     this.sizes.forEach(s => {
                         results.push({
                             id: Date.now() + Math.random(),
-                            // Lưu object để hiển thị
-                            color: c,
+                            // Lưu object để hiển thị tên
                             size: s,
 
+                            //Lưu id để xử lý
+                            color_id: c,
+                            size_id: s.id,
+
                             // Các trường nhập liệu
-                            price: document.getElementById('inputPrice').value,
-                            sale_price: document.getElementById('inputSalePrice').value,
-                            stock: document.getElementById('inputStock').value,
+                            price: Number(document.getElementById('inputPrice').value) || 0,
+                            sale_price: Number(document.getElementById('inputSalePrice').value) || 0,
+                            quantity: Number(document.getElementById('inputStock').value) || 0,
                             status: true,
                         });
                     });
@@ -1068,16 +1082,6 @@
         if (!variantsRaw || variantsRaw === '[]') {
             alert('Danh sách biến thể không được để trống!');
             e.preventDefault(); // Dừng submit lại
-            return;
-        }
-
-        //Xử lý ảnh khi submit
-        if (!window.croppedImages || !window.croppedImages[1]) {
-            e.preventDefault();
-            const img = document.getElementById('image-error');
-            img.innerHTML = 'Hình ảnh chính là bắt buộc!';
-            img.scrollIntoView();
-            return;
         }
 
         const name = document.getElementById('name-input');
@@ -1092,28 +1096,34 @@
                 behavior: 'smooth',
                 block: 'center'
             })
-            return;
         }
 
         if (!brand.value) {
             e.preventDefault();
             const brandMsg = document.getElementById('brand-error')
-            brandMsg.innerHTML = "Vui lòng chọn danh mục!";
-            brandMsg.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            })
-            return;
-        }
-
-        if (!category.value) {
-            e.preventDefault();
-            const brandMsg = document.getElementById('category-error')
             brandMsg.innerHTML = "Vui lòng chọn nhãn hiệu!";
             brandMsg.scrollIntoView({
                 behavior: 'smooth',
                 block: 'center'
             })
+        }
+
+        if (!category.value) {
+            e.preventDefault();
+            const brandMsg = document.getElementById('category-error')
+            brandMsg.innerHTML = "Vui lòng chọn danh mục!";
+            brandMsg.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            })
+        }
+
+        //Xử lý ảnh khi submit
+        if (!window.croppedImages || !window.croppedImages[1]) {
+            e.preventDefault();
+            const img = document.getElementById('image-error');
+            img.innerHTML = 'Hình ảnh chính là bắt buộc!';
+            img.scrollIntoView();
             return;
         }
 
@@ -1143,7 +1153,7 @@
 
     document.querySelector('input[type="number"]').addEventListener('keydown', function(e) {
         // Chặn phím dấu phẩy, dấu chấm và chữ 'e'
-        if (['.', ',', 'e', 'E'].includes(e.key)) {
+        if (['.', ',', 'e', 'E', '-'].includes(e.key)) {
             e.preventDefault();
         }
     });
