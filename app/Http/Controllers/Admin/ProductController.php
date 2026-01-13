@@ -10,6 +10,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Tag;
+use App\Models\Variant;
 
 class ProductController extends Controller
 {
@@ -47,7 +48,11 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        //
+        $product = Product::create($request->safe()->except('variants'));
+        foreach ($request->variants as $variant) {
+            $product->variants()->create($variant);
+        }
+        return redirect()->back()->with('success', 'Đã thêm sản phẩm:' . $product->name . ' cùng các biến thể!');
     }
 
     /**

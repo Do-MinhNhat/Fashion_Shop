@@ -8,19 +8,49 @@ class StoreProductRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->isAdmin();
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'variants' => json_decode($this->variants_data, true)
+        ]);
     }
 
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:products,slug',
-            'slug' => 'required|string|max:255|unique:products,slug',
+            //Product
+            'name' => 'required|string|max:255|unique:products,name',
             'description' => 'nullable|string|max:10000',
             'thumbnail' => 'nullable|shop_image',
             'status' => 'required|boolean',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
+            //Variant
+            'variants' => [
+                'required',
+                'array',
+                'min:1',
+                'required',
+                'array',
+                function ($attribute, $value, $fail) {
+                    //Kiểm tra trùng lặp
+                    $duplicates = collect($value)->map(function ($item) {
+                        return $item['color']['id'] . '-' . $item['size']['id'];
+                    });
+
+                    if ($duplicates->unique()->count() < $duplicates->count()) {
+                        $fail('Trong danh sách biến thể có các dòng bị trùng lặp Màu và Size.');
+                    }
+                }
+            ],
+            'variants.*.color_id' => 'required|exists:colors,id',
+            'variants.*.size_id' => 'required|exists:sizes,id',
+            'variants.*.price' => 'required|numeric|min:0',
+            'variants.*.sale_price' => 'nullable|numeric|min:0|lte:price',
+            'variants.*.quantity' => 'required|integer|min:0',
         ];
     }
 
@@ -29,8 +59,6 @@ class StoreProductRequest extends FormRequest
         return [
             'name.required' => 'Tên sản phẩm không được để trống',
             'name.unique' => 'Tên sản phẩm đã tồn tại',
-            'slug.required' => 'Slug không được để trống',
-            'slug.unique' => 'Slug đã tồn tại',
             'description.max' => 'mô tả sản phẩm không quá 10000 ký tự',
             'status.required' => 'Trạng thái không được để trống',
             'status.boolean' => 'Trạng thái không hợp lệ',
@@ -38,6 +66,24 @@ class StoreProductRequest extends FormRequest
             'brand_id.exists' => 'Thương hiệu không tồn tại',
             'category_id.exists' => 'Danh mục không tồn tại',
             'brand_id.exists' => 'Thương hiệu không tồn tại',
+
+            //Variant
+            'variants.required' => 'Bạn phải tạo ít nhất một biến thể cho sản phẩm',
+            'variants.array' => 'Dữ liệu biến thể không đúng định dạng',
+            'variants.min' => 'Danh sách biến thể phải có ít nhất 1 biến thể',
+            'variants.*.color_id.required' => 'Vui lòng chọn màu sắc ở dòng :position',
+            'variants.*.color_id.exists' => 'Màu sắc ở dòng :position không tồn tại',
+            'variants.*.size_id.required' => 'Vui lòng chọn size ở dòng :position',
+            'variants.*.size_id.exists' => 'Size ở dòng :position không tồn tại',
+            'variants.*.price.required' => 'Giá sản phẩm ở dòng :position không được để trống',
+            'variants.*.price.numeric' => 'Giá sản phẩm ở dòng :position phải là số',
+            'variants.*.price.min' => 'Giá sản phẩm ở dòng :position phải lớn hơn hoặc bằng 0',
+            'variants.*.sale_price.numeric' => 'Giá khuyến mãi ở dòng :position phải là số',
+            'variants.*.sale_price.min' => 'Giá khuyến mãi ở dòng :position phải lớn hơn hoặc bằng 0',
+            'variants.*.sale_price.lte' => 'Giá khuyến mãi ở dòng :position phải nhỏ hơn hoặc bằng giá gốc',
+            'variants.*.quantity.required' => 'Số lượng ở dòng :position không được để trống',
+            'variants.*.quantity.integer' => 'Số lượng ở dòng :position phải là số nguyên',
+            'variants.*.quantity.min' => 'Số lượng ở dòng :position phải lớn hơn hoặc bằng 0',
         ];
     }
 }

@@ -248,72 +248,99 @@
                             <!-- Tên -->
                             <div class="grid grid-cols-1 md:grid-cols-1">
                                 <div>
+                                    @foreach ($errors->all() as $error)
+                                    <li class="text-red-700 text-sm flex items-start">
+                                        <i class="fas fa-caret-right mt-1 mr-2 text-red-400"></i>
+                                        {{ $error }}
+                                    </li>
+                                    @endforeach
                                     <label class="text-xs font-semibold uppercase text-gray-500">Tên sản phẩm</label>
-                                    <input type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255" required>
+                                    @error('name')
+                                    <span class="text-xs text-red-500 italic">
+                                        {{ $message }}
+                                    </span>
+                                    @enderror
+                                    <span id="name-error" class="text-xs text-red-500 italic"></span>
+                                    <input value="{{ old('name') }}" id="name-input" type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255">
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <!-- Danh mục -->
                                 <div>
                                     <label for="category-select" class="text-xs font-semibold uppercase text-gray-500">Danh mục</label>
+                                    @error('category_id')
+                                    <span class="text-xs text-red-500 italic">
+                                        {{ $message }}
+                                    </span>
+                                    @enderror
                                     <span id="category-error" class="text-xs text-red-500 italic"></span>
-                                    <select x-ref="categorySelect" id="category-select" name="category_id" class="cursor-pointer" required>
+                                    <select value="{{ old('category_id') }}" x-ref="categorySelect" id="category-select" name="category_id" class="cursor-pointer">
                                         <option value="" disabled selected hidden>Chọn danh mục...</option>
                                         @foreach ($categories as $category)
-                                        <option value="{{$category->id}}">{{$category->name}}</option>
+                                        <option value="{{$category->id}}" @selected(old('category_id')==$category->id)>{{$category->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <!-- Nhãn hiệu -->
                                 <div>
                                     <label for="brand-select" class="text-xs font-semibold uppercase text-gray-500">Nhãn hiệu</label>
+                                    @error('brand_id')
+                                    <span class="text-xs text-red-500 italic">
+                                        {{ $message }}
+                                    </span>
+                                    @enderror
                                     <span id="brand-error" class="text-xs text-500-red italic"></span>
-                                    <select x-ref="brandSelect" id="brand-select" name="brand_id" class="cursor-pointer" required>
+                                    <select value="{{ old('brand_id') }}" x-ref="brandSelect" id="brand-select" name="brand_id" class="cursor-pointer">
                                         <option value="" disabled selected hidden>Chọn nhãn hiệu...</option>
                                         @foreach ($brands as $brand)
-                                        <option value="{{$brand->id}}">{{$brand->name}}</option>
+                                        <option value="{{$brand->id}}" @selected(old('brand_id')==$brand->id)>{{$brand->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
 
                             </div>
 
+                            <div class="border rounded-xl grid grid-cols-1 md:grid-cols-1 p-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <!-- Kích thước -->
+                                    <div>
+                                        <label class="text-xs font-semibold uppercase text-gray-500">Kích thước</label>
+                                        <span id="size-error" class="text-xs text-red-500 italic">Vui lòng chọn danh mục trước!</span>
+                                        <select x-ref="sizeSelect" id="size-select" name="sizes[]" class="cursor-pointer" multiple>
+                                            <option value="" disabled selected hidden>Chọn nhiều kích thước...</option>
+                                        </select>
+                                    </div>
+                                    <!-- Màu sắc -->
+                                    <div>
+                                        <label for="color-select" class="text-xs font-semibold uppercase text-gray-500">Màu sắc</label>
+                                        <span id="color-error" class="text-xs text-red-500 italic"></span>
+                                        <select x-ref="colorSelect" id="color-select" name="colors[]" class="cursor-pointer" multiple>
+                                            <option value="" disabled selected hidden>Chọn nhiều màu sắc...</option>
+                                            @foreach ($colors as $color)
+                                            <option value="{{$color->id}}" data-hex="{{$color->hex_code}}">{{$color->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Kích thước -->
-                                <div>
-                                    <label class="text-xs font-semibold uppercase text-gray-500">Kích thước</label>
-                                    <span id="size-error" class="text-xs text-red-500 italic">Vui lòng chọn danh mục trước!</span>
-                                    <select x-ref="sizeSelect" id="size-select" name="sizes[]" class="cursor-pointer" multiple>
-                                        <option value="" disabled selected hidden>Chọn nhiều kích thước...</option>
-                                    </select>
+                                <!-- Giá + Tồn kho -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="text-xs font-semibold uppercase text-gray-500">Giá gốc</label>
+                                        <input id="inputPrice" type="number" class="w-full p-2.5 border rounded text-sm" placeholder="0" min="0" step="1">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-semibold uppercase text-gray-500">Giá đã giảm</label>
+                                        <input id="inputSalePrice" type="number" class="w-full p-2.5 border rounded text-sm" placeholder="0" min="0" step="1">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-semibold uppercase text-gray-500">Số lượng</label>
+                                        <input id="inputStock" type="number" class="w-full p-2.5 border rounded text-sm" placeholder="0" min="0" step="1">
+                                    </div>
                                 </div>
-                                <!-- Màu sắc -->
-                                <div>
-                                    <label for="color-select" class="text-xs font-semibold uppercase text-gray-500">Màu sắc</label>
-                                    <span id="color-error" class="text-xs text-red-500 italic"></span>
-                                    <select x-ref="colorSelect" id="color-select" name="colors[]" class="cursor-pointer" multiple>
-                                        <option value="" disabled selected hidden>Chọn nhiều màu sắc...</option>
-                                        @foreach ($colors as $color)
-                                        <option value="{{$color->id}}" data-hex="{{$color->hex_code}}">{{$color->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Giá + Tồn kho -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="text-xs font-semibold uppercase text-gray-500">Giá gốc</label>
-                                    <input id="inputPrice" type="number" class="w-full p-2.5 border rounded text-sm" placeholder="0" min="0" step="1">
-                                </div>
-                                <div>
-                                    <label class="text-xs font-semibold uppercase text-gray-500">Giá đã giảm</label>
-                                    <input id="inputSalePrice" type="number" class="w-full p-2.5 border rounded text-sm" placeholder="0" min="0" step="1">
-                                </div>
-                                <div>
-                                    <label class="text-xs font-semibold uppercase text-gray-500">Số lượng</label>
-                                    <input id="inputStock" type="number" class="w-full p-2.5 border rounded text-sm" placeholder="0" min="0" step="1">
+                                <div class="text-center mt-5 gap-15">
+                                    <button @click="isExpanded = !isExpanded" type="button" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Ẩn/Hiện danh sách</button>
+                                    <button @click="handleGenerateClick()" type="button" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Tạo biến thể</button>
                                 </div>
                             </div>
 
@@ -473,7 +500,6 @@
                             <div class="flex justify-end gap-3 pt-3 border-t">
                                 <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
                                 <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu sản phẩm</button>
-                                <button @click="handleGenerateClick()" type="button">Tạo các biến thể</button>
                             </div>
                             <input type="hidden" name="variants_data" :value="JSON.stringify(variants)">
                         </form>
@@ -541,7 +567,7 @@
     function variantManager() {
         return {
             isExpanded: false,
-            variants: [],
+            variants: JSON.parse(`{!! old('variants_data', '[]') !!}`),
             colors: [],
             sizes: [],
 
@@ -840,7 +866,8 @@
             // Hàm này phải nằm TRONG object trả về
             handleGenerateClick() {
                 this.generateVariants();
-
+                console.log("Dữ liệu biến thể:", this.variants)
+                console.table(this.variants)
                 if (this.variants.length > 0) {
                     this.isExpanded = true;
                 }
@@ -1033,6 +1060,7 @@
 
     //Hàm lằng nghe submit
     document.getElementById('productForm').addEventListener('submit', function(e) {
+
         const formData = new FormData(this); // 'this' chính là cái form
         const variantsRaw = formData.get('variants_data'); // Lấy chuỗi JSON từ input ẩn
 
@@ -1051,6 +1079,44 @@
             img.scrollIntoView();
             return;
         }
+
+        const name = document.getElementById('name-input');
+        const brand = document.getElementById('brand-select');
+        const category = document.getElementById('category-select');
+
+        if (!name.value) {
+            e.preventDefault();
+            const nameMsg = document.getElementById('name-error')
+            nameMsg.innerHTML = "Tên sản phẩm không được để trống!";
+            nameMsg.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            })
+            return;
+        }
+
+        if (!brand.value) {
+            e.preventDefault();
+            const brandMsg = document.getElementById('brand-error')
+            brandMsg.innerHTML = "Vui lòng chọn danh mục!";
+            brandMsg.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            })
+            return;
+        }
+
+        if (!category.value) {
+            e.preventDefault();
+            const brandMsg = document.getElementById('category-error')
+            brandMsg.innerHTML = "Vui lòng chọn nhãn hiệu!";
+            brandMsg.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            })
+            return;
+        }
+
         //Chia hình ảnh thumbnail và hình ảnh con
         const thumbnail = new DataTransfer();
         const images = new DataTransfer();
