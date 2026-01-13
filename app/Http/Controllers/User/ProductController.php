@@ -42,10 +42,13 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $viewData = [];
-        $viewData['title'] = $product->name;
-        $viewData['header'] = $product->name;
-        return view('user.product.show', compact('product', 'viewData'));
+        return view('user.product.show', [
+            'viewData' => [
+                'title' => $product->name,
+                'subtitle' => 'Chi tiết sản phẩm',
+                'product' => $product,
+            ]
+        ]);
     }
 
     /**

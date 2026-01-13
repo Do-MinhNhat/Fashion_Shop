@@ -9,4 +9,15 @@ class CartDetail extends Model
 {
     /** @use HasFactory<\Database\Factories\CartDetailFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        "user_id",
+        "variant_id",
+        "quantity"
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

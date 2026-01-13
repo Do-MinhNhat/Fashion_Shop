@@ -16,8 +16,7 @@ class CartDetailController extends Controller
      */
     public function index()
     {
-        $user = User::find(Auth::id());
-        $items = $user->cart_details()->get();
+        $items = Auth::user()->cartDetails;
         return view('user.cart.index', compact('items'));
     }
 
@@ -27,6 +26,7 @@ class CartDetailController extends Controller
         $items = $user->cart_details()->get();
         return view('user.cart.index', compact('items'));
     }
+
     /**
      * Show the form for creating a new resource.
      */

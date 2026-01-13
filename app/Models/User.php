@@ -54,4 +54,9 @@ class User extends Authenticatable
     {
         return $this->role()->where('name','like','admin%')->exists();
     }
+
+    public function cartDetails()
+    {
+        return $this->hasMany(CartDetail::class);
+    }
 }
