@@ -252,7 +252,7 @@
                         <span class="font-serif text-2xl font-bold">3.700.000 ₫</span>
                     </div>
 
-                    <a href="/Client/Checkout/Checkout.html" class="block w-full bg-black text-white text-center py-4 uppercase tracking-[0.2em] text-xs font-bold hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    <a href="" class="block w-full bg-black text-white text-center py-4 uppercase tracking-[0.2em] text-xs font-bold hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                         Thanh toán ngay
                     </a>
                     

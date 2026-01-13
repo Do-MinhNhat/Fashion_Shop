@@ -18,15 +18,16 @@ class HomeController extends Controller
             ->take(10)
             ->get();
 
-        // Sản phẩm nổi bật (rating cao)
-        $featuredProducts = Product::where('status', 1)
-            ->where('rating', '>=', 4)
-            ->orderByDesc('rating')
-            ->take(10)
+        // Sản phẩm nổi bật (view cao)
+        $bestSellerProducts= Product::query()
+            ->where('status', 1)
+            ->where('view', '>=', 4)
+            ->orderBy('view', 'desc')
+            ->limit(10)
             ->get();
 
-        // Sản phẩm bán chạy (view nhiều)
-        $bestSellerProducts = Product::where('status', 1)
+        // Sản phẩm bán chạy (order nhiều)
+        $featuredProducts = Product::where('status', 1)
             ->orderByDesc('view')
             ->take(10)
             ->get();

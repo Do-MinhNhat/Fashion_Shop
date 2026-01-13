@@ -1,7 +1,27 @@
+@php
+$menus = [
+    'Nam' => [
+        ['label' => 'Áo nam', 'params' => ['gender' => 'men', 'type' => 'ao']],
+        ['label' => 'Quần nam', 'params' => ['gender' => 'men', 'type' => 'quan']],
+        ['label' => 'Giày nam', 'params' => ['gender' => 'men', 'type' => 'giay']],
+    ],
+    'Nữ' => [
+        ['label' => 'Váy', 'params' => ['gender' => 'women', 'type' => 'vay']],
+        ['label' => 'Áo nữ', 'params' => ['gender' => 'women', 'type' => 'ao']],
+        ['label' => 'Phụ kiện nữ', 'params' => ['gender' => 'women', 'type' => 'phu-kien']],
+    ],
+    'Phụ kiện' => [
+        ['label' => 'Túi', 'params' => ['category' => 'tui']],
+        ['label' => 'Nón', 'params' => ['category' => 'non']],
+        ['label' => 'Thắt lưng', 'params' => ['category' => 'that-lung']],
+    ],
+];
+@endphp
+
+
 <header class="relative">
     <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
             {{-- Mobile --}}
             <button class="lg:hidden">
                 <i class="fa-solid fa-bars text-xl"></i>
@@ -12,27 +32,39 @@
                 CDHN.
             </a>
 
-            {{-- Category (Desktop) --}}
-            <div class="hidden lg:flex space-x-8 text-sm uppercase tracking-widest font-bold text-gray-500">
-                <a href="{{ route('user.product.index', ['gender' => 'men']) }}" class="hover:text-black transition-colors relative group">
-                    Nam
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all group-hover:w-full"></span>
-                </a>
-                <a href="{{ route('user.product.index', ['gender' => 'women']) }}" class="hover:text-black transition-colors relative group">
-                    Nữ
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all group-hover:w-full"></span>
-                </a>
-                <a href="{{ route('user.product.index', ['category' => 'giay']) }}" class="hover:text-black transition-colors relative group">
-                    Giày
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all group-hover:w-full"></span>
-                </a>
-                <a href="{{ route('user.product.index') }}" class="hover:text-black transition-colors relative group">
+            {{-- Category --}}
+            <div class="hidden lg:flex items-center space-x-10 text-sm uppercase tracking-widest font-semibold text-gray-500">
+                @foreach ($menus as $title => $items)
+                    <div class="relative group">
+
+                        {{-- Parent --}}
+                        <button class="hover:text-black transition flex items-center gap-1">
+                            {{ $title }}
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </button>
+
+                        {{-- Dropdown --}}
+                        <div class="absolute left-0 top-full mt-4 w-56 bg-white shadow-xl rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            @foreach ($items as $item)
+                                <a href="{{ route('user.product.index', $item['params']) }}"
+                                class="block px-5 py-3 text-sm text-gray-600 hover:bg-gray-100 hover:text-black transition">
+                                    {{ $item['label'] }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+
+                {{-- Collection --}}
+                <a href="{{ route('user.product.index', ['sale' => 1]) }}" class="text-red-500 hover:text-red-600 transition relative group">
                     Bộ sưu tập
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all group-hover:w-full"></span>
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-500 transition-all group-hover:w-full"></span>
                 </a>
-                <a href="{{ route('user.product.index') }}" class="hover:text-red-600 text-red-500 transition-colors relative group">
+
+                {{-- Sale --}}
+                <a href="{{ route('user.product.index', ['sale' => 1]) }}" class="text-red-500 hover:text-red-600 transition relative group">
                     Sale
-                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all group-hover:w-full"></span>
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-500 transition-all group-hover:w-full"></span>
                 </a>
             </div>
 
@@ -42,14 +74,12 @@
                 <div class="relative flex items-center" id="search-container">
                     <form action="{{ route('user.product.index') }}" method="GET">
                         <input type="text"
-                            name="q"
-                            id="search-input"
-                            placeholder="Tìm kiếm sản phẩm..."
-                            class="w-0 opacity-0 border-b border-black bg-transparent outline-none text-sm transition-all duration-300 pr-8 py-2 absolute right-0 top-0 focus:w-64 focus:opacity-100 placeholder-gray-400"
+                            name="q" id="search-input" placeholder="Tìm kiếm sản phẩm..."
+                            class="w-0 opacity-0 border-b border-black bg-transparent outline-none text-sm transition-all duration-300 pr-8 py-1 absolute right-0 top-[-2px] focus:w-64 focus:opacity-100 placeholder-gray-400"
                         >
                     </form>
 
-                    <button id="search-btn" class="hover:scale-110 transition-transform">
+                    <button id="search-btn" class="hover:scale-110 transition-transform cursor-pointer z-50">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
@@ -66,12 +96,7 @@
                 </a>
 
                 {{-- Account --}}
-                <a href="{{ Auth::check() ? route('user.profile.index') : route('login') }}"
-                class="hover:scale-110 transition-transform">
-                    <i class="fa-regular fa-user"></i>
-                </a>
-
-                <div class="hidden md:flex items-center gap-3 ml-2 pl-4 border-l border-gray-200">
+                <div class="hidden md:flex items-center gap-3">
                     @guest
                         {{-- Chưa đăng nhập --}}
                         <a href="{{ route('login') }}"
@@ -86,14 +111,11 @@
                     @endguest
 
                     @auth
-                        {{-- Đã đăng nhập --}}
-                        <span class="text-xs font-bold uppercase tracking-widest">
-                            {{ Auth::user()->name }}
-                        </span>
+                        <a href="{{ Auth::check() ? route('user.profile.index') : route('login') }}" class="hover:scale-110 transition-transform">
+                            <i class="fa-regular fa-user"></i>
+                        </a>
                     @endauth
                 </div>
-
-
             </div>
         </div>
 

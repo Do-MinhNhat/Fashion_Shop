@@ -22,3 +22,5 @@ details>summary::-webkit-details-marker {
 .checkbox-artist:checked+div svg {
     display: block;
 }
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }

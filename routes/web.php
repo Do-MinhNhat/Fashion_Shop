@@ -28,12 +28,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
     // Profile 
     Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'index'])->name('user.profile.index');
+        // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'edit'])->name('user.profile.edit');
+        // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'update'])->name('user.profile.update');
+        // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'destroy'])->name('user.profile.destroy');
     // Order
     Route::get('/ho-so-ca-nhan/don-hang', [OrderController::class, 'index'])->name('user.profile.order.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('user.profile.order.show');
