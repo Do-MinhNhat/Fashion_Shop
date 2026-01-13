@@ -24,7 +24,7 @@ class ProductController extends Controller
         $viewData['title'] = 'Admin - Sản phẩm';
         $viewData['subtitle'] = 'Quản lý sản phẩm';
 
-        $products = Product::where('status', true)->with('variants')->Paginate(2)->withQueryString();
+        $products = Product::where('status', true)->with('variants')->Paginate(5)->withQueryString();
 
         $brands = Brand::where('status', true)->get();
 
@@ -55,7 +55,7 @@ class ProductController extends Controller
         foreach ($request->variants as $variant) {
             $product->variants()->create($variant);
         }
-        return redirect()->back()->with('success', 'Đã thêm sản phẩm:' . $product->name . ' cùng các biến thể!');
+        return redirect()->back()->with('success', 'Đã thêm sản phẩm "' . $product->name . '" cùng các biến thể!');
     }
 
     /**

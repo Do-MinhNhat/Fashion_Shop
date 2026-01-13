@@ -94,6 +94,18 @@
         </div>
     </div>
 
+    <div class="flex justify-center">
+        @if($errors->any())
+        <div style="color: #721c24; padding: 10px; border: 1px solid #721c24; background: #f8d7da;">
+            Có lỗi xảy ra khi thêm sản phẩm, vui lòng kiểm tra lại!
+        </div>
+        @endif
+        @if (session('success'))
+        <div style="color: green; padding: 10px; border: 1px solid green; background: #e9f7ef;">
+            {{ session('success') }}
+        </div>
+        @endif
+    </div>
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div class="relative w-full md:w-96">
             <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -113,7 +125,6 @@
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-50 border-b border-gray-200">
                 <tr>
-                    <th class="p-4 w-10 text-center"><input type="checkbox" class="rounded accent-black"></th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">STT</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mã số</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Sản phẩm</th>
@@ -124,17 +135,14 @@
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right pr-12">Thao tác</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
-                </tr>
-                @foreach ($products as $product)
-            <tbody x-data="{ open: false }">
-                <tr class="group hover:bg-blue-50 border-blue-200 transition" :class="open ? 'bg-blue-50 border-blue-200' : 'bg-white'"
+            @foreach ($products as $product)
+            <tbody class="divide-y divide-gray-100" x-data="{ open: false }">
+                <tr @click="open = !open" class=" group hover:bg-blue-50 border-blue-200 transition" :class="open ? 'bg-gray-50 border-gray-200' : 'bg-white'"
                     class="border-b transition-colors duration-300">
-                    <td class="p-4 text-center"><input type="checkbox" class="rounded accent-black"></td>
-                    <td class="p-4 text-sm font-medium">
+                    <td class="p-4 text-sm font-medium border-r text-center">
                         {{ $loop->iteration }}
                     </td>
-                    <td class="p-4 text-sm font-medium">
+                    <td class="p-4 text-sm font-medium text-center">
                         {{ $product->id }}
                     </td>
                     <td class="p-4">
@@ -166,10 +174,8 @@
                     <td class="p-4 text-right">
                         <button class="text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit"></i></button>
                         <button class="text-gray-400 hover:text-red-500 p-2 transition"><i class="fas fa-trash"></i></button>
-                        <button class="text-gray-400 hover:text-black p-2 transition" @click="open = !open">
-                            <i class="fas fa-chevron-down" :class="open ? 'rotate-180' : ''">
-                            </i>
-                        </button>
+                        <i class="fas fa-chevron-down text-gray-400" :class="open ? 'rotate-180' : ''">
+                        </i>
                     </td>
                 </tr>
                 <tr>
@@ -179,7 +185,6 @@
                                 <table class="w-full text-sm">
                                     <thead class="bg-blue-50 border-b border-gray-200">
                                         <tr class="text-center">
-                                            <th class="p-2 w-10 text-center"><input type="checkbox" class="rounded accent-black"></th>
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">STT</th>
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mã số</th>
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Màu sắc</th>
@@ -187,22 +192,33 @@
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giá gốc</th>
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giá giảm</th>
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tồn kho</th>
+                                            <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Trạng thái</th>
                                             <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($product->variants as $variant)
                                         <tr class="border-b text-center">
-                                            <td class="p-2 text-center"><input type="checkbox" class="rounded accent-black"></td>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $variant->id }}</td>
                                             <td>
-                                                <span class="px-2 rounded-full bg-[{{$variant->color->hex_code}}] mr-1"></span>{{ $variant->color->name }}
+                                                <span class="border px-2 rounded-full bg-[{{$variant->color->hex_code}}] mr-1"></span>{{ $variant->color->name }}
                                             </td>
                                             <td>{{ $variant->size->name }}</td>
                                             <td><x-money :value="$variant->price" /></td>
                                             <td><x-money :value="$variant->sale_price" /></td>
                                             <td>{{ $variant->quantity }}</td>
+                                            <td>
+                                                @if($variant->status)
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Hoạt động
+                                                </span>
+                                                @else
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Không hoạt động
+                                                </span>
+                                                @endif
+                                            </td>
                                             <td class="p-4 text-right">
                                                 <button class="text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit"></i></button>
                                                 <button class="text-gray-400 hover:text-red-500 p-2 transition"><i class="fas fa-trash"></i></button>
@@ -571,8 +587,8 @@
         return {
             isExpanded: false,
             variants: JSON.parse(`{!! old('variants_data', '[]') !!}`),
-            colors: @json(old('colors', '[]')),
-            sizes: @json(old('sizes', '[]')),
+            colors: @json(old("colors", "[]")),
+            sizes: @json(old("sizes", "[]")),
             colorMap: JSON.parse('@json($colors -> pluck("hex_code", "id"))'),
 
             init() {

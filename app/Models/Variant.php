@@ -12,7 +12,7 @@ class Variant extends Model
     /** @use HasFactory<\Database\Factories\VariantFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['product_id', 'size_id', 'color_id', 'price', 'sale_price', 'quantity'];
+    protected $fillable = ['product_id', 'size_id', 'color_id', 'price', 'sale_price', 'quantity', 'status'];
 
     protected static function booted()
     {
