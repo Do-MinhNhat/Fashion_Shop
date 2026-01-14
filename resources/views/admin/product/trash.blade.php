@@ -31,6 +31,13 @@
 @endsection
 @section('content')
 
+@if (session('error'))
+<div class="flex justify-center m-5">
+    <div style="color: #721c24; padding: 10px; border: 1px solid #721c24; background: #f8d7da;">
+        {{ session('error') }}
+    </div>
+</div>
+@endif
 @if (session('success'))
 <div class="flex justify-center m-5">
     <div style="color: green; padding: 10px; border: 1px solid green; background: #e9f7ef;">

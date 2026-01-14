@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Size;
 use App\Models\Tag;
+use Illuminate\Database\QueryException;
 use SebastianBergmann\Environment\Console;
 
 class ProductController extends Controller
@@ -110,22 +111,31 @@ class ProductController extends Controller
     public function delete(Product $product)
     {
         $product->delete();
-        return back()->with('success', 'Đã xóa sản phẩm "' . $product->name . 'ID: "' . $product->id);
+        return back()->with('success', 'Đã xóa sản phẩm "' . $product->name . '" ID: ' . $product->id);
     }
     public function restore(Product $product)
     {
         $product->restore();
-        return back()->with('success', 'Khôi phục sản phẩm "' . $product->name . 'ID: "' . $product->id);
+        return back()->with('success', 'Khôi phục sản phẩm "' . $product->name . '" ID: ' . $product->id);
     }
     public function forceDelete(Product $product)
     {
         $name = $product->name;
         $id = $product->id;
-        $this->deleteImage($product->thumbnail);
-        foreach ($product->images as $img) {
-            $this->deleteImage($img->url);
+        $thumbnail = $product->thumbnail;
+        $images = $product->images->pluck('url')->all();
+        try {
+            $product->forceDelete();
+        } catch (QueryException $error) {
+            if ($error->getCode() == "23000") { //Kiểm tra khóa ngoại
+                return back()->with('error', 'Dữ liệu này đang được sử dụng ở nơi khác, không thể xóa vĩnh viễn!');
+            }
+            return back()->with('error', 'Lỗi hệ thống: Không thể thực hiện lệnh xóa.');
         }
-        $product->forceDelete();
+        $this->deleteImage($thumbnail);
+        foreach ($images as $img) {
+            $this->deleteImage($img);
+        }
         return back()->with('success', 'Đã xóa vĩnh viễn sản phẩm "' . $name . 'ID: "' . $id);
     }
     public function trash()
