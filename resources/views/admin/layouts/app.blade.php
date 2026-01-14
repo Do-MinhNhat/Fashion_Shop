@@ -28,9 +28,10 @@
             @include('admin.layouts.header')
             @yield('content')
         </main>
-        @yield('pop')
+        @yield('pop-add')
+        @yield('pop-edit')
     </div>
-    @yield('script')
+    @stack('scripts')
 </body>
 
 </html>

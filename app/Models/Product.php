@@ -34,6 +34,10 @@ class Product extends Model
         return 'slug';
     }
 
+    public function reviews(): HasMany{
+        return $this->hasMany(Review::class);
+    }
+
     public function variants(): HasMany
     {
         return $this->hasMany(Variant::class);

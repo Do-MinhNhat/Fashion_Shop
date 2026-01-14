@@ -105,6 +105,9 @@
         </div>
         @endif
     </div>
+
+    <x-product-edit :categories="$categories" :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
+
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div class="flex gap-3 w-full md:w-auto">
             <a href="{{ route('admin.product.trash') }}">
@@ -114,22 +117,24 @@
             </a>
             <div class="relative w-full md:w-96">
                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input type="text" placeholder="Tìm kiếm sản phẩm..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
+                <input name="search" type="text" placeholder="Tìm kiếm theo ID, tên sản phẩm, từ khóa..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
             </div>
         </div>
         <div class="flex gap-3 w-full md:w-auto">
-            <button class="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm">
-                <i class="fas fa-filter mr-2"></i> Bộ lọc
-            </button>
+            <div id="unfill-button"></div>
+            <div id="fill-button"></div>
+            <div id="filter-button"></div>
             <button onclick="openModal()" class="px-5 py-2.5 bg-black text-white rounded-lg text-sm font-bold hover:bg-gray-800 shadow-lg shadow-black/20 flex items-center gap-2 transition-transform active:scale-95">
                 <i class="fas fa-plus"></i> Thêm mới
             </button>
         </div>
     </div>
 
+    <x-product-filter :categories="$categories" :brands="$brands" :tags="$tags" />
+
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <table class="w-full text-left border-collapse">
-            <thead class="bg-gray-50 border-b border-gray-200">
+            <thead class="bg-gray-100 border-b border-gray-200">
                 <tr>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">STT</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mã số</th>
@@ -157,6 +162,12 @@
                             <div>
                                 <p class="font-medium text-gray-900 group-hover:text-blue-600 transition">{{ $product->name }}</p>
                             </div>
+                            <div class="flex items-center space-x-2">
+                                <p class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-0.5 rounded border border-yellow-200">
+                                    <i class="fas fa-star mr-1"></i> {{ $product->rating }}
+                                </p>
+                                <p class="text-sm text-gray-500">{{($product->reviews()->count())}}</p>
+                            </div>
                         </div>
                     </td>
                     <td class="p-4 text-sm font-medium">
@@ -178,7 +189,7 @@
                         <span class="text-sm text-gray-600">{{ $product->variants->sum('quantity') }}</span>
                     </td>
                     <td class="p-4 text-right flex flex-row justify-center" @click.stop>
-                        <button class="text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit fa-lg"></i></button>
+                        <button @click="console.log('Đang bấm nút...'); $dispatch('open-edit-modal')" class=" text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit fa-lg"></i></button>
                         <form action="{{ route('admin.product.delete', $product) }}" method="POST">
                             @csrf
                             @method('DELETE')
@@ -597,7 +608,7 @@
     </div>
 </div>
 @endsection
-@section('script')
+@push('scripts')
 <script>
     function variantManager() {
         return {
@@ -1229,4 +1240,4 @@
         }
     }, true);
 </script>
-@endsection
+@endpush
