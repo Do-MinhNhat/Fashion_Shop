@@ -1,7 +1,7 @@
 @props(['categories', 'brands', 'tags', 'colors', 'sizes'])
 <div x-data="{ open: false }"
     x-show="open"
-    x-on:open-edit-modal.window="open = true"
+    x-on:open-add-modal.window="open = true"
     style="display: none;"
     class="fixed inset-0 z-[9999] overflow-y-auto">
 
@@ -20,7 +20,7 @@
             </div>
 
             <div x-show="open"
-                x-data="variantManager()" {{-- Logic riêng của bạn --}}
+                x-data="productManager()"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 scale-95"
                 x-transition:enter-end="opacity-100 scale-100"
@@ -139,6 +139,7 @@
                                         <button @click="isExpanded = !isExpanded" type="button" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Ẩn/Hiện danh sách</button>
                                         <button @click="handleGenerateClick()" type="button" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Tạo biến thể</button>
                                     </div>
+                                    <span id="generate-error" class="mx-auto italic text-red-500 text-xs mt-2"></span>
                                 </div>
 
                                 <!-- Trạng thái -->
@@ -361,13 +362,19 @@
         </div>
     </template>
 </div>
-@once
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+    function productManager() {
+        return {
+            ...variantManager(),
+            ...submitManager()
+        }
+    }
+
     function variantManager() {
         return {
             isExpanded: false,
@@ -732,230 +739,210 @@
         }
     }
 
-    // 1. Khởi tạo Croppie
-    window.croppedImages = {};
-    var el = document.getElementById('upload-crop');
-    var uploadCrop = new Croppie(el, {
-        viewport: {
-            width: 300,
-            height: 400,
-            type: 'square'
-        }, // Khung cắt
-        boundary: {
-            width: 500,
-            height: 400,
-        }, // Vùng bao ngoài
-        showZoomer: true, // Hiện thanh trượt zoom
-    });
-
-    // 2. Khi chọn ảnh từ máy tính
-    const uploadInputs = document.querySelectorAll('.image-upload');
-
-    uploadInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            // Nếu có file và file đó không phải là image thì chặn (reset)
-            const msg = document.getElementById("image-error");
-            const index = this.getAttribute('data-index'); // Lấy số 1, 2, 3...
-            if (this.files && this.files[0]) {
-
-                if (!this.files[0].type.startsWith('image/')) {
-                    msg.innerHTML = 'Chỉ được chọn hình ảnh!';
-                    this.value = '';
-                    return;
-                }
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    // Hiển thị vùng cắt ảnh
-                    document.getElementById('crop-area').classList.remove('hidden');
-                    //Ẩn vùng thêm ảnh
-                    document.getElementById('image-area').classList.add('hidden');
-                    // Nạp ảnh vào Croppie
-                    uploadCrop.bind({
-                        url: e.target.result
-                    });
-
-                    // Lưu lại index hiện tại
-                    document.getElementById('crop-button').setAttribute('data-target', index);
-                    document.getElementById('crop-cancel-button').setAttribute('data-target', index);
-
-                    msg.innerHTML = '';
-                }
-
-                reader.readAsDataURL(this.files[0]);
-            }
+    function submitManager() {
+        // 1. Khởi tạo Croppie
+        window.croppedImages = {};
+        var el = document.getElementById('upload-crop');
+        var uploadCrop = new Croppie(el, {
+            viewport: {
+                width: 300,
+                height: 400,
+                type: 'square'
+            }, // Khung cắt
+            boundary: {
+                width: 500,
+                height: 400,
+            }, // Vùng bao ngoài
+            showZoomer: true, // Hiện thanh trượt zoom
         });
-    });
 
-    // Khi nhấn nút hủy cắt ảnh
-    document.getElementById('crop-cancel-button').addEventListener('click', function() {
-        const targetIndex = this.getAttribute('data-target');
-        if (confirm('Xác nhận hủy?')) {
-            //xóa input
-            document.getElementById('upload-' + targetIndex).value = "";
-            //Ẩn vùng cắt ảnh
-            document.getElementById('crop-area').classList.add('hidden');
-            //Hiển thị vùng thêm ảnh
-            document.getElementById('image-area').classList.remove('hidden');
-        }
-    });
-    // 3. Khi nhấn nút "Cắt ảnh"
-    document.getElementById('crop-button').addEventListener('click', function() {
-        // 1. Lấy index (1, 2, 3...) mà input đang xử lý
-        const targetIndex = this.getAttribute('data-target');
+        // 2. Khi chọn ảnh từ máy tính
+        const uploadInputs = document.querySelectorAll('.image-upload');
 
-        uploadCrop.result({
-            type: 'blob',
-            size: {
-                width: 1200,
-                height: 1600
-            } // Tỉ lệ 3:4
-        }).then(function(blob) {
-            // 2. Hiển thị xem trước vào đúng ô
-            const previewElement = document.getElementById('preview-' + targetIndex);
+        uploadInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                // Nếu có file và file đó không phải là image thì chặn (reset)
+                const msg = document.getElementById("image-error");
+                const index = this.getAttribute('data-index'); // Lấy số 1, 2, 3...
+                if (this.files && this.files[0]) {
 
-            if (previewElement) {
-                var url = URL.createObjectURL(blob);
-                previewElement.src = url;
-                previewElement.style.display = 'block';
-                //Ẩn vùng thêm ảnh
-                document.getElementById('image-' + targetIndex).style.display = 'none';
-                //Hiển thị nút xóa
-                document.getElementById('btn-delete-' + targetIndex).classList.remove('hidden');
+                    if (!this.files[0].type.startsWith('image/')) {
+                        msg.innerHTML = 'Chỉ được chọn hình ảnh!';
+                        this.value = '';
+                        return;
+                    }
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        // Hiển thị vùng cắt ảnh
+                        document.getElementById('crop-area').classList.remove('hidden');
+                        //Ẩn vùng thêm ảnh
+                        document.getElementById('image-area').classList.add('hidden');
+                        // Nạp ảnh vào Croppie
+                        uploadCrop.bind({
+                            url: e.target.result
+                        });
+
+                        // Lưu lại index hiện tại
+                        document.getElementById('crop-button').setAttribute('data-target', index);
+                        document.getElementById('crop-cancel-button').setAttribute('data-target', index);
+
+                        msg.innerHTML = '';
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        });
+
+        // Khi nhấn nút hủy cắt ảnh
+        document.getElementById('crop-cancel-button').addEventListener('click', function() {
+            const targetIndex = this.getAttribute('data-target');
+            if (confirm('Xác nhận hủy?')) {
+                //xóa input
+                document.getElementById('upload-' + targetIndex).value = "";
+                //Ẩn vùng cắt ảnh
+                document.getElementById('crop-area').classList.add('hidden');
                 //Hiển thị vùng thêm ảnh
                 document.getElementById('image-area').classList.remove('hidden');
-                if (targetIndex == 1) {
-                    document.getElementById('image-error').innerHTML = '';
+            }
+        });
+        // 3. Khi nhấn nút "Cắt ảnh"
+        document.getElementById('crop-button').addEventListener('click', function() {
+            // 1. Lấy index (1, 2, 3...) mà input đang xử lý
+            const targetIndex = this.getAttribute('data-target');
+
+            uploadCrop.result({
+                type: 'blob',
+                size: {
+                    width: 1200,
+                    height: 1600
+                } // Tỉ lệ 3:4
+            }).then(function(blob) {
+                // 2. Hiển thị xem trước vào đúng ô
+                const previewElement = document.getElementById('preview-' + targetIndex);
+
+                if (previewElement) {
+                    var url = URL.createObjectURL(blob);
+                    previewElement.src = url;
+                    previewElement.style.display = 'block';
+                    //Ẩn vùng thêm ảnh
+                    document.getElementById('image-' + targetIndex).style.display = 'none';
+                    //Hiển thị nút xóa
+                    document.getElementById('btn-delete-' + targetIndex).classList.remove('hidden');
+                    //Hiển thị vùng thêm ảnh
+                    document.getElementById('image-area').classList.remove('hidden');
+                    if (targetIndex == 1) {
+                        document.getElementById('image-error').innerHTML = '';
+                    }
                 }
-            }
-            // 3. Lưu blob vào mảng toàn cục theo Index
-            window.croppedImages[targetIndex] = blob;
+                // 3. Lưu blob vào mảng toàn cục theo Index
+                window.croppedImages[targetIndex] = blob;
 
-            //Ẩn vùng cắt ảnh
-            document.getElementById('crop-area').classList.add('hidden');
-        });
-    });
-
-    // Nút xóa ảnh
-    window.removeImage = function(index) {
-        if (confirm('Xóa ảnh này?')) {
-            document.getElementById('preview-' + index).classList.add('hidden');
-            document.getElementById('btn-delete-' + index).classList.add('hidden');
-            document.getElementById('upload-' + index).value = ""; // Reset input
-            document.getElementById('preview-' + index).src = ""; // Reset image
-            document.getElementById('image-' + index).style.display = 'block'; //Hiện vùng thêm ảnh
-            delete window.croppedImages[index];
-        }
-    };
-
-    //Hàm lằng nghe submit
-    document.getElementById('productForm').addEventListener('submit', function(e) {
-
-        //Lấy json từ bảng biến thể
-        const formData = new FormData(this);
-        const variantsRaw = formData.get('variants_data');
-
-        //Chia hình ảnh thumbnail và hình ảnh con
-        const thumbnail = new DataTransfer();
-        const images = new DataTransfer();
-
-        //Kiểm tra trước khi submit
-        const name = document.getElementById('name-input');
-        const brand = document.getElementById('brand-select');
-        const category = document.getElementById('category-select');
-
-        // Kiểm tra rỗng
-        if (!variantsRaw || variantsRaw === '[]') {
-            alert('Danh sách biến thể không được để trống!');
-            e.preventDefault(); // Dừng submit lại
-        }
-
-        if (!name.value) {
-            e.preventDefault();
-            const nameMsg = document.getElementById('name-error')
-            nameMsg.innerHTML = "Tên sản phẩm không được để trống!";
-            nameMsg.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            })
-        }
-
-        if (!brand.value) {
-            e.preventDefault();
-            const brandMsg = document.getElementById('brand-error')
-            brandMsg.innerHTML = "Vui lòng chọn nhãn hiệu!";
-            brandMsg.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            })
-        }
-
-        if (!category.value) {
-            e.preventDefault();
-            const brandMsg = document.getElementById('category-error')
-            brandMsg.innerHTML = "Vui lòng chọn danh mục!";
-            brandMsg.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            })
-        }
-
-        //Xử lý ảnh khi submit
-        if (!window.croppedImages || !window.croppedImages[1]) {
-            e.preventDefault();
-            const img = document.getElementById('image-error');
-            img.innerHTML = 'Hình ảnh chính là bắt buộc!';
-            img.scrollIntoView();
-            return;
-        }
-
-        // Duyệt qua mảng các ảnh đã crop
-        Object.keys(window.croppedImages).forEach(index => {
-            const blob = window.croppedImages[index];
-            if (!blob) return;
-            const file = new File([blob], `image_${index}.png`, {
-                type: "image/png"
+                //Ẩn vùng cắt ảnh
+                document.getElementById('crop-area').classList.add('hidden');
             });
-            //Hình thumbnail
-            if (index == "1") {
-                thumbnail.items.add(file);
-                console.log('Đã thêm hình ảnh thumbnail');
-            } else {
-                //Hình ảnh con
-                images.items.add(file);
-                console.log("Đã thêm hình con!");
-            }
         });
-
-        const thumbInput = document.getElementById('thumbnailInput');
-        const imgsInput = document.getElementById('imagesInput');
-
-        thumbInput.files = thumbnail.files;
-        imgsInput.files = images.files;
-
-        console.log("Files in Thumb Input:", thumbInput.files.length);
-        console.log("Files in Images Input:", imgsInput.files.length);
-    });
-
-    document.querySelector('input[type="number"]').addEventListener('keydown', function(e) {
-        // Chặn phím
-        if (['.', ',', 'e', 'E', '-'].includes(e.key)) {
-            e.preventDefault();
-        }
-    });
-
-    document.addEventListener('blur', function(e) {
-        // Kiểm tra nếu là input type="number"
-        if (e.target && e.target.type === 'number') {
-            // Nếu giá trị trống hoặc không phải là số hợp lệ
-            if (e.target.value === '') {
-                e.target.value = 0;
-
-                // Nếu bạn đang dùng Alpine.js, cần thông báo để nó cập nhật dữ liệu
-                e.target.dispatchEvent(new Event('input'));
+        // Nút xóa ảnh
+        window.removeImage = function(index) {
+            if (confirm('Xóa ảnh này?')) {
+                document.getElementById('preview-' + index).classList.add('hidden');
+                document.getElementById('btn-delete-' + index).classList.add('hidden');
+                document.getElementById('upload-' + index).value = ""; // Reset input
+                document.getElementById('preview-' + index).src = ""; // Reset image
+                document.getElementById('image-' + index).style.display = 'block'; //Hiện vùng thêm ảnh
+                delete window.croppedImages[index];
             }
-        }
-    }, true);
+        };
+
+        //Hàm lằng nghe submit
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+
+            //Lấy json từ bảng biến thể
+            const formData = new FormData(this);
+            const variantsRaw = formData.get('variants_data');
+
+            //Chia hình ảnh thumbnail và hình ảnh con
+            const thumbnail = new DataTransfer();
+            const images = new DataTransfer();
+
+            //Kiểm tra trước khi submit
+            const name = document.getElementById('name-input');
+            const brand = document.getElementById('brand-select');
+            const category = document.getElementById('category-select');
+
+            // Kiểm tra rỗng
+            if (!variantsRaw || variantsRaw === '[]') {
+                alert('Danh sách biến thể không được để trống!');
+                e.preventDefault(); // Dừng submit lại
+            }
+
+            if (!name.value) {
+                e.preventDefault();
+                const nameMsg = document.getElementById('name-error')
+                nameMsg.innerHTML = "Tên sản phẩm không được để trống!";
+                nameMsg.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                })
+            }
+
+            if (!brand.value) {
+                e.preventDefault();
+                const brandMsg = document.getElementById('brand-error')
+                brandMsg.innerHTML = "Vui lòng chọn nhãn hiệu!";
+                brandMsg.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                })
+            }
+
+            if (!category.value) {
+                e.preventDefault();
+                const brandMsg = document.getElementById('category-error')
+                brandMsg.innerHTML = "Vui lòng chọn danh mục!";
+                brandMsg.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                })
+            }
+
+            //Xử lý ảnh khi submit
+            if (!window.croppedImages || !window.croppedImages[1]) {
+                e.preventDefault();
+                const img = document.getElementById('image-error');
+                img.innerHTML = 'Hình ảnh chính là bắt buộc!';
+                img.scrollIntoView();
+                return;
+            }
+
+            // Duyệt qua mảng các ảnh đã crop
+            Object.keys(window.croppedImages).forEach(index => {
+                const blob = window.croppedImages[index];
+                if (!blob) return;
+                const file = new File([blob], `image_${index}.png`, {
+                    type: "image/png"
+                });
+                //Hình thumbnail
+                if (index == "1") {
+                    thumbnail.items.add(file);
+                    console.log('Đã thêm hình ảnh thumbnail');
+                } else {
+                    //Hình ảnh con
+                    images.items.add(file);
+                    console.log("Đã thêm hình con!");
+                }
+            });
+
+            const thumbInput = document.getElementById('thumbnailInput');
+            const imgsInput = document.getElementById('imagesInput');
+
+            thumbInput.files = thumbnail.files;
+            imgsInput.files = images.files;
+
+            console.log("Files in Thumb Input:", thumbInput.files.length);
+            console.log("Files in Images Input:", imgsInput.files.length);
+        });
+    }
 </script>
 @endpush
-@endonce
