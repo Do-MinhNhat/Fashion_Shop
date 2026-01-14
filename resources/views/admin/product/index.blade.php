@@ -93,23 +93,29 @@
             </div>
         </div>
     </div>
-
     <div class="flex justify-center">
         @if($errors->any())
-        <div style="color: #721c24; padding: 10px; border: 1px solid #721c24; background: #f8d7da;">
+        <div class="mb-8" style="color: #721c24; padding: 10px; border: 1px solid #721c24; background: #f8d7da;">
             Có lỗi xảy ra khi thêm sản phẩm, vui lòng kiểm tra lại!
         </div>
         @endif
         @if (session('success'))
-        <div style="color: green; padding: 10px; border: 1px solid green; background: #e9f7ef;">
+        <div class="mb-8" style="color: green; padding: 10px; border: 1px solid green; background: #e9f7ef;">
             {{ session('success') }}
         </div>
         @endif
     </div>
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-        <div class="relative w-full md:w-96">
-            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            <input type="text" placeholder="Tìm kiếm sản phẩm..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
+        <div class="flex gap-3 w-full md:w-auto">
+            <a href="{{ route('admin.product.trash') }}">
+                <button class="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm">
+                    <i class="fas fa-trash mr-2"></i> Thùng rác
+                </button>
+            </a>
+            <div class="relative w-full md:w-96">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" placeholder="Tìm kiếm sản phẩm..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
+            </div>
         </div>
         <div class="flex gap-3 w-full md:w-auto">
             <button class="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm">
@@ -171,11 +177,16 @@
                     <td class="p-4 text-center">
                         <span class="text-sm text-gray-600">{{ $product->variants->sum('quantity') }}</span>
                     </td>
-                    <td class="p-4 text-right">
-                        <button class="text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit"></i></button>
-                        <button class="text-gray-400 hover:text-red-500 p-2 transition"><i class="fas fa-trash"></i></button>
-                        <i class="fas fa-chevron-down text-gray-400" :class="open ? 'rotate-180' : ''">
-                        </i>
+                    <td class="p-4 text-right flex flex-row justify-center" @click.stop>
+                        <button class="text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit fa-lg"></i></button>
+                        <form action="{{ route('admin.product.delete', $product) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-gray-400 hover:text-red-500 p-2 transition" @click="if(!confirm('Bạn có chắc chắn muốn xóa?')) $event.preventDefault()">
+                                <i class=" fas fa-trash fa-lg"></i>
+                            </button>
+                        </form>
+                        <button @click="open = !open" class="text-gray-400 hover:text-black p-2 transition"><i class="fas fa-chevron-down fa-lg" :class="open ? 'rotate-180' : ''"></i></button>
                     </td>
                 </tr>
                 <tr>
@@ -219,9 +230,15 @@
                                                 </span>
                                                 @endif
                                             </td>
-                                            <td class="p-4 text-right">
+                                            <td class="p-4 flex justify-end">
                                                 <button class="text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit"></i></button>
-                                                <button class="text-gray-400 hover:text-red-500 p-2 transition"><i class="fas fa-trash"></i></button>
+                                                <form method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-gray-400 hover:text-red-500 p-2 transition" @click="if(!confirm('Bạn có chắc chắn muốn xóa?')) $event.preventDefault()">
+                                                        <i class=" fas fa-trash"></i>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -276,7 +293,7 @@
                                         {{ $message }}
                                     </span>
                                     @enderror
-                                    <span id="name-error" class="text-xs text-red-500 italic"></span>
+                                    <span id="name-error" class="text-xs text-red-500 italic">*</span>
                                     <input value="{{ old('name') }}" id="name-input" type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255">
                                 </div>
                             </div>
@@ -289,7 +306,7 @@
                                         {{ $message }}
                                     </span>
                                     @enderror
-                                    <span id="category-error" class="text-xs text-red-500 italic"></span>
+                                    <span id="category-error" class="text-xs text-red-500 italic">*</span>
                                     <select value="{{ old('category_id') }}" x-ref="categorySelect" id="category-select" name="category_id" class="cursor-pointer">
                                         <option value="" disabled selected hidden>Chọn danh mục...</option>
                                         @foreach ($categories as $category)
@@ -305,7 +322,7 @@
                                         {{ $message }}
                                     </span>
                                     @enderror
-                                    <span id="brand-error" class="text-xs text-red-500 italic"></span>
+                                    <span id="brand-error" class="text-xs text-red-500 italic">*</span>
                                     <select value="{{ old('brand_id') }}" x-ref="brandSelect" id="brand-select" name="brand_id" class="cursor-pointer">
                                         <option value="" disabled selected hidden>Chọn nhãn hiệu...</option>
                                         @foreach ($brands as $brand)
@@ -320,7 +337,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <!-- Kích thước -->
                                     <div>
-                                        <label class="text-xs font-semibold uppercase text-gray-500">Kích thước</label>
+                                        <label class="text-xs font-semibold uppercase text-gray-500">Kích cỡ</label>
                                         <span id="size-error" class="text-xs text-red-500 italic">Vui lòng chọn danh mục trước!</span>
                                         <select x-ref="sizeSelect" id="size-select" name="sizes[]" class="cursor-pointer" multiple>
                                             <option value="" disabled selected hidden>Chọn nhiều kích thước...</option>
@@ -330,7 +347,7 @@
                                     <div>
                                         <label for="color-select" class="text-xs font-semibold uppercase text-gray-500">Màu sắc</label>
                                         <span id="color-error" class="text-xs text-red-500 italic"></span>
-                                        <select x-ref="colorSelect" id="color-select" name="colors[]" class="cursor-pointer" multiple>
+                                        <select x-ref="colorSelect" id="color-select" name="colors[]" class="cursor-pointer uppercase" multiple>
                                             <option value="" disabled selected hidden>Chọn nhiều màu sắc...</option>
                                             @foreach ($colors as $color)
                                             <option value="{{$color->id}}" data-hex="{{$color->hex_code}}" {{ (is_array(old('colors')) && in_array($color->id, old('colors'))) ? 'selected' : '' }}>{{$color->name}}</option>
@@ -385,8 +402,6 @@
 
                             <!-- Upload ảnh -->
                             <div>
-                                <input type="hidden" name="cropped-thumbnail">
-                                <input type="hidden" name="cropped-images[]" multiple>
                                 <label class="text-xs font-semibold uppercase text-gray-500">Hình ảnh</label>
                                 <span id="image-error" class="text-xs text-red-500 italic"></span>
                                 <div>
@@ -409,7 +424,7 @@
                                                             <p class="text-xs text-gray-400 font-medium">PNG, JPG hoặc JPEG (Tỉ lệ 3:4)</p>
                                                             <p class="text-xs text-gray-400 font-medium">Tối đa: 2MB</p>
                                                         </div>
-                                                        <input id="upload-1" data-index="1" type="file" class="hidden image-upload" />
+                                                        <input id="upload-1" data-index="1" type="file" class="hidden image-upload" accept="image/*" />
                                                     </label>
                                                 </div>
                                                 <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-1" src="" style="display:none;">
@@ -430,7 +445,7 @@
                                                                 <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
                                                                 <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
                                                             </div>
-                                                            <input id="upload-2" data-index="2" type="file" class="hidden image-upload" />
+                                                            <input id="upload-2" data-index="2" type="file" class="hidden image-upload" accept="image/*" />
                                                         </label>
                                                     </div>
                                                     <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-2" src="" style="display:none;">
@@ -446,7 +461,7 @@
                                                                 <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
                                                                 <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
                                                             </div>
-                                                            <input id="upload-3" data-index="3" type="file" class="hidden image-upload" />
+                                                            <input id="upload-3" data-index="3" type="file" class="hidden image-upload" accept="image/*" />
                                                         </label>
                                                     </div>
                                                     <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-3" src="" style="display:none;">
@@ -462,7 +477,7 @@
                                                                 <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
                                                                 <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
                                                             </div>
-                                                            <input id="upload-4" data-index="4" type="file" class="hidden image-upload" />
+                                                            <input id="upload-4" data-index="4" type="file" class="hidden image-upload" accept="image/*" />
                                                         </label>
                                                     </div>
                                                     <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-4" src="" style="display:none;">
@@ -478,7 +493,7 @@
                                                                 <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
                                                                 <p class="mb-2 text-xs text-gray-500 font-semibold text-center px-2">Nhấn để tải ảnh</p>
                                                             </div>
-                                                            <input id="upload-5" data-index="5" type="file" class="hidden image-upload" />
+                                                            <input id="upload-5" data-index="5" type="file" class="hidden image-upload" accept="image/*" />
                                                         </label>
                                                     </div>
                                                     <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="preview-5" src="" style="display:none;">
@@ -503,7 +518,6 @@
                                     <option value="{{$tag->id}}">{{$tag->name}}</option>
                                     @endforeach
                                 </select>
-                                <span class="text-xs italic">(Các thông tin như Danh mục, Nhãn hiệu, Màu sắc... sẽ được thêm tự động)</span>
                             </div>
 
                             <!-- Mô tả -->
@@ -518,6 +532,8 @@
                                 <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu sản phẩm</button>
                             </div>
                             <input type="hidden" name="variants_data" :value="JSON.stringify(variants)">
+                            <input type="file" id="thumbnailInput" name="cropped-thumbnail" class="hidden">
+                            <input type="file" id="imagesInput" name="cropped-images[]" class="hidden" multiple>
                         </form>
                     </div>
                 </div>
@@ -555,11 +571,11 @@
                                     </td>
                                     <td class="p-2">
                                         <input type="number" x-model.number="variant.price" min="0"
-                                            class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
+                                            class=" w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
                                     </td>
                                     <td class="p-2">
-                                        <input type="number" x-model.number="variant.sale_price" min="0"
-                                            class="w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
+                                        <input type="number" x-model.number="variant.sale_price" min="0" @blur="if(variant.sale_price > variant.price) variant.sale_price = variant.price;"
+                                            class=" w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
                                     </td>
                                     <td class="p-2">
                                         <input type="number" x-model.number="variant.quantity" min="0"
@@ -828,7 +844,7 @@
                                 callback(false);
                                 if (error.response) {
                                     msg.className = 'text-xs text-red-500 italic';
-                                    msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
+                                    msg.innerHTML = Object.values(error?.response?.data?.errors).flat()[0];
                                 } else {
                                     console.log('Fetch error:', error);
                                     alert('Không thể kết nối đến server');
@@ -901,15 +917,22 @@
             },
 
             generateVariants() {
-                if (this.colors.length === 0 && this.sizes.length === 0) {
-                    alert("Vui lòng nhập ít nhất một màu hoặc size");
+                const inputColor = document.getElementById('color-select');
+                const inputSize = document.getElementById('size-select');
+                const msg = document.getElementById('generate-error');
+
+                if (!inputColor.value || !inputSize.value) {
+                    msg.innerHTML = "Vui lòng chọn ít nhất 1 Kích cỡ và 1 Màu sắc";
                     return;
                 }
 
                 if (this.variants.length > 0 && !confirm("Dữ liệu bảng hiện tại sẽ bị thay thế. Bạn có chắc chắn?")) {
                     return;
                 }
-                // Logic tạo tích Descartes
+                const priceInput = Number(document.getElementById('inputPrice').value) || 0;
+                const salePriceInput = Number(document.getElementById('inputSalePrice').value) || 0;
+
+                // Logic tạo các biến thể
                 let results = []
                 this.colors.forEach(c => {
                     this.sizes.forEach(s => {
@@ -923,8 +946,8 @@
                             size_id: s.id,
 
                             // Các trường nhập liệu
-                            price: Number(document.getElementById('inputPrice').value) || 0,
-                            sale_price: Number(document.getElementById('inputSalePrice').value) || 0,
+                            price: priceInput,
+                            sale_price: salePriceInput > priceInput ? priceInput : salePriceInput,
                             quantity: Number(document.getElementById('inputStock').value) || 0,
                             status: true,
                         });
@@ -961,9 +984,16 @@
 
     uploadInputs.forEach(input => {
         input.addEventListener('change', function() {
+            // Nếu có file và file đó không phải là image thì chặn (reset)
+            const msg = document.getElementById("image-error");
             const index = this.getAttribute('data-index'); // Lấy số 1, 2, 3...
-
             if (this.files && this.files[0]) {
+
+                if (!this.files[0].type.startsWith('image/')) {
+                    msg.innerHTML = 'Chỉ được chọn hình ảnh!';
+                    this.value = '';
+                    return;
+                }
                 var reader = new FileReader();
 
                 reader.onload = function(e) {
@@ -976,9 +1006,11 @@
                         url: e.target.result
                     });
 
-                    // Lưu lại index hiện tại vào nút "Cắt" để biết đang cắt cho input nào
+                    // Lưu lại index hiện tại
                     document.getElementById('crop-button').setAttribute('data-target', index);
                     document.getElementById('crop-cancel-button').setAttribute('data-target', index);
+
+                    msg.innerHTML = '';
                 }
 
                 reader.readAsDataURL(this.files[0]);
@@ -1091,18 +1123,24 @@
     //Hàm lằng nghe submit
     document.getElementById('productForm').addEventListener('submit', function(e) {
 
-        const formData = new FormData(this); // 'this' chính là cái form
-        const variantsRaw = formData.get('variants_data'); // Lấy chuỗi JSON từ input ẩn
+        //Lấy json từ bảng biến thể
+        const formData = new FormData(this);
+        const variantsRaw = formData.get('variants_data');
+
+        //Chia hình ảnh thumbnail và hình ảnh con
+        const thumbnail = new DataTransfer();
+        const images = new DataTransfer();
+
+        //Kiểm tra trước khi submit
+        const name = document.getElementById('name-input');
+        const brand = document.getElementById('brand-select');
+        const category = document.getElementById('category-select');
 
         // Kiểm tra rỗng
         if (!variantsRaw || variantsRaw === '[]') {
             alert('Danh sách biến thể không được để trống!');
             e.preventDefault(); // Dừng submit lại
         }
-
-        const name = document.getElementById('name-input');
-        const brand = document.getElementById('brand-select');
-        const category = document.getElementById('category-select');
 
         if (!name.value) {
             e.preventDefault();
@@ -1143,35 +1181,52 @@
             return;
         }
 
-        //Chia hình ảnh thumbnail và hình ảnh con
-        const thumbnail = new DataTransfer();
-        const images = new DataTransfer();
         // Duyệt qua mảng các ảnh đã crop
         Object.keys(window.croppedImages).forEach(index => {
             const blob = window.croppedImages[index];
-            if (!blob) {
-                return;
-            }
+            if (!blob) return;
             const file = new File([blob], `image_${index}.png`, {
                 type: "image/png"
             });
             //Hình thumbnail
             if (index == "1") {
                 thumbnail.items.add(file);
+                console.log('Đã thêm hình ảnh thumbnail');
             } else {
                 //Hình ảnh con
                 images.items.add(file);
+                console.log("Đã thêm hình con!");
             }
-            document.getElementById('cropped-thumbnail').files = thumbnail.files;
-            document.getElementById('cropped-images').files = images.files;
         });
+
+        const thumbInput = document.getElementById('thumbnailInput');
+        const imgsInput = document.getElementById('imagesInput');
+
+        thumbInput.files = thumbnail.files;
+        imgsInput.files = images.files;
+
+        console.log("Files in Thumb Input:", thumbInput.files.length);
+        console.log("Files in Images Input:", imgsInput.files.length);
     });
 
     document.querySelector('input[type="number"]').addEventListener('keydown', function(e) {
-        // Chặn phím dấu phẩy, dấu chấm và chữ 'e'
+        // Chặn phím
         if (['.', ',', 'e', 'E', '-'].includes(e.key)) {
             e.preventDefault();
         }
     });
+
+    document.addEventListener('blur', function(e) {
+        // Kiểm tra nếu là input type="number"
+        if (e.target && e.target.type === 'number') {
+            // Nếu giá trị trống hoặc không phải là số hợp lệ
+            if (e.target.value === '') {
+                e.target.value = 0;
+
+                // Nếu bạn đang dùng Alpine.js, cần thông báo để nó cập nhật dữ liệu
+                e.target.dispatchEvent(new Event('input'));
+            }
+        }
+    }, true);
 </script>
 @endsection

@@ -15,7 +15,7 @@ class Product extends Model
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name','slug','description','thumbnail','status','category_id','brand_id'];
+    protected $fillable = ['name', 'slug', 'description', 'thumbnail', 'status', 'category_id', 'brand_id'];
 
     // Tự động thêm Slug khi thêm name
     protected function name(): Attribute
@@ -47,6 +47,10 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function images(): HasMany {
+        return $this->hasMany(Image::class);
     }
 
     public function brand(): BelongsTo

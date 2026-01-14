@@ -48,7 +48,11 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:admin-product,admin-head')->group(function () {
             //Product
             Route::get('/san-pham', [AdminProductController::class, 'index'])->name('admin.product.index');
-            Route::post('/san-pham/them', [AdminProductController::class, 'store'])->name('admin.product.store');
+            Route::get('/san-pham/thung-rac', [AdminProductController::class, 'trash'])->name('admin.product.trash');
+            Route::post('/san-pham', [AdminProductController::class, 'store'])->name('admin.product.store');
+            Route::delete('/san-pham/{product}/', [AdminProductController::class, 'delete'])->name('admin.product.delete');
+            Route::put('san-pham/{product}/khoi-phuc', [AdminProductController::class, 'restore'])->name('admin.product.restore')->withTrashed();
+            Route::delete('san-pham/{product}/force', [AdminProductController::class, 'forceDelete'])->name('admin.product.forceDelete')->withTrashed();
 
             //Category Route
             Route::post('/danh-muc/them', [AdminCategoryController::class, 'store'])->name('admin.category.store');

@@ -28,4 +28,8 @@ class Category extends Model
     public function sizes(): HasMany{
         return $this->hasMany(Size::class);
     }
+
+    public function products(): HasMany{
+        return $this->hasMany(Product::class);
+    }
 }

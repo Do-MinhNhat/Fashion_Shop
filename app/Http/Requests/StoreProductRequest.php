@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class StoreProductRequest extends FormRequest
 {
@@ -14,7 +15,8 @@ class StoreProductRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'variants' => json_decode($this->variants_data, true)
+            'variants' => json_decode($this->variants_data, true),
+            'slug' => Str::slug($this->name),
         ]);
     }
 
@@ -23,8 +25,8 @@ class StoreProductRequest extends FormRequest
         return [
             //Product
             'name' => 'required|string|max:255|unique:products,name',
+            'slug' => 'required|unique:products,slug',
             'description' => 'nullable|string|max:10000',
-            'thumbnail' => 'nullable|shop_image',
             'status' => 'nullable|boolean',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
@@ -59,6 +61,7 @@ class StoreProductRequest extends FormRequest
         return [
             'name.required' => 'Tên sản phẩm không được để trống',
             'name.unique' => 'Tên sản phẩm đã tồn tại',
+            'slug.unique' => 'Tên sản phẩm đã tồn tại',
             'description.max' => 'mô tả sản phẩm không quá 10000 ký tự',
             'status.boolean' => 'Trạng thái không hợp lệ',
             'category_id.exists' => 'Danh mục không tồn tại',

@@ -33,7 +33,7 @@ class StoreBrandRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:brands,name',
             'slug' => 'required|unique:brands,slug',
-            'image' => 'required|shop_image',
+            'image' => 'nullable|shop_image',
         ];
     }
 
@@ -43,7 +43,6 @@ class StoreBrandRequest extends FormRequest
             'name.required' => 'Tên thương hiệu không được để trống',
             'name.unique' => 'Tên thương hiệu đã tồn tại',
             'slug.unique' => 'Tên thương hiệu đã tồn tại',
-            'image.required' => 'Hình ảnh không được để trống',
         ];
     }
 }

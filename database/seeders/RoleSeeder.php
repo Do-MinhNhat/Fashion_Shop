@@ -14,7 +14,7 @@ class RoleSeeder extends Seeder
             ['name'=>'user'],
             ['name'=>'admin-user'],
             ['name'=>'admin-product'],
-            ['name'=>'shipper'],
+            ['name'=>'admin-shipper'],
             ['name'=>'admin-head'],
         ];
 

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class StoreTagRequest extends FormRequest
 {
@@ -13,7 +14,12 @@ class StoreTagRequest extends FormRequest
     {
         return $this->user()->isAdmin();
     }
-
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'slug' => Str::slug($this->name),
+        ]);
+    }
     /**
      * Get the validation rules that apply to the request.
      *
@@ -30,11 +36,8 @@ class StoreTagRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên nhãn không được để trống',
-            'name.unique' => 'Tên nhãn đã tồn tại',
-
-            'slug.required' => 'Slug không được để trống',
-            'slug.max' => 'Slug tối đa 255 ký tự',
-            'slug.unique' => 'Slug đã tồn tại',
+            'name.unique' => 'Nhãn đã tồn tại',
+            'slug.unique' => 'Nhãn đã tồn tại',
         ];
     }
 }

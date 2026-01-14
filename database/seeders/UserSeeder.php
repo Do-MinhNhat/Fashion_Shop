@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
                 'name' => 'Do Minh Nhat',
                 'email' => 'nhat@gmail.com',
                 'password' => Hash::make('12345678'),
-                'role_id' => 1,
+                'role_id' => 5,
                 'phone' => '0912345678',
                 'gender' => 1,
                 'address' => 'TP Hồ Chí Minh',
