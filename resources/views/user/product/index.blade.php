@@ -2,8 +2,7 @@
 @section('title', $viewData['title'])
 @section('content')
 
-@endsection
-<div class="max-w-[1440px] mx-auto flex min-h-screen bg-white">
+<div class="max-w-[1440px] pt-20 mx-auto flex min-h-screen bg-white">
     <!-- Filter -->
     @include('components.sidebar.product-sidebar-filter')
 
@@ -21,7 +20,7 @@
                 <div class="relative group flex-1 md:flex-none">
                     <select class="appearance-none w-full md:w-48 bg-transparent border-b border-gray-300 py-2 pr-8 text-sm focus:outline-none cursor-pointer">
                         <option>Mới nhất</option>
-                        <option>Giá: Thấp đến Cao</option>
+                        <option>Giá: Thấp đến Cao</option>  
                         <option>Giá: Cao đến Thấp</option>
                         <option>Bán chạy nhất</option>
                     </select>
@@ -46,9 +45,9 @@
                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
                                 <i class="fas fa-plus"></i>
                             </button>
-                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
+                            <a href="{{ route('user.product.show', $product->slug) }}" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
                                 <i class="far fa-eye"></i>
-                            </button>
+                            </a>
                         </div>
                     </div>
                     <div>

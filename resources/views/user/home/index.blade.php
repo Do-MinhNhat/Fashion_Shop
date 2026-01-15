@@ -14,7 +14,7 @@
             <h3 class="text-3xl font-serif">Sản phẩm mới</h3>
 
             <div class="flex space-x-4 mt-4 md:mt-0 text-sm">
-                <a href="" class="hover:underline">View All</a>
+                <a href="{{ route('user.product.index') }}" class="hover:underline">View All</a>
             </div>
         </div>
         <!-- Product List -->
@@ -33,7 +33,7 @@
             <h3 class="text-3xl font-serif">Sản Phẩm Nổi Bật</h3>
 
             <div class="flex space-x-4 mt-4 md:mt-0 text-sm">
-                <a href="" class="hover:underline">View All </a>
+                <a href="{{ route('user.product.index') }}" class="hover:underline">View All </a>
             </div>
         </div>
         <!-- Product List -->
@@ -52,7 +52,7 @@
             <h3 class="text-3xl font-serif">Bộ sưu tập hot</h3>
 
             <div class="flex space-x-4 mt-4 md:mt-0 text-sm">
-                <a href="" class="hover:underline">View All </a>
+                <a href="{{ route('user.product.index') }}" class="hover:underline">View All </a>
             </div>
         </div>
         <!-- Product List -->
@@ -71,7 +71,7 @@
             <h3 class="text-3xl font-serif">Sản phẩm bán chạy</h3>
 
             <div class="flex space-x-4 mt-4 md:mt-0 text-sm">
-                <a href="" class="hover:underline">View All </a>
+                <a href="{{ route('user.product.index') }}" class="hover:underline">View All </a>
             </div>
         </div>
         <!-- Product List -->

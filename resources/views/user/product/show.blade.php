@@ -11,10 +11,10 @@
                 class="absolute inset-0 w-full h-full object-cover"
             >
 
-            @if($viewData['product']->thumbnail)
+            @if($viewData['product']->gallery)
             <div class="absolute bottom-6 left-6 right-6">
                 <div class="grid grid-cols-4 gap-4 max-w-75">
-                    @foreach($viewData['product']->thumbnail as $img)
+                    @foreach($viewData['product']->gallery as $img)
                         <img
                             src="{{ asset('storage/' . $img) }}"
                             class="w-full aspect-[3/4] object-cover border-2 border-white/50 hover:border-white cursor-pointer transition"

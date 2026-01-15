@@ -35,7 +35,6 @@ Route::middleware('auth')->group(function () {
         // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'destroy'])->name('user.profile.destroy');
     // Order
     Route::get('/ho-so-ca-nhan/don-hang', [OrderController::class, 'index'])->name('user.profile.order.index');
-    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('user.profile.order.show');
     // Address
     Route::get('/ho-so-ca-nhan/dia-chi', [AddressController::class, 'index'])->name('user.profile.address.index');
     // Cart
