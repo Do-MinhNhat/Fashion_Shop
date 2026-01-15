@@ -9,69 +9,43 @@ use App\Http\Requests\UpdateProductRequest;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $viewData = [];
-        $viewData['title'] = 'Sản phẩm - Fasion Shop';
-        $viewData['subtitle'] = 'Danh sách sản phẩm';
-        $products = Product::where('status', true)->with('variants')->Paginate(2)->withQueryString();
-        return view('user.product.index', compact('products', 'viewData'));
+        $products = Product::where('status', true)
+            ->with('variants')
+            ->latest()
+            ->paginate(12) 
+            ->withQueryString();
+
+        return view('user.product.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Hiển thị chi tiết sản phẩm
+    public function show($slug)
     {
-        //
-    }
+        // 1. Lấy sản phẩm, kèm theo Variants VÀ thông tin chi tiết Color/Size
+        $product = Product::where('slug', $slug)
+            ->where('status', true)
+            ->with(['variants.color', 'variants.size']) 
+            ->firstOrFail();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreProductRequest $request)
-    {
-        //
-    }
+        // 2. Lấy danh sách Màu (Object) duy nhất
+        $colors = $product->variants->map(function ($variant) {
+            return $variant->color;
+        })->filter()->unique('id')->values();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
-    {
-        return view('user.product.show', [
-            'viewData' => [
-                'title' => $product->name,
-                'subtitle' => 'Chi tiết sản phẩm',
-                'product' => $product,
-            ]
-        ]);
-    }
+        // 3. Lấy danh sách Size (Object) duy nhất
+        $sizes = $product->variants->map(function ($variant) {
+            return $variant->size;
+        })->filter()->unique('id')->values();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
+        // 4. Logic khác giữ nguyên...
+        $product->increment('view');
+        $relatedProducts = Product::where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->with('variants')
+            ->inRandomOrder()->take(4)->get();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateProductRequest $request, Product $product)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
+        return view('user.product.show', compact('product', 'relatedProducts', 'colors', 'sizes'));
     }
 }

@@ -13,7 +13,6 @@ use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
 use Illuminate\Support\Facades\Route;
 //User Checkout Route
-Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
 //-----------------------------
 //User Home Route
 Route::get('/', [HomeController::class, 'index'])->name('user.home.index');
@@ -28,6 +27,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+//User ^^^^^^^^^^^^^^^^^^^^^^^^^^
     // Profile 
     Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'index'])->name('user.profile.index');
         // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'edit'])->name('user.profile.edit');
@@ -39,11 +39,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/ho-so-ca-nhan/dia-chi', [AddressController::class, 'index'])->name('user.profile.address.index');
     // Cart
     Route::get('/gio-hang', [CartDetailController::class, 'index'])->name('user.cart.index');
+    Route::post('/gio-hang', [CartDetailController::class, 'store'])->name('user.cart.store');
+    Route::delete('/gio-hang/xoa/{id}', [CartDetailController::class, 'destroy'])->name('user.cart.destroy');
+    Route::patch('/gio-hang/cap-nhat/{id}', [CartDetailController::class, 'update'])->name('user.cart.update');
+    // Checkout
+    Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
 
-
-
-    //User ^^^^^^^^^^^^^^^^^^^^^^^^^^
-    //Admin vvvvvvvvvvvvvvvvvvvvvvvvv
+//Admin vvvvvvvvvvvvvvvvvvvvvvvvv
     Route::middleware('is_admin')->prefix('quan-ly')->group(function () {
         Route::get('/', [AdminHomeController::class, 'index'])->name('admin.home.index');
         Route::middleware('role:admin-user,admin-head')->group(function () {
