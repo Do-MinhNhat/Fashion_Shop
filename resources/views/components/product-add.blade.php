@@ -27,17 +27,18 @@
                 x-transition:leave="transition ease-in duration-200"
                 x-transition:leave-start="opacity-100 scale-100"
                 x-transition:leave-end="opacity-0 scale-95"
-                class="bg-white w-full shadow-2xl rounded-lg flex relative max-h-[90vh] overflow-hidden"
+                class="bg-white w-full shadow-2xl rounded-lg flex relative max-h-[90vh] overflow-hidden transition-all"
                 :class="isExpanded ? 'max-w-7xl' : 'max-w-2xl'">
 
-                <div class="overflow-y-auto flex-col max-w-2xl shrink-0">
-                    <div class="flex justify-between items-center p-6 border-b">
-                        <h3 class="text-lg font-bold">Chỉnh sửa sản phẩm</h3>
-                        <button @click="open = false" class="text-gray-400 hover:text-red-500 transition text-xl px-2">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="overflow-y-auto max-h-[79vh]">
+
+                <div class="overflow-y-auto max-h-[79vh]">
+                    <div class="flex-col overflow-y-auto max-w-2xl shrink-0">
+                        <div class="flex justify-between items-center p-6 border-b">
+                            <h3 class="text-lg font-bold">Thêm sản phẩm mới</h3>
+                            <button @click="open = false" class="text-gray-400 hover:text-red-500 transition text-xl px-2">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                         <!-- Content -->
                         <div class="p-6 overflow-y-auto custom-scrollbar">
                             <form method="POST" action="{{ route('admin.product.store') }}" id="productForm" class="space-y-6" enctype="multipart/form-data">
@@ -293,7 +294,7 @@
 
                                 <!-- Footer -->
                                 <div class="flex justify-end gap-3 pt-3 border-t">
-                                    <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
+                                    <button type="button" @click="open = false" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
                                     <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu sản phẩm</button>
                                 </div>
                                 <input type="hidden" name="variants_data" :value="JSON.stringify(variants)">
