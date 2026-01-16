@@ -23,6 +23,12 @@
             }
         }
     }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
     window.axios = axios;
     window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -31,10 +37,6 @@
         window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
     }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 @endsection
 @section('style')
 <style>
@@ -186,7 +188,7 @@
                         <span class="text-sm text-gray-600">{{ $product->variants->sum('quantity') }}</span>
                     </td>
                     <td class="p-4 text-right flex flex-row justify-center" @click.stop>
-                        <button @click="$dispatch('open-edit-modal')" class=" text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit fa-lg"></i></button>
+                        <button @click="$dispatch('open-edit-modal', @js($product))" class=" text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit fa-lg"></i></button>
                         <form action="{{ route('admin.product.delete', $product) }}" method="POST">
                             @csrf
                             @method('DELETE')
@@ -268,13 +270,6 @@
 @endsection
 @push('scripts')
 <script>
-    document.querySelector('input[type="number"]').addEventListener('keydown', function(e) {
-        // Chặn phím
-        if (['.', ',', 'e', 'E', '-'].includes(e.key)) {
-            e.preventDefault();
-        }
-    });
-
     document.addEventListener('blur', function(e) {
         // Kiểm tra nếu là input type="number"
         if (e.target && e.target.type === 'number') {

@@ -102,7 +102,31 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $imgMsg = "";
+        $product->update($request->validated());
+        $baseName =  $product->id . "_" . $product->slug;
+        if ($request->hasFile('cropped-thumbnail')) {
+            $thumbnail = $baseName . "." . $request->file('cropped-thumbnail')->extension();
+            $thumbPath = $this->uploadImage($thumbnail, $request->file('cropped-thumbnail'), 'product/thumbnail');
+            $product->update(['thumbnail' => $thumbPath]);
+            $imgMsg = $imgMsg . " Ảnh chính: 1 hình";
+        } else {
+            $imgMsg = $imgMsg . " Ảnh chính rỗng";
+        }
+        if ($request->hasFile('cropped-images')) {
+            foreach ($request->file('cropped-images') as $index => $file) {
+                $imagesName = $baseName . "_" . ($index + 1) . "." . $file->extension();
+                $imagePath = $this->uploadImage($imagesName, $file, 'product/image');
+                $product->images()->create(['url' => $imagePath]);
+            }
+            $imgMsg = $imgMsg . ", Ảnh phụ: " . count($request->file('cropped-images')) . " hình";
+        } else {
+            $imgMsg = $imgMsg . ", ảnh phụ rỗng";
+        }
+        foreach ($request->variants as $variant) {
+            $product->variants()->update($variant);
+        }
+        return redirect()->back()->with('success', 'Đã sửa sản phẩm "' . $product->name . '" cùng các biến thể!' . $imgMsg);
     }
 
     /**
