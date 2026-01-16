@@ -266,7 +266,7 @@
                                     <select x-ref="tagSelect" name="tags[]" multiple>
                                         <option value="" disabled selected hidden>Chọn nhiều nhãn...</option>
                                         @foreach ($tags as $tag)
-                                        <option value="{{$tag->id}}">{{$tag->name}}</option>
+                                        <option value="{{$tag->id}}" @selected(old('tag_id')==$tag->id)>{{$tag->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -274,7 +274,7 @@
                                 <!-- Mô tả -->
                                 <div>
                                     <label class="text-xs font-semibold uppercase text-gray-500">Mô tả</label>
-                                    <textarea rows="3" class="w-full p-2.5 border rounded text-sm" placeholder="Mô tả ngắn sản phẩm..."></textarea>
+                                    <textarea rows="3" name="description" class="w-full p-2.5 border rounded text-sm" placeholder="Mô tả ngắn sản phẩm...">{{ old('description') }}</textarea>
                                 </div>
 
                                 <!-- Footer -->
@@ -784,8 +784,8 @@
                         console.log("Đã thêm hình con!");
                     }
                 });
-                this.$refs.thumbnailInput = thumbnail.files;
-                this.$refs.imagesInput = images.files;
+                this.$refs.thumbnailInput.files = thumbnail.files;
+                this.$refs.imagesInput.files = images.files;
             },
 
             handleImageChange(event) {

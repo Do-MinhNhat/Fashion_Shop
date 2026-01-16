@@ -13,6 +13,7 @@ use App\Models\Color;
 use App\Models\Size;
 use App\Models\Tag;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Carbon;
 use SebastianBergmann\Environment\Console;
 
 class ProductController extends Controller
@@ -27,7 +28,7 @@ class ProductController extends Controller
         $viewData['title'] = 'Admin - Sản phẩm';
         $viewData['subtitle'] = 'Quản lý sản phẩm';
 
-        $products = Product::with('variants')->Paginate(5)->withQueryString();
+        $products = Product::with(['variants','tags','images'])->Paginate(5)->withQueryString();
 
         $brands = Brand::where('status', true)->get();
 
@@ -78,6 +79,7 @@ class ProductController extends Controller
         foreach ($request->variants as $variant) {
             $product->variants()->create($variant);
         }
+        $product->tags()->sync($request->tags);
         return redirect()->back()->with('success', 'Đã thêm sản phẩm "' . $product->name . '" cùng các biến thể!' . $imgMsg);
     }
 
@@ -106,10 +108,11 @@ class ProductController extends Controller
         $product->update($request->validated());
         $baseName =  $product->id . "_" . $product->slug;
         if ($request->hasFile('cropped-thumbnail')) {
+            $this->deleteImage($product->thumbnail);
             $thumbnail = $baseName . "." . $request->file('cropped-thumbnail')->extension();
             $thumbPath = $this->uploadImage($thumbnail, $request->file('cropped-thumbnail'), 'product/thumbnail');
             $product->update(['thumbnail' => $thumbPath]);
-            $imgMsg = $imgMsg . " Ảnh chính: 1 hình";
+            $imgMsg = $imgMsg . "Cập nhật ảnh chính";
         } else {
             $imgMsg = $imgMsg . " Ảnh chính rỗng";
         }
@@ -124,8 +127,10 @@ class ProductController extends Controller
             $imgMsg = $imgMsg . ", ảnh phụ rỗng";
         }
         foreach ($request->variants as $variant) {
-            $product->variants()->update($variant);
+            $cleanDate = array_diff_key($variant, array_flip(['id','size_id','color_id','product_id','created_at', 'updated_at', 'deleted_at']));
+            $product->variants()->where('id',$variant['id'])->update($cleanDate);
         }
+        $product->tags()->sync($request->tags);
         return redirect()->back()->with('success', 'Đã sửa sản phẩm "' . $product->name . '" cùng các biến thể!' . $imgMsg);
     }
 

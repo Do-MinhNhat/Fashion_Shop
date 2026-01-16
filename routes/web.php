@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/san-pham/{product}/', [AdminProductController::class, 'delete'])->name('admin.product.delete');
             Route::put('san-pham/{product}/khoi-phuc', [AdminProductController::class, 'restore'])->name('admin.product.restore')->withTrashed();
             Route::delete('san-pham/{product}/force', [AdminProductController::class, 'forceDelete'])->name('admin.product.forceDelete')->withTrashed();
+            Route::put('san-pham/{product}/cap-nhat', [AdminProductController::class, 'update'])->name('admin.product.update');
 
             //Category Route
             Route::post('/danh-muc/them', [AdminCategoryController::class, 'store'])->name('admin.category.store');
