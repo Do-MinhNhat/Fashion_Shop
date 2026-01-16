@@ -26,6 +26,12 @@
             Thông tin tài khoản
         </a>
 
+        <a href="{{ route('user.profile.wishlist.index') }}"
+           class="block px-4 py-2 rounded text-sm transition
+           {{ request()->routeIs('user.profile.wishlist.index') ? $active : $normal }}">
+            Danh sách yêu thích
+        </a>
+
         <a href="{{ route('user.profile.order.index') }}"
            class="block px-4 py-2 rounded text-sm transition
            {{ request()->routeIs('user.profile.order.*') ? $active : $normal }}">

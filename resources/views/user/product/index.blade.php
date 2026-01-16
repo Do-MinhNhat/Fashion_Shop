@@ -38,6 +38,10 @@
                 $imageUrl = str_starts_with($product->thumbnail, 'http') 
                             ? $product->thumbnail 
                             : asset('storage/' . $product->thumbnail);
+                $isWishlisted = false;
+                if(auth()->check()) {
+                    $isWishlisted = auth()->user()->wishlists()->where('product_id', $product->id)->exists();
+                }
             @endphp
                 <div class="group cursor-pointer">
                     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
@@ -50,51 +54,51 @@
                             >
                         </a>
 
-                        {{-- ADD TO CART BUTTON --}}
+                        {{-- BUTTON (Tim - Giỏ hàng - Xem nhanh) --}}
                         <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                            @if($firstVariant && $firstVariant->quantity > 0)
+                            {{-- 1. NÚT TIM (WISHLIST) --}}
+                            <button type="button"
+                                onclick="toggleWishlistGlobal(this, {{ $product->id }})"
+                                class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow transition-all duration-300
+                                       {{ $isWishlisted ? 'text-red-500' : 'text-gray-900 hover:bg-black hover:text-white' }}"
+                                title="{{ $isWishlisted ? 'Bỏ thích' : 'Yêu thích' }}"
+                            >
+                                <i class="{{ $isWishlisted ? 'fas' : 'far' }} fa-heart text-sm"></i>
+                            </button>
+                            
+                            {{-- 2. ADD TO CART BUTTON --}}
+                            @if($firstVariant && $firstVariant->quantity >= 0)
                                 <form action="{{ route('user.cart.store') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="variant_id" value="{{ $firstVariant->id }}">
                                     <input type="hidden" name="quantity" value="1">
                                     
-                                    <button
-                                        type="submit"
-                                        class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
-                                        <i class="fas fa-plus"></i>
+                                    <button type="submit"
+                                        class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ"
+                                    >
+                                        <i class="fa-solid fa-cart-plus"></i>
                                     </button>
                                 </form>
-
-                                <a href="{{ route('user.product.show', $product->slug) }}"
-                                    class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition"
-                                    title="Xem nhanh"
-                                >
-                                    <i class="far fa-eye"></i>
-                                </a>
                             @else
-                                <button disabled class="w-full bg-gray-200/90 text-gray-500 py-3 text-xs uppercase tracking-widest cursor-not-allowed font-bold backdrop-blur-sm">
-                                    Hết hàng
+                                <button disabled class="w-10 h-10 bg-gray/90 rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition tracking-widest cursor-not-allowed font-bold backdrop-blur-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-x-icon lucide-package-x"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/><path d="m17 13 5 5m-5 0 5-5"/></svg>
                                 </button>
                             @endif
+
+                            {{-- 3. VIEW DETAIL--}}
+                            <a href="{{ route('user.product.show', $product->slug) }}"
+                                class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition"
+                                title="Xem nhanh"
+                            >
+                                <i class="far fa-eye text-sm"></i>
+                            </a>
                         </div>
 
-                        <div class="absolute top-4 left-4 flex flex-col gap-2">
-                            <span class="bg-white px-2 py-1 text-[10px] uppercase tracking-wide font-bold shadow-sm">New In</span>
-                        </div>
-
-                        <div class="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
-                            @if($isNew)
-                                <span class="bg-white px-2 py-1 text-[10px] uppercase tracking-wide font-bold shadow-sm">New In</span>
-                            @endif
-                            
-                            @if($firstVariant && $firstVariant->quantity <= 0)
-                                <span class="bg-red-600 text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                                    Sold Out
-                                </span>
-                            @endif
-                        </div>
+                        {{-- BADGES --}}
+                        @include('components.badges.badges', ['product' => $product])
                     </div>
 
+                    {{-- Info card --}}
                     <div>
                         <a href="{{ route('user.product.show',$product) }}">
                             <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">{{ $product->name }}</h4>
@@ -134,8 +138,6 @@
 
 @push('scripts')
 <script>
-    const variants = @json($product->variants);
-
     @if(session('success'))
         Swal.fire({
             icon: 'success',
