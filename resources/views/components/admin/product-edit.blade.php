@@ -1,7 +1,7 @@
 @props(['categories', 'brands', 'tags', 'colors', 'sizes'])
 <div x-data="{ open: {{ $errors->edit->any()? 'true' : 'false' }}, product: {}}"
     x-show="open"
-    x-on:open-edit-modal.window="open = true; product = $event.detail; console.table(product)"
+    x-on:open-edit-modal.window="open = true; product = $event.detail"
     style="display: none;"
     class="fixed inset-0 z-[9999] overflow-y-auto">
 
@@ -35,7 +35,7 @@
                     <div class="flex-col overflow-y-auto max-w-2xl shrink-0">
                         <div class="flex justify-between items-center p-6 border-b">
                             <h3 class="text-lg font-bold">Chỉnh sửa sản phẩm</h3>
-                            <button @click="open = false" class="text-gray-400 hover:text-red-500 transition text-xl px-2">
+                            <button @click="open = false; " class="text-gray-400 hover:text-red-500 transition text-xl px-2">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
@@ -157,10 +157,10 @@
                                                             <input x-ref="upload-1" data-index="1" @change="handleImageChange($event)" type="file" class="hidden" accept="image/*" />
                                                         </label>
                                                     </div>
-                                                    <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" x-ref="preview-1" src="" style="display:none;">
-                                                    <button type="button" onclick="removeImage(1)" x-ref="btn-delete-1"
-                                                        class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
-                                                        <i class="fas fa-trash-alt text-xs"></i>
+                                                    <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 hidden" x-ref="preview-1" src="">
+                                                    <button type="button" onclick="replaceImage(1)" x-ref="btn-replace-1"
+                                                        class="hidden absolute top-2 right-2 z-20 bg-blue-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-blue-600 transition shadow-lg">
+                                                        <i class="fas fa-sync text-xs"></i>
                                                     </button>
                                                     <div class="absolute bottom-4 left-4 bg-white/80 backdrop-blur px-3 py-1 rounded-full text-sm font-semibold shadow-sm">
                                                         Ảnh chính
@@ -178,10 +178,10 @@
                                                                 <input x-ref="upload-2" data-index="2" @change="handleImageChange($event)" type="file" class="hidden" accept="image/*" />
                                                             </label>
                                                         </div>
-                                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" x-ref="preview-2" src="" style="display:none;">
-                                                        <button type="button" onclick="removeImage(2)" x-ref="btn-delete-2"
-                                                            class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
-                                                            <i class="fas fa-trash-alt text-xs"></i>
+                                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 hidden" x-ref="preview-2" src="">
+                                                        <button type="button" onclick="replaceImage(2)" x-ref="btn-replace-2"
+                                                            class="hidden absolute top-2 right-2 z-20 bg-blue-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-blue-600 transition shadow-lg">
+                                                            <i class="fas fa-sync text-xs"></i>
                                                         </button>
                                                     </div>
                                                     <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
@@ -194,10 +194,10 @@
                                                                 <input x-ref="upload-3" data-index="3" @change="handleImageChange($event)" type="file" class="hidden" accept="image/*" />
                                                             </label>
                                                         </div>
-                                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" x-ref="preview-3" src="" style="display:none;">
-                                                        <button type="button" onclick="removeImage(3)" x-ref="btn-delete-3"
-                                                            class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
-                                                            <i class="fas fa-trash-alt text-xs"></i>
+                                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 hidden" x-ref="preview-3" src="">
+                                                        <button type="button" onclick="replaceImage(3)" x-ref="btn-replace-3"
+                                                            class="hidden absolute top-2 right-2 z-20 bg-blue-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-blue-600 transition shadow-lg">
+                                                            <i class="fas fa-sync text-xs"></i>
                                                         </button>
                                                     </div>
                                                     <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
@@ -210,10 +210,10 @@
                                                                 <input x-ref="upload-4" data-index="4" @change="handleImageChange($event)" type="file" class="hidden" accept="image/*" />
                                                             </label>
                                                         </div>
-                                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" x-ref="preview-4" src="" style="display:none;">
-                                                        <button type="button" onclick="removeImage(4)" x-ref="btn-delete-4"
-                                                            class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
-                                                            <i class="fas fa-trash-alt text-xs"></i>
+                                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 hidden" x-ref="preview-4" src="">
+                                                        <button type="button" onclick="replaceImage(4)" x-ref="btn-replace-4"
+                                                            class="hidden absolute top-2 right-2 z-20 bg-blue-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-blue-600 transition shadow-lg">
+                                                            <i class="fas fa-sync text-xs"></i>
                                                         </button>
                                                     </div>
                                                     <div class="relative rounded-xl overflow-hidden cursor-pointer shadow-md">
@@ -226,10 +226,10 @@
                                                                 <input x-ref="upload-5" data-index="5" @change="handleImageChange($event)" type="file" class="hidden" accept="image/*" />
                                                             </label>
                                                         </div>
-                                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" x-ref="preview-5" src="" style="display:none;">
-                                                        <button type="button" onclick="removeImage(5)" x-ref="btn-delete-5"
-                                                            class="hidden absolute top-2 right-2 z-20 bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-red-600 transition shadow-lg">
-                                                            <i class="fas fa-trash-alt text-xs"></i>
+                                                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 hidden" x-ref="preview-5" src="">
+                                                        <button type="button" onclick="replaceImage(5)" x-ref="btn-replace-5"
+                                                            class="hidden absolute top-2 right-2 z-20 bg-blue-500 text-white w-7 h-7 flex items-center justify-center rounded-full hover:bg-blue-600 transition shadow-lg">
+                                                            <i class="fas fa-sync text-xs"></i>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -370,14 +370,6 @@
                         field: "text",
                         order: "asc"
                     },
-                    onChange: async (value) => {
-                        if (!value) {
-                            self.$refs.sizeError.innerHTML = "Vui lòng chọn danh mục!";
-                            return
-                        };
-                        self.variants = [];
-                        await self.loadSizesByCategory(value);
-                    }
                 });
 
                 this.tsBrand = new TomSelect(this.$refs.brandSelect, {
@@ -462,14 +454,7 @@
                     }
                 });
 
-                this.$watch('product', (product) => {
-                    this.tsCategory.setValue(String(product.category_id));
-                    this.tsBrand.setValue(String(product.brand_id));
-                    this.tsTag.setValue(product.tags.map(t => String(t.id)));
-                    this.variants = Object.values(product.variants);
-                });
-
-                window.croppedAddImages = {};
+                window.croppedEditImages = {};
                 var el = this.$refs.uploadCrop;
                 if (el) {
                     this.uploadCrop = new Croppie(el, {
@@ -515,11 +500,11 @@
                         if (previewElement) {
                             var url = URL.createObjectURL(blob);
                             previewElement.src = url;
-                            previewElement.style.display = 'block';
+                            previewElement.classList.remove('hidden');
                             //Ẩn vùng thêm ảnh
-                            this.$refs['image-' + targetIndex].style.display = 'none';
+                            this.$refs['image-' + targetIndex].classList.add('hidden');
                             //Hiển thị nút xóa
-                            this.$refs['btn-delete-' + targetIndex].classList.remove('hidden');
+                            this.$refs['btn-replace-' + targetIndex].classList.remove('hidden');
                             //Hiển thị vùng thêm ảnh
                             this.$refs.imageArea.classList.remove('hidden');
                             if (targetIndex == 1) {
@@ -527,22 +512,15 @@
                             }
                         }
                         // 3. Lưu blob vào mảng toàn cục theo Index
-                        window.croppedAddImages[targetIndex] = blob;
+                        window.croppedEditImages[targetIndex] = blob;
 
                         //Ẩn vùng cắt ảnh
                         this.$refs.cropArea.classList.add('hidden');
                     });
                 });
-                // Nút xóa ảnh
-                window.removeImage = (index) => {
-                    if (confirm('Xóa ảnh này?')) {
-                        this.$refs['preview-' + index].classList.add('hidden');
-                        this.$refs['btn-delete-' + index].classList.add('hidden');
-                        this.$refs['upload-' + index].value = ""; // Reset input
-                        this.$refs['preview-' + index].src = ""; // Reset image
-                        this.$refs['image-' + index].style.display = 'block'; //Hiện vùng thêm ảnh
-                        delete window.croppedAddImages[index];
-                    }
+                // Nút sửa ảnh
+                window.replaceImage = (index) => {
+                    self.$refs['upload-' + index].click();
                 };
 
                 this.$refs.productForm.addEventListener('keydown', (e) => {
@@ -552,6 +530,41 @@
                             e.preventDefault();
                         }
                     }
+                });
+
+                this.$watch('product', (product) => {
+                    this.tsCategory.setValue(String(product.category_id));
+                    this.tsBrand.setValue(String(product.brand_id));
+                    this.tsTag.setValue(product.tags.map(t => String(t.id)));
+                    this.variants = Object.values(product.variants);
+
+                    const imgs = [];
+
+                    for (let i = 1; i <= 5; i++) {
+                        this.$refs['preview-' + i].classList.add('hidden');
+                        this.$refs['preview-' + i].src = '';
+                        this.$refs['upload-' + i].value = '';
+                        this.$refs['image-' + i].classList.remove('hidden');
+                        this.$refs['btn-replace-' + i].classList.add('hidden');
+                    }
+
+                    product.images.forEach(i => {
+                        imgs.push(i.url);
+                    })
+
+                    //Thumbnail
+                    this.$refs['preview-1'].classList.remove('hidden');
+                    this.$refs['preview-1'].src = '{{ asset("storage") }}/' + product.thumbnail;
+                    this.$refs['image-1'].classList.add('hidden');
+                    this.$refs['btn-replace-1'].classList.remove('hidden');
+
+                    imgs.forEach((img) => {
+                        let index = Number(img.split('.').shift().split('_').pop());
+                        this.$refs['preview-' + index].classList.remove('hidden');
+                        this.$refs['preview-' + index].src = '{{ asset("storage") }}/' + img;
+                        this.$refs['image-' + index].classList.add('hidden');
+                        this.$refs['btn-replace-' + index].classList.remove('hidden');
+                    })
                 });
             },
 
@@ -605,24 +618,22 @@
                 }
 
                 // Duyệt qua mảng các ảnh đã crop
-                Object.keys(window.croppedAddImages).forEach(index => {
-                    const blob = window.croppedAddImages[index];
+                Object.keys(window.croppedEditImages).forEach(index => {
+                    const blob = window.croppedEditImages[index];
                     if (!blob) return;
-                    const file = new File([blob], `image_${index}.png`, {
+                    const file = new File([blob], `${index}.png`, {
                         type: "image/png"
                     });
                     //Hình thumbnail
                     if (index == "1") {
                         thumbnail.items.add(file);
-                        console.log('Đã thêm hình ảnh thumbnail');
                     } else {
                         //Hình ảnh con
                         images.items.add(file);
-                        console.log("Đã thêm hình con!");
                     }
                 });
-                this.$refs.thumbnailInput = thumbnail.files;
-                this.$refs.imagesInput = images.files;
+                this.$refs.thumbnailInput.files = thumbnail.files;
+                this.$refs.imagesInput.files = images.files;
             },
 
             handleImageChange(event) {
@@ -676,45 +687,6 @@
                 }
             },
 
-            generateVariants() {
-                const inputColor = this.$refs.colorSelect;
-                const inputSize = this.$refs.sizeSelect;
-                const msg = this.$refs.generateError;
-
-                if (!inputColor.value || !inputSize.value) {
-                    msg.innerHTML = "Vui lòng chọn ít nhất 1 Kích cỡ và 1 Màu sắc";
-                    return;
-                }
-
-                if (this.variants.length > 0 && !confirm("Dữ liệu bảng hiện tại sẽ bị thay thế. Bạn có chắc chắn?")) {
-                    return;
-                }
-                const priceInput = Number(this.$refs.inputPrice.value) || 0;
-                const salePriceInput = Number(this.$refs.inputSalePrice.value) || 0;
-
-                // Logic tạo các biến thể
-                let results = []
-                this.colors.forEach(c => {
-                    this.sizes.forEach(s => {
-                        results.push({
-                            id: Date.now() + Math.random(),
-                            // Lưu object để hiển thị tên
-                            size: s,
-
-                            //Lưu id để xử lý
-                            color_id: c,
-                            size_id: s.id,
-
-                            // Các trường nhập liệu
-                            price: priceInput,
-                            sale_price: salePriceInput > priceInput ? priceInput : salePriceInput,
-                            quantity: Number(this.$refs.inputStock.value) || 0,
-                            status: true,
-                        });
-                    });
-                });
-                this.variants = results;
-            },
             removeRow(index) {
                 if (confirm('Xóa biến thể này?')) {
                     this.variants.splice(index, 1);

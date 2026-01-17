@@ -28,7 +28,7 @@ class ProductController extends Controller
         $viewData['title'] = 'Admin - Sản phẩm';
         $viewData['subtitle'] = 'Quản lý sản phẩm';
 
-        $products = Product::with(['variants','tags','images'])->Paginate(5)->withQueryString();
+        $products = Product::with(['variants', 'tags', 'images'])->Paginate(5)->withQueryString();
 
         $brands = Brand::where('status', true)->get();
 
@@ -112,26 +112,33 @@ class ProductController extends Controller
             $thumbnail = $baseName . "." . $request->file('cropped-thumbnail')->extension();
             $thumbPath = $this->uploadImage($thumbnail, $request->file('cropped-thumbnail'), 'product/thumbnail');
             $product->update(['thumbnail' => $thumbPath]);
-            $imgMsg = $imgMsg . "Cập nhật ảnh chính";
+            $imgMsg = $imgMsg . " Cập nhật ảnh chính";
         } else {
-            $imgMsg = $imgMsg . " Ảnh chính rỗng";
+            $imgMsg = $imgMsg . ", Ảnh chính giữ nguyên";
         }
         if ($request->hasFile('cropped-images')) {
-            foreach ($request->file('cropped-images') as $index => $file) {
-                $imagesName = $baseName . "_" . ($index + 1) . "." . $file->extension();
+            foreach ($request->file('cropped-images') as $file) {
+                $imgNum = $file->getClientOriginalName();
+                $oldImage = $product->images()->where('url', 'like', "%_{$imgNum}")->value('url');
+                $imagesName = $baseName . "_" . $imgNum;
+                $this->deleteImage($oldImage);
                 $imagePath = $this->uploadImage($imagesName, $file, 'product/image');
-                $product->images()->create(['url' => $imagePath]);
+                if ($oldImage) {
+                    $product->images()->where('url', $oldImage)->update(['url' => $imagePath]);
+                } else {
+                    $product->images()->create(['url' => $imagePath]);
+                }
             }
             $imgMsg = $imgMsg . ", Ảnh phụ: " . count($request->file('cropped-images')) . " hình";
         } else {
-            $imgMsg = $imgMsg . ", ảnh phụ rỗng";
+            $imgMsg = $imgMsg . ", ảnh phụ giữ nguyên";
         }
         foreach ($request->variants as $variant) {
-            $cleanDate = array_diff_key($variant, array_flip(['id','size_id','color_id','product_id','created_at', 'updated_at', 'deleted_at']));
-            $product->variants()->where('id',$variant['id'])->update($cleanDate);
+            $cleanDate = array_diff_key($variant, array_flip(['id', 'size_id', 'color_id', 'product_id', 'created_at', 'updated_at', 'deleted_at']));
+            $product->variants()->where('id', $variant['id'])->update($cleanDate);
         }
         $product->tags()->sync($request->tags);
-        return redirect()->back()->with('success', 'Đã sửa sản phẩm "' . $product->name . '" cùng các biến thể!' . $imgMsg);
+        return redirect()->back()->with('success', "Đã sửa sản phẩm: '{$product->name}'$imgMsg");
     }
 
     /**

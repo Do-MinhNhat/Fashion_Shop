@@ -21,6 +21,6 @@ class product-filter extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.product-filter');
+        return view('components.admin.product-filter');
     }
 }

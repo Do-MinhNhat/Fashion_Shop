@@ -128,9 +128,9 @@
             </button>
         </div>
     </div>
-    <x-product-add :categories="$categories" :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
-    <x-product-edit :categories="$categories" :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
-    <x-product-filter :categories="$categories" :brands="$brands" :tags="$tags" />
+    <x-admin.product-add :categories="$categories" :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
+    <x-admin.product-edit :categories="$categories" :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
+    <x-admin.product-filter :categories="$categories" :brands="$brands" :tags="$tags" />
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-100 border-b border-gray-200">

@@ -21,6 +21,6 @@ class product-edit extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.product-edit');
+        return view('components.admin.product-edit');
     }
 }

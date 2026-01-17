@@ -21,6 +21,6 @@ class product-add extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.product-add');
+        return view('components.admin.product-add');
     }
 }
