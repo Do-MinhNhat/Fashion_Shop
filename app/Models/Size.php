@@ -9,4 +9,9 @@ class Size extends Model
 {
     /** @use HasFactory<\Database\Factories\SizeFactory> */
     use HasFactory;
+
+    public function variants()
+    {
+        return $this->hasMany(Variant::class);
+    }
 }

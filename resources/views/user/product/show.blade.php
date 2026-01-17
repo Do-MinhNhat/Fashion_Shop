@@ -1,9 +1,11 @@
 @extends('user.layouts.app')
 @section('title', $product->name)
-
 @section('content')
+
 <div class="pt-20 lg:pt-28 max-w-7xl mx-auto px-6">
+    {{-- Chi tiết sản phẩm --}}
     <div class="flex flex-col lg:flex-row lg:min-h-screen">
+        {{-- Ảnh --}}
         <div class="w-full lg:w-3/5 relative bg-gray-50">
             {{-- Ảnh chính --}}
             <img id="main-image"
@@ -18,54 +20,45 @@
                 <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
                     {{-- Thêm ảnh thumbnail chính vào list luôn --}}
                     <img onclick="changeImage(this)"
-                         src="{{ asset('storage/' . $product->thumbnail) }}"
-                         class="w-20 h-24 object-cover border-2 border-black cursor-pointer bg-white"
-                         alt="Thumbnail">
+                        src="{{ asset('storage/' . $product->thumbnail) }}"
+                        class="gallery-thumb w-20 h-24 object-cover border-2 border-black cursor-pointer bg-white"
+                    >
 
                     @foreach($product->gallery as $img)
                         <img onclick="changeImage(this)"
-                             src="{{ asset('storage/' . $img) }}"
-                             class="w-20 h-24 object-cover border-2 border-white/50 hover:border-black cursor-pointer transition bg-white"
-                             alt="Thumbnail">
+                            src="{{ asset('storage/' . $img) }}"
+                            class="gallery-thumb w-20 h-24 object-cover border-2 border-white/50 hover:border-black cursor-pointer bg-white"
+                        >
                     @endforeach
                 </div>
             </div>
             @endif
         </div>
-
+        
+        {{-- Thông tin sản phẩm --}}
         <div class="w-full lg:w-2/5 bg-white px-6 py-8 lg:px-12 lg:py-12">
             <div class="max-w-md mx-auto sticky top-24">
                 <span class="text-sm text-gray-400 tracking-widest uppercase block mb-2">
                     {{ $product->category->name ?? 'Collection' }}
                 </span>
-
                 <h1 class="text-3xl md:text-4xl font-serif mb-4 text-gray-900">
                     {{ $product->name }}
                 </h1>
-
                 <div class="flex items-end gap-4 mb-6">
                     <p class="text-2xl font-light text-black">
                         {{ number_format($product->price) }} ₫
                     </p>
                     @if($product->variants->sum('quantity') > 0)
-                        <span class="text-sm text-green-600 mb-1">
-                            (Còn hàng)
-                        </span>
+                        <span id="stock-status-text" class="text-sm text-green-600 mb-1">(Còn hàng)</span>
                     @else
-                        <span class="text-sm text-red-600 mb-1">
-                            (Hết hàng)
-                        </span>
+                        <span id="stock-status-text" class="text-sm text-red-600 mb-1">(Hết hàng)</span>
                     @endif
                 </div>
-
                 <p class="text-gray-500 text-sm leading-relaxed mb-8 border-b border-gray-100 pb-8">
                     {{ $product->description }}
                 </p>
 
                 <form action="{{ route('user.cart.store') }}" method="POST" id="add-to-cart-form">
-                    @csrf
-                    <input type="hidden" name="variant_id" id="selected-variant-id" required>
-
                     @php
                         $defaultVariant = $product->variants->where('quantity', '>', 0)->first() ?? $product->variants->first();
                         $isWishlisted = false;
@@ -73,9 +66,11 @@
                             $isWishlisted = auth()->user()->wishlists()->where('product_id', $product->id)->exists();
                         }
                     @endphp
-
+                    @csrf
+                    <input type="hidden" name="variant_id" id="selected-variant-id" required>
+                    
                     {{-- PHẦN MÀU SẮC --}}
-                    @if($colors->isNotEmpty())
+                    @if($colors->isNotEmpty()) 
                         <div class="mb-6">
                             <label class="font-bold text-xs uppercase mb-3 block">
                                 Màu sắc: <span id="selected-color-text" class="font-normal text-gray-500">Chọn màu</span>
@@ -85,19 +80,14 @@
                                     <label class="cursor-pointer select-none group">
                                         <input type="radio" name="color_opt" value="{{ $color->id }}" 
                                             data-name="{{ $color->name }}" 
-                                            class="peer sr-only" 
-                                            onchange="updateVariantState()"
+                                            class="peer sr-only"
                                             {{ ($defaultVariant && $defaultVariant->color_id == $color->id) ? 'checked' : '' }} 
                                         >
                                         
-                                        <div class="
-                                            w-9 h-9 rounded-full 
-                                            flex items-center justify-center 
-                                            border border-gray-200
-                                            transition-all duration-200
-                                            hover:scale-110
-                                            peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-black peer-checked:border-transparent
-                                        ">
+                                        <div class="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center
+                                            transition-all duration-200 hover:scale-110
+                                            peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-black peer-checked:border-transparent"
+                                            style="background: {{ $color->name }};">
                                         </div>
                                     </label>
                                 @endforeach
@@ -120,7 +110,6 @@
                                             onchange="updateVariantState()"
                                             {{ ($defaultVariant && $defaultVariant->size_id == $size->id) ? 'checked' : '' }}
                                         >
-                                        
                                         <div class="min-w-[40px] px-3 h-10 flex items-center justify-center border border-gray-200 rounded-sm text-sm font-bold bg-white text-gray-900
                                                     peer-checked:bg-black peer-checked:text-white peer-checked:border-black
                                                     hover:border-black transition-all">
@@ -161,7 +150,6 @@
                                 <i class="{{ $isWishlisted ? 'fas' : 'far' }} fa-heart text-lg transition-transform group-active:scale-75"></i>
                             </button>
                         </form>
-                        
                     </div>
                     
                     <p id="variant-error" class="text-red-500 text-xs mt-2 hidden"></p>
@@ -181,11 +169,84 @@
         </div>
     </div>
 
-    {{-- REVIEW SECTION --}}
-    <div class="py-16 border-t border-gray-100 mt-16">
-        <h3 class="font-serif text-2xl mb-8">Đánh giá khách hàng</h3>
-        <div class="bg-gray-50 p-8 text-center text-gray-500">
-            Chức năng đánh giá đang được cập nhật...
+    {{-- Gợi ý sản phẩm liên quan --}}
+    <div class="py-16 border-t border-gray-100">
+        <h3 class="font-serif text-2xl mb-8 text-center">Các sản phẩm liên quan </h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+            @foreach($relatedProducts as $relatedProduct)
+                @include('components.products.product-card', ['relatedProduct' => $product])
+            @endforeach
+        </div>
+    </div>
+
+    {{-- Đánh giá sản phẩm --}}
+    <div class="py-16 border-t border-gray-100 mt-16" id="reviews-section">
+        <h3 class="font-serif text-2xl mb-10">Đánh giá khách hàng</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            {{-- THỐNG KÊ RATING --}}
+            <div class="lg:col-span-4 space-y-8">
+                <div class="bg-gray-50 p-8 text-center">
+                    <div class="text-5xl font-serif font-bold text-gray-900 mb-2">{{ $product->rating }}</div>
+                    <div class="flex justify-center gap-1 text-yellow-500 text-sm mb-2">
+                        @for ($i = 1; $i <= 5; $i++)
+                            @if ($i <= floor($averageRating))
+                                <i class="fas fa-star"></i>
+                            @elseif ($i == ceil($averageRating) && $averageRating - floor($averageRating) >= 0.5)
+                                <i class="fas fa-star-half-alt"></i>
+                            @else
+                                <i class="far fa-star text-gray-300"></i>
+                            @endif
+                        @endfor
+                    </div>
+                    <p class="text-sm text-gray-500">Dựa trên {{ $totalRating }} đánh giá</p>
+                </div>
+
+                {{-- Progress Bars --}}
+                <div class="space-y-3">
+                    @foreach($ratingDist as $star => $count)
+                        @php
+                            $percent = $totalRating > 0 ? ($count / $totalRating) * 100 : 0;
+                        @endphp
+                        <div class="flex items-center gap-3 text-sm">
+                            <span class="w-3 font-bold">{{ $star }}</span>
+                            <i class="fas fa-star text-xs text-gray-300"></i>
+                            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                {{-- Chiều rộng Dynamic --}}
+                                <div class="h-full bg-gray-900" style="width: {{ $percent }}%"></div>
+                            </div>
+                            <span class="w-8 text-right text-gray-400 text-xs">
+                                {{ $count }}
+                            </span>
+                        </div>
+                    @endforeach
+                </div>
+                
+                <button x-data @click="$dispatch('open-review-modal')" 
+                        class="w-full border border-gray-900 text-gray-900 py-3 text-sm font-bold uppercase tracking-wider hover:bg-black hover:text-white transition">
+                    Viết đánh giá
+                </button>
+                {{-- Popup Review Modal --}}
+                <x-review-modal :product="$product" />
+            </div>
+
+            {{-- DANH SÁCH REVIEW --}}
+            <div class="lg:col-span-8">
+                <div class="space-y-8 pt-4">
+                    @forelse($reviews as $review)
+                        @include('components.cardReview.review-card', ['review' => $review])
+                    @empty
+                        <div class="text-center py-10">
+                            <p class="text-gray-500">Chưa có đánh giá nào cho sản phẩm này.</p>
+                            <p class="text-sm text-gray-400 mt-2">Hãy là người đầu tiên chia sẻ cảm nhận!</p>
+                        </div>
+                    @endforelse
+
+                    {{-- Pagination (Review) --}}
+                    <div class="pt-4 flex justify-center">
+                        {{ $reviews->appends(request()->query())->links() }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -198,48 +259,44 @@
     // 1. Logic đổi ảnh
     function changeImage(element) {
         document.getElementById('main-image').src = element.src;
-        document.querySelectorAll('.gallery-thumb').forEach(el => el.classList.remove('border-black'));
+        document.querySelectorAll('.gallery-thumb').forEach(el => {
+            el.classList.remove('border-black');
+            el.classList.add('border-white/50');
+        });
+        element.classList.remove('border-white/50');
+        element.classList.add('border-black');
     }
 
     // 2. Logic Update Variant ID
     function updateVariantState() {
-        // 1. Lấy ID từ input đang được chọn
         const colorInput = document.querySelector('input[name="color_opt"]:checked');
         const sizeInput = document.querySelector('input[name="size_opt"]:checked');
 
-        const selectedColorId = colorInput ? parseInt(colorInput.value) : null;
-        const selectedSizeId = sizeInput ? parseInt(sizeInput.value) : null;
-        const stockStatusText = document.getElementById('stock-status-text'); // Bạn cần đặt ID cho thẻ span hiển thị chữ (Còn hàng)
-    
+        const selectedColorId = colorInput ? Number(colorInput.value) : null;
+        const selectedSizeId = sizeInput ? Number(sizeInput.value) : null;
+
+        const hiddenInput = document.getElementById('selected-variant-id');
+        hiddenInput.value = ""; 
+
+        const stockStatusText = document.getElementById('stock-status-text');
+
+        // Update text color & size label
+        if(colorInput) document.getElementById('selected-color-text').innerText = colorInput.dataset.name;
+        if(sizeInput) document.getElementById('selected-size-text').innerText = sizeInput.dataset.name;
+
         if (selectedColorId && selectedSizeId) {
             const match = variants.find(v => v.color_id === selectedColorId && v.size_id === selectedSizeId);
-            
+
             if (match) {
                 if (match.quantity > 0) {
                     stockStatusText.innerText = '(Còn hàng)';
                     stockStatusText.className = 'text-sm text-green-600 mb-1';
+                    hiddenInput.value = match.id;
                 } else {
                     stockStatusText.innerText = '(Hết hàng)';
                     stockStatusText.className = 'text-sm text-red-600 mb-1';
                 }
             }
-        }
-        
-        // 2. Cập nhật Text hiển thị (Dùng data-name để lấy tên)
-        if(colorInput) document.getElementById('selected-color-text').innerText = colorInput.dataset.name;
-        if(sizeInput) document.getElementById('selected-size-text').innerText = sizeInput.dataset.name;
-
-        // 3. Tìm Variant trong list JSON
-        const hiddenInput = document.getElementById('selected-variant-id');
-        hiddenInput.value = ''; 
-
-        if (selectedColorId && selectedSizeId) {
-            // SO SÁNH color_id và size_id THAY VÌ color/size string
-            const match = variants.find(v => v.color_id === selectedColorId && v.size_id === selectedSizeId);
-
-            if (match && match.quantity > 0) {
-                hiddenInput.value = match.id;
-            } 
         }
     }
     
@@ -257,21 +314,6 @@
         let input = this.nextElementSibling;
         if (parseInt(input.value) > 1) {
             input.value = parseInt(input.value) - 1;
-        }
-    });
-
-    // 4. CHẶN SUBMIT
-    document.getElementById('add-to-cart-form').addEventListener('submit', function(e) {
-        const variantId = document.getElementById('selected-variant-id').value;
-        
-        if (!variantId) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'warning',
-                title: 'Sản phẩm tạm hết hàng',
-                text: 'Phân loại bạn chọn hiện không còn hàng hoặc chưa được chọn.',
-                confirmButtonColor: '#000',
-            });
         }
     });
 

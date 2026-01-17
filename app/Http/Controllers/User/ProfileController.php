@@ -14,9 +14,8 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $viewData['title'] = 'Hồ sơ cá nhân - Fasion Shop';
         $user = Auth::user();
-        return view('user.profile.index', compact('user', 'viewData'));
+        return view('user.profile.index', compact('user'));
     }
 
     /**

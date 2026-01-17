@@ -1,6 +1,5 @@
 @extends('user.layouts.app')
-@section('title', $viewData['title'])
-
+@section('title', 'Tài khoản của tôi')
 @section('content')
 
 <div class="max-w-6xl mx-auto pt-20 pb-10 px-4 flex flex-col md:flex-row gap-8 bg-gray-50  text-gray-800">
