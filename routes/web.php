@@ -8,9 +8,9 @@ use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
+use App\Http\Controllers\User\WishlistController;
 use Illuminate\Support\Facades\Route;
 //User Checkout Route
 //-----------------------------
@@ -42,6 +42,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/gio-hang', [CartDetailController::class, 'store'])->name('user.cart.store');
     Route::delete('/gio-hang/xoa/{id}', [CartDetailController::class, 'destroy'])->name('user.cart.destroy');
     Route::patch('/gio-hang/cap-nhat/{id}', [CartDetailController::class, 'update'])->name('user.cart.update');
+    // Wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('user.profile.wishlist.index');
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('user.wishlist.toggle');
+    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'destroy'])->name('user.wishlist.destroy');
+    Route::delete('/wishlist/clear', [WishlistController::class, 'clear'])->name('user.wishlist.clear');
     // Checkout
     Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
 

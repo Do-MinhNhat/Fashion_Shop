@@ -68,66 +68,68 @@
 
                     @php
                         $defaultVariant = $product->variants->where('quantity', '>', 0)->first() ?? $product->variants->first();
+                        $isWishlisted = false;
+                        if(auth()->check()) {
+                            $isWishlisted = auth()->user()->wishlists()->where('product_id', $product->id)->exists();
+                        }
                     @endphp
 
                     {{-- PHẦN MÀU SẮC --}}
                     @if($colors->isNotEmpty())
-                    <div class="mb-6">
-                        <label class="font-bold text-xs uppercase mb-3 block">
-                            Màu sắc: <span id="selected-color-text" class="font-normal text-gray-500">Chọn màu</span>
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            @foreach($colors as $color)
-                                <label class="cursor-pointer select-none group">
-                                    <input type="radio" name="color_opt" value="{{ $color->id }}" 
-                                        data-name="{{ $color->name }}" 
-                                        class="peer sr-only" 
-                                        onchange="updateVariantState()"
-                                        {{ ($defaultVariant && $defaultVariant->color_id == $color->id) ? 'checked' : '' }} 
-                                    >
-                                    
-                                    <div class="
-                                        w-9 h-9 rounded-full 
-                                        flex items-center justify-center 
-                                        border border-gray-200
-                                        transition-all duration-200
-                                        hover:scale-110
-                                        peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-black peer-checked:border-transparent
-                                    ">
-                                    </div>
-                                </label>
-                            @endforeach
+                        <div class="mb-6">
+                            <label class="font-bold text-xs uppercase mb-3 block">
+                                Màu sắc: <span id="selected-color-text" class="font-normal text-gray-500">Chọn màu</span>
+                            </label>
+                            <div class="flex flex-wrap gap-3">
+                                @foreach($colors as $color)
+                                    <label class="cursor-pointer select-none group">
+                                        <input type="radio" name="color_opt" value="{{ $color->id }}" 
+                                            data-name="{{ $color->name }}" 
+                                            class="peer sr-only" 
+                                            onchange="updateVariantState()"
+                                            {{ ($defaultVariant && $defaultVariant->color_id == $color->id) ? 'checked' : '' }} 
+                                        >
+                                        
+                                        <div class="
+                                            w-9 h-9 rounded-full 
+                                            flex items-center justify-center 
+                                            border border-gray-200
+                                            transition-all duration-200
+                                            hover:scale-110
+                                            peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-black peer-checked:border-transparent
+                                        ">
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
                     @endif
 
                     {{-- PHẦN KÍCH CỠ --}}
                     @if($sizes->isNotEmpty())
-                    <div class="mb-8">
-                        <label class="font-bold text-xs uppercase mb-3 block">
-                            Kích cỡ: <span id="selected-size-text" class="font-normal text-gray-500">Chọn size</span>
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            @foreach($sizes as $size)
-                                <label class="cursor-pointer select-none group">
-                                    {{-- VALUE LÀ ID --}}
-                                    <input type="radio" name="size_opt" value="{{ $size->id }}" 
-                                        data-name="{{ $size->name }}"
-                                        class="peer sr-only" 
-                                        onchange="updateVariantState()"
-                                        {{ ($defaultVariant && $defaultVariant->size_id == $size->id) ? 'checked' : '' }}
-                                    >
-                                    
-                                    {{-- HIỂN THỊ LÀ TÊN --}}
-                                    <div class="min-w-[40px] px-3 h-10 flex items-center justify-center border border-gray-200 rounded-sm text-sm font-bold bg-white text-gray-900
-                                                peer-checked:bg-black peer-checked:text-white peer-checked:border-black
-                                                hover:border-black transition-all">
-                                        {{ $size->name }}
-                                    </div>
-                                </label>
-                            @endforeach
+                        <div class="mb-8">
+                            <label class="font-bold text-xs uppercase mb-3 block">
+                                Kích cỡ: <span id="selected-size-text" class="font-normal text-gray-500">Chọn size</span>
+                            </label>
+                            <div class="flex flex-wrap gap-3">
+                                @foreach($sizes as $size)
+                                    <label class="cursor-pointer select-none group">
+                                        <input type="radio" name="size_opt" value="{{ $size->id }}" 
+                                            data-name="{{ $size->name }}"
+                                            class="peer sr-only" 
+                                            onchange="updateVariantState()"
+                                            {{ ($defaultVariant && $defaultVariant->size_id == $size->id) ? 'checked' : '' }}
+                                        >
+                                        
+                                        <div class="min-w-[40px] px-3 h-10 flex items-center justify-center border border-gray-200 rounded-sm text-sm font-bold bg-white text-gray-900
+                                                    peer-checked:bg-black peer-checked:text-white peer-checked:border-black
+                                                    hover:border-black transition-all">
+                                            {{ $size->name }}
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
                     @endif
 
                     <div class="flex gap-4">
@@ -146,9 +148,20 @@
                         </button>
 
                         {{-- Nút Yêu thích --}}
-                        <button type="button" class="w-12 h-12 border border-gray-300 flex items-center justify-center text-gray-600 hover:text-red-500 hover:border-red-500 transition">
-                            <i class="far fa-heart text-lg"></i>
-                        </button>
+                        <form action="{{ route('user.wishlist.toggle') }}" method="POST">
+                            @csrf
+                            
+                            <button type="button" 
+                                id="btn-wishlist"
+                                data-product-id="{{ $product->id }}"
+                                data-url="{{ route('user.wishlist.toggle') }}"
+                                class="w-12 h-12 border flex items-center justify-center transition group
+                                {{ $isWishlisted ? 'border-red-500 text-red-700' : 'border-gray-300 text-gray-600 hover:text-red-500 hover:border-red-500' }}"
+                            >
+                                <i class="{{ $isWishlisted ? 'fas' : 'far' }} fa-heart text-lg transition-transform group-active:scale-75"></i>
+                            </button>
+                        </form>
+                        
                     </div>
                     
                     <p id="variant-error" class="text-red-500 text-xs mt-2 hidden"></p>
@@ -196,6 +209,21 @@
 
         const selectedColorId = colorInput ? parseInt(colorInput.value) : null;
         const selectedSizeId = sizeInput ? parseInt(sizeInput.value) : null;
+        const stockStatusText = document.getElementById('stock-status-text'); // Bạn cần đặt ID cho thẻ span hiển thị chữ (Còn hàng)
+    
+        if (selectedColorId && selectedSizeId) {
+            const match = variants.find(v => v.color_id === selectedColorId && v.size_id === selectedSizeId);
+            
+            if (match) {
+                if (match.quantity > 0) {
+                    stockStatusText.innerText = '(Còn hàng)';
+                    stockStatusText.className = 'text-sm text-green-600 mb-1';
+                } else {
+                    stockStatusText.innerText = '(Hết hàng)';
+                    stockStatusText.className = 'text-sm text-red-600 mb-1';
+                }
+            }
+        }
         
         // 2. Cập nhật Text hiển thị (Dùng data-name để lấy tên)
         if(colorInput) document.getElementById('selected-color-text').innerText = colorInput.dataset.name;
@@ -232,7 +260,7 @@
         }
     });
 
-    // 4. CHẶN SUBMIT: Quan trọng (Thay thế cho việc disable nút)
+    // 4. CHẶN SUBMIT
     document.getElementById('add-to-cart-form').addEventListener('submit', function(e) {
         const variantId = document.getElementById('selected-variant-id').value;
         
@@ -257,5 +285,82 @@
             timer: 1500
         });
     @endif
+
+    // 6. XỬ LÝ WISHLIST
+    const btnWishlist = document.getElementById('btn-wishlist');
+    
+    if(btnWishlist) {
+        btnWishlist.addEventListener('click', function() {
+            @guest
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Yêu cầu đăng nhập',
+                    text: 'Bạn cần đăng nhập để lưu sản phẩm yêu thích',
+                    confirmButtonText: 'Đăng nhập ngay',
+                    showCancelButton: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('login') }}";
+                    }
+                });
+                return;
+            @endguest
+
+            const btn = this;
+            const icon = btn.querySelector('i');
+            const url = btn.dataset.url;
+            const productId = btn.dataset.productId;
+            
+            const variantId = document.getElementById('selected-variant-id').value;
+
+            const isActive = btn.classList.contains('text-red-500');
+            
+            if (isActive) {
+                // Đang like -> Bỏ like (Về màu xám, tim rỗng)
+                btn.classList.remove('border-red-500', 'text-red-500');
+                btn.classList.add('border-gray-300', 'text-gray-600');
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+            } else {
+                // Chưa like -> Like (Lên màu đỏ, tim đặc)
+                btn.classList.remove('border-gray-300', 'text-gray-600');
+                btn.classList.add('border-red-500', 'text-red-500');
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+            }
+
+            // --- GỬI REQUEST ---
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    variant_id: variantId || null 
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+
+                Toast.fire({
+                    icon: 'success',    
+                    title: data.message
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Lỗi', 'Không thể cập nhật danh sách yêu thích', 'error');
+            });
+        });
+    }
 </script>
 @endpush
