@@ -96,9 +96,16 @@
         </div>
     </div>
     <div class="flex justify-center">
+        @if (session('error'))
+        <div class="flex justify-center m-5">
+            <div style="color: #721c24; padding: 10px; border: 1px solid #721c24; background: #f8d7da;">
+                {{ session('error') }}
+            </div>
+        </div>
+        @endif
         @if($errors->any())
         <div class="mb-8" style="color: #721c24; padding: 10px; border: 1px solid #721c24; background: #f8d7da;">
-            Có lỗi xảy ra khi thêm sản phẩm, vui lòng kiểm tra lại!
+            Có lỗi, vui lòng kiểm tra lại!
         </div>
         @endif
         @if (session('success'))
@@ -131,6 +138,7 @@
     <x-admin.product-add :categories="$categories" :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
     <x-admin.product-edit :categories="$categories" :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
     <x-admin.product-filter :categories="$categories" :brands="$brands" :tags="$tags" />
+    <x-admin.product-variant-add :categories="$categories" :brands="$brands" :colors="$colors" :sizes="$sizes" />
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-100 border-b border-gray-200">
@@ -188,6 +196,7 @@
                         <span class="text-sm text-gray-600">{{ $product->variants->sum('quantity') }}</span>
                     </td>
                     <td class="p-4 text-right flex flex-row justify-center" @click.stop>
+                        <button @click="$dispatch('open-variant-add-modal', @js($product))" class=" text-gray-400 hover:text-black p-2 transition"><i class="fas fa-plus fa-lg"></i></button>
                         <button @click="$dispatch('open-edit-modal', @js($product))" class=" text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit fa-lg"></i></button>
                         <form action="{{ route('admin.product.delete', $product) }}" method="POST">
                             @csrf
@@ -241,7 +250,7 @@
                                                 @endif
                                             </td>
                                             <td class="p-4 flex justify-end">
-                                                <form method="POST">
+                                                <form action="{{ route('admin.variant.delete', $variant) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-gray-400 hover:text-red-500 p-2 transition" @click="if(!confirm('Bạn có chắc chắn muốn xóa?')) $event.preventDefault()">

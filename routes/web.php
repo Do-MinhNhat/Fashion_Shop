@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\VariantController as AdminVariantController;
 use Illuminate\Support\Facades\Route;
 //User Checkout Route
 Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
@@ -54,6 +55,10 @@ Route::middleware('auth')->group(function () {
             Route::put('san-pham/{product}/khoi-phuc', [AdminProductController::class, 'restore'])->name('admin.product.restore')->withTrashed();
             Route::delete('san-pham/{product}/force', [AdminProductController::class, 'forceDelete'])->name('admin.product.forceDelete')->withTrashed();
             Route::put('san-pham/{product}/cap-nhat', [AdminProductController::class, 'update'])->name('admin.product.update');
+
+            //Variant Route
+            Route::post('/san-pham/them-bien-the', [AdminVariantController::class, 'store'])->name('admin.variant.store');
+            Route::delete('/san-pham/{variant}/xoa', [AdminVariantController::class, 'delete'])->name('admin.variant.delete');
 
             //Category Route
             Route::post('/danh-muc/them', [AdminCategoryController::class, 'store'])->name('admin.category.store');

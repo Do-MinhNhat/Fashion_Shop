@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Variant extends Model
 {
     /** @use HasFactory<\Database\Factories\VariantFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = ['product_id', 'size_id', 'color_id', 'price', 'sale_price', 'quantity', 'status'];
 

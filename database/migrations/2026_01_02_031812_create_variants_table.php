@@ -24,7 +24,6 @@ return new class extends Migration
             $table->integer('quantity')->default(0);
             $table->boolean('status')->default(1);
             $table->timestamps();
-            $table->softDeletes();
             $table->unique(['product_id', 'color_id', 'size_id']);
         });
     }

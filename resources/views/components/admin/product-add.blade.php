@@ -762,9 +762,9 @@
 
                 if (!category.value) {
                     e.preventDefault();
-                    const brandMsg = this.$refs.categoryError;
-                    brandMsg.innerHTML = "Vui lòng chọn danh mục!";
-                    brandMsg.scrollIntoView({
+                    const categoryMsg = this.$refs.categoryError;
+                    categoryMsg.innerHTML = "Vui lòng chọn danh mục!";
+                    categoryMsg.scrollIntoView({
                         behavior: 'smooth',
                         block: 'center'
                     })

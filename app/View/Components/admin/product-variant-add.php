@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\admin;
 
 use Closure;
 use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
 
-class product-filter extends Component
+class product-variant-add extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class product-filter extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.admin.product-filter');
+        return view('components.admin.product-variant-add');
     }
 }
