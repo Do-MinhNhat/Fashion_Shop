@@ -1,5 +1,5 @@
 @props(['categories', 'brands', 'tags', 'colors', 'sizes'])
-<div x-data="{ open: {{ $errors->edit->any()? 'true' : 'false' }}, product: {}}"
+<div x-data="{ open: {{ $errors->edit->any()? 'true' : 'false' }}, product: {{ $errors->edit->any()? json_encode(old()) : json_encode((object)[]) }} }"
     x-show="open"
     x-on:open-edit-modal.window="open = true; product = $event.detail"
     style="display: none;"
@@ -47,7 +47,7 @@
                                 <!-- Tên -->
                                 <div class=" grid grid-cols-1 md:grid-cols-1">
                                     <div>
-                                        @foreach ($errors->all() as $error)
+                                        @foreach ($errors->edit->all() as $error)
                                         <li class="text-red-700 text-sm flex items-start">
                                             <i class="fas fa-caret-right mt-1 mr-2 text-red-400"></i>
                                             {{ $error }}
@@ -55,15 +55,15 @@
                                         @endforeach
                                         <label class="text-xs font-semibold uppercase text-gray-500">Tên sản phẩm</label>
                                         <span x-ref="nameError" class="text-xs text-red-500 italic">*</span>
-                                        <input x-model="product.name" value="{{ old('name') }}" x-ref="nameInput" type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255">
+                                        <input x-model="product.name" x-ref="nameInput" type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255">
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <!-- Danh mục -->
                                     <div>
                                         <label class="text-xs font-semibold uppercase text-gray-500">Danh mục</label>
-                                        <span x-ref="categoryError" class="text-xs text-red-500 italic">*</span>
-                                        <select x-ref="categorySelect" name="category_id" class="cursor-pointer">
+                                        <span x-ref="categoryError" class="text-xs text-red-500 italic">Kích cỡ dựa trên danh mục!</span>
+                                        <select x-ref="categorySelect" name="category_id" class="cursor-pointer" disabled>
                                             <option value="" disabled selected hidden>Chọn danh mục...</option>
                                             @foreach ($categories as $category)
                                             <option value="{{$category->id}}" @selected(old('category_id')==$category->id)>{{$category->name}}</option>
@@ -102,7 +102,7 @@
                                     </div>
                                     <div class="text-center mt-5 gap-15">
                                         <button @click="isExpanded = !isExpanded" type="button" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Ẩn/Hiện danh sách</button>
-                                        <button @click="handleGenerateClick()" type="button" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Tạo biến thể</button>
+                                        <button @click="handleGenerateClick()" type="button" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Sửa nhanh</button>
                                     </div>
                                     <span x-ref="generateError" class="mx-auto italic text-red-500 text-xs mt-2"></span>
                                 </div>
@@ -245,7 +245,7 @@
                                     <select x-ref="tagSelect" name="tags[]" multiple>
                                         <option value="" disabled selected hidden>Chọn nhiều nhãn...</option>
                                         @foreach ($tags as $tag)
-                                        <option value="{{$tag->id}}" @selected(old('tag_id')==$tag->id)>{{$tag->name}}</option>
+                                        <option value="{{$tag->id}}" @selected(in_array($tag->id, old('tags', [])))>{{$tag->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -253,7 +253,7 @@
                                 <!-- Mô tả -->
                                 <div>
                                     <label class="text-xs font-semibold uppercase text-gray-500">Mô tả</label>
-                                    <textarea x-model="product.description" rows="3" class="w-full p-2.5 border rounded text-sm" placeholder="Mô tả ngắn sản phẩm..."></textarea>
+                                    <textarea x-model="product.description" name="description" rows="3" class="w-full p-2.5 border rounded text-sm" placeholder="Mô tả ngắn sản phẩm..."></textarea>
                                 </div>
 
                                 <!-- Footer -->
@@ -285,7 +285,6 @@
                                     <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giá giảm</th>
                                     <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tồn kho</th>
                                     <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Hoạt động</th>
-                                    <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Xóa</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -300,7 +299,7 @@
                                             <span x-text="getSizeName(variant.size_id)"></span>
                                         </td>
                                         <td class="p-2">
-                                            <input type="number" x-model.number="variant.price" min="0"
+                                            <input type="number" x-model.number="variant.price" min="0" @blur="if(variant.sale_price > variant.price) variant.price = variant.sale_price;"
                                                 class=" w-full border-0 focus:ring-2 focus:ring-blue-400 rounded bg-transparent hover:bg-white p-1 uppercase">
                                         </td>
                                         <td class="p-2">
@@ -334,6 +333,7 @@
             sizeName: JSON.parse('@json($sizes -> pluck("name", "id"))'),
 
             init() {
+                console.table(this.product);
                 const self = this;
                 this.tsCategory = new TomSelect(this.$refs.categorySelect, {
                     create: async function(input, callback) {
@@ -679,19 +679,15 @@
 
             // Hàm này phải nằm TRONG object trả về
             handleGenerateClick() {
-                this.generateVariants();
-                console.log("Dữ liệu biến thể:", this.variants)
-                console.table(this.variants)
-                if (this.variants.length > 0) {
-                    this.isExpanded = true;
-                }
+                this.variants.forEach(variant => {
+                    let sale_price = this.$refs.inputSalePrice.value;
+                    if (sale_price) variant.sale_price = Number(sale_price);
+                    let price = this.$refs.inputPrice.value;
+                    if (price) variant.price = Number(price);
+                    let quantity = this.$refs.inputStock.value;
+                    if (quantity) variant.quantity = Number(quantity);
+                })
             },
-
-            removeRow(index) {
-                if (confirm('Xóa biến thể này?')) {
-                    this.variants.splice(index, 1);
-                }
-            }
         }
     }
 </script>

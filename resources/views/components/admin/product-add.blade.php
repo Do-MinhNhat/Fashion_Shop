@@ -1,5 +1,5 @@
 @props(['categories', 'brands', 'tags', 'colors', 'sizes'])
-<div x-data="{ open: {{ $errors->any()? 'true' : 'false' }} }"
+<div x-data="{ open: {{ $errors->add->any()? 'true' : 'false' }}, oldData: {{ $errors->add->any()? json_encode(old()) : json_encode((object)[]) }} }"
     x-show="open"
     x-on:open-add-modal.window="open = true"
     style="display: none;"
@@ -34,7 +34,8 @@
                 <div class="overflow-y-auto max-h-[79vh]">
                     <div class="flex-col overflow-y-auto max-w-2xl shrink-0">
                         <div class="flex justify-between items-center p-6 border-b">
-                            <h3 class="text-lg font-bold">Thêm sản phẩm mới</h3>
+                            <h3 class="text-lg font-bold mr-2">Thêm sản phẩm mới</h3>
+                            <button @click="$refs.productForm.reset()" type="button" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200 mr-auto">Làm mới</button>
                             <button @click="open = false" class="text-gray-400 hover:text-red-500 transition text-xl px-2">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -46,7 +47,7 @@
                                 <!-- Tên -->
                                 <div class=" grid grid-cols-1 md:grid-cols-1">
                                     <div>
-                                        @foreach ($errors->all() as $error)
+                                        @foreach ($errors->add->all() as $error)
                                         <li class="text-red-700 text-sm flex items-start">
                                             <i class="fas fa-caret-right mt-1 mr-2 text-red-400"></i>
                                             {{ $error }}
@@ -54,7 +55,7 @@
                                         @endforeach
                                         <label class="text-xs font-semibold uppercase text-gray-500">Tên sản phẩm</label>
                                         <span x-ref="nameError" class="text-xs text-red-500 italic">*</span>
-                                        <input value="{{ old('name') }}" x-ref="nameInput" type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255">
+                                        <input x-model="oldData.name" x-ref="nameInput" type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255">
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -65,7 +66,7 @@
                                         <select x-ref="categorySelect" name="category_id" class="cursor-pointer">
                                             <option value="" disabled selected hidden>Chọn danh mục...</option>
                                             @foreach ($categories as $category)
-                                            <option value="{{$category->id}}" @selected(old('category_id')==$category->id)>{{$category->name}}</option>
+                                            <option value="{{$category->id}}">{{$category->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -76,7 +77,7 @@
                                         <select x-ref="brandSelect" name="brand_id" class="cursor-pointer">
                                             <option value="" disabled selected hidden>Chọn nhãn hiệu...</option>
                                             @foreach ($brands as $brand)
-                                            <option value="{{$brand->id}}" @selected(old('brand_id')==$brand->id)>{{$brand->name}}</option>
+                                            <option value="{{$brand->id}}">{{$brand->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -266,7 +267,7 @@
                                     <select x-ref="tagSelect" name="tags[]" multiple>
                                         <option value="" disabled selected hidden>Chọn nhiều nhãn...</option>
                                         @foreach ($tags as $tag)
-                                        <option value="{{$tag->id}}" @selected(old('tag_id')==$tag->id)>{{$tag->name}}</option>
+                                        <option value="{{$tag->id}}">{{$tag->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -274,7 +275,7 @@
                                 <!-- Mô tả -->
                                 <div>
                                     <label class="text-xs font-semibold uppercase text-gray-500">Mô tả</label>
-                                    <textarea rows="3" name="description" class="w-full p-2.5 border rounded text-sm" placeholder="Mô tả ngắn sản phẩm...">{{ old('description') }}</textarea>
+                                    <textarea x-model="oldData.description" rows="3" name="description" class="w-full p-2.5 border rounded text-sm" placeholder="Mô tả ngắn sản phẩm..."></textarea>
                                 </div>
 
                                 <!-- Footer -->
@@ -353,13 +354,14 @@
     function productAddManager() {
         return {
             isExpanded: false,
-            variants: JSON.parse(`{!! old('variants_data', '[]') !!}`),
+            variants: [],
             colors: @json(old("colors", "[]")),
             sizes: @json(old("sizes", "[]")),
             colorMap: JSON.parse('@json($colors -> pluck("hex_code", "id"))'),
 
             init() {
                 const self = this;
+
                 this.tsCategory = new TomSelect(this.$refs.categorySelect, {
                     create: async function(input, callback) {
                         if (confirm('Xác nhận thêm?')) {
@@ -619,6 +621,16 @@
                         order: "asc"
                     }
                 });
+
+                this.$nextTick(() => {
+                    if (this.oldData) {
+                        this.tsCategory.setValue(String(this.oldData.category_id));
+                        this.tsBrand.setValue(String(this.oldData.brand_id));
+                        this.tsTag.setValue(Object.values(this.oldData.tags || {}).map(t => String(t)));
+                        this.variants = JSON.parse(this.oldData.variants_data || '[]');
+                    }
+                })
+
                 if (this.tsCategory.getValue()) {
                     this.$refs.sizeError.innerHTML = '';
                     this.loadSizesByCategory(this.tsCategory.getValue());
@@ -884,7 +896,7 @@
                 this.colors.forEach(c => {
                     this.sizes.forEach(s => {
                         results.push({
-                            id: Date.now() + Math.random(),
+                            id: c + "-" + s.id,
                             // Lưu object để hiển thị tên
                             size: s,
 

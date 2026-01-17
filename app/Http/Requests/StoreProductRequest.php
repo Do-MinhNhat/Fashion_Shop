@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 
 class StoreProductRequest extends FormRequest
 {
+    protected $errorBag = 'add';
+
     public function authorize(): bool
     {
         return $this->user()->isAdmin();

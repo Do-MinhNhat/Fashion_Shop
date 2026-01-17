@@ -241,7 +241,6 @@
                                                 @endif
                                             </td>
                                             <td class="p-4 flex justify-end">
-                                                <button class="text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit"></i></button>
                                                 <form method="POST">
                                                     @csrf
                                                     @method('DELETE')
