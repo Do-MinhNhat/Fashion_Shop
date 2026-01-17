@@ -12,28 +12,31 @@ class HomeController extends Controller
     {
         $viewData["title"] = "Trang chủ - Fashion Shop";
 
-        // Sản phẩm mới 
-        $newProducts = Product::where('status', 1)
+        // 1. Sản phẩm mới
+        $newProducts = Product::with('variants')
+            ->where('status', 1)
             ->latest('id')
             ->take(10)
             ->get();
 
-        // Sản phẩm nổi bật (view cao)
-        $bestSellerProducts= Product::query()
+        // 2. Sản phẩm nổi bật (view cao)
+        $bestSellerProducts = Product::with('variants')
             ->where('status', 1)
             ->where('view', '>=', 4)
             ->orderBy('view', 'desc')
             ->limit(10)
             ->get();
 
-        // Sản phẩm bán chạy (order nhiều)
-        $featuredProducts = Product::where('status', 1)
-            ->orderByDesc('view')
+        // 3. Sản phẩm bán chạy
+        $featuredProducts = Product::with('variants')
+            ->where('status', 1)
+            ->inRandomOrder() 
             ->take(10)
             ->get();
 
-        // Bộ sưu tập hot (ví dụ category_id = 1)
-        $collectionProducts = Product::where('status', 1)
+        // 4. Bộ sưu tập hot
+        $collectionProducts = Product::with('variants')
+            ->where('status', 1)
             ->where('category_id', 1)
             ->latest('id')
             ->take(10)
@@ -49,5 +52,4 @@ class HomeController extends Controller
             'maxProductId'
         ));
     }
-
 }

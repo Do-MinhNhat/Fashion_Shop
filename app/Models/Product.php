@@ -30,9 +30,14 @@ class Product extends Model
         return 'slug';
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function variants(): HasMany
     {
-        return $this->hasMany(Variant::class);
+        return $this->hasMany(Variant::class, 'product_id');
     }
 
     public function tags(): BelongsToMany

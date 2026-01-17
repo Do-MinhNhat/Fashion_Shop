@@ -6,7 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use App\Models\CartDetail;
 
 class User extends Authenticatable
 {
@@ -46,6 +48,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function cartDetails(): HasMany
+    {
+        return $this->hasMany(CartDetail::class);
+    }
+
     public function role(): BelongsTo{
         return $this->belongsTo(Role::class);
     }
@@ -53,10 +61,5 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role()->where('name','like','admin%')->exists();
-    }
-
-    public function cartDetails()
-    {
-        return $this->hasMany(CartDetail::class);
     }
 }

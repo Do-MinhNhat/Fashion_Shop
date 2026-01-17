@@ -87,10 +87,10 @@ $menus = [
                 {{-- Cart --}}
                 <a href="{{ route('user.cart.index') }}" class="relative hover:scale-110 transition-transform p-1">
                     <i class="fa-solid fa-bag-shopping text-lg"></i>
-                    {{-- Logic check cart count --}}
-                    @if(session('cart_count') > 0)
-                        <span class="absolute -top-1 -right-1 bg-black text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                            {{ session('cart_count') }}
+                    {{-- Hiển thị số lượng nếu > 0 --}}
+                    @if(isset($cartCount) && $cartCount > 0)
+                        <span class="cart-count-badge absolute -top-1 -right-1 bg-black text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                            {{ $cartCount > 99 ? '99+' : $cartCount }}
                         </span>
                     @endif
                 </a>

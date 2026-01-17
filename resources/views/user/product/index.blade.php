@@ -1,5 +1,5 @@
 @extends('user.layouts.app')
-@section('title', $viewData['title'])
+@section('title', 'Danh sách sản phảm')
 @section('content')
 
 <div class="max-w-[1440px] pt-20 mx-auto flex min-h-screen bg-white">
@@ -32,24 +32,69 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
             <!-- Product List -->
             @foreach ($products as $product)
+            @php
+                $isNew = $product->created_at->diffInDays(now()) < 30;
+                $firstVariant = $product->variants->first();
+                $imageUrl = str_starts_with($product->thumbnail, 'http') 
+                            ? $product->thumbnail 
+                            : asset('storage/' . $product->thumbnail);
+            @endphp
                 <div class="group cursor-pointer">
                     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
-                        <a href="{{ route('user.product.show',$product) }}">
-                            <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Dress">
+                        <a href="{{ route('user.product.show', $product->slug) }}" class="block w-full h-full">
+                            <img
+                                src="{{ $imageUrl }}"
+                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                alt="{{ $product->name }}"
+                                loading="lazy"
+                            >
                         </a>
+
+                        {{-- ADD TO CART BUTTON --}}
+                        <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
+                            @if($firstVariant && $firstVariant->quantity > 0)
+                                <form action="{{ route('user.cart.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="variant_id" value="{{ $firstVariant->id }}">
+                                    <input type="hidden" name="quantity" value="1">
+                                    
+                                    <button
+                                        type="submit"
+                                        class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+
+                                <a href="{{ route('user.product.show', $product->slug) }}"
+                                    class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition"
+                                    title="Xem nhanh"
+                                >
+                                    <i class="far fa-eye"></i>
+                                </a>
+                            @else
+                                <button disabled class="w-full bg-gray-200/90 text-gray-500 py-3 text-xs uppercase tracking-widest cursor-not-allowed font-bold backdrop-blur-sm">
+                                    Hết hàng
+                                </button>
+                            @endif
+                        </div>
+
                         <div class="absolute top-4 left-4 flex flex-col gap-2">
                             <span class="bg-white px-2 py-1 text-[10px] uppercase tracking-wide font-bold shadow-sm">New In</span>
                         </div>
 
-                        <div class="absolute bottom-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-300">
-                            <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Thêm vào giỏ">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <a href="{{ route('user.product.show', $product->slug) }}" class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow hover:bg-black hover:text-white transition" title="Xem nhanh">
-                                <i class="far fa-eye"></i>
-                            </a>
+                        <div class="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
+                            @if($isNew)
+                                <span class="bg-white px-2 py-1 text-[10px] uppercase tracking-wide font-bold shadow-sm">New In</span>
+                            @endif
+                            
+                            @if($firstVariant && $firstVariant->quantity <= 0)
+                                <span class="bg-red-600 text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                                    Sold Out
+                                </span>
+                            @endif
                         </div>
                     </div>
+
                     <div>
                         <a href="{{ route('user.product.show',$product) }}">
                             <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">{{ $product->name }}</h4>
@@ -86,3 +131,19 @@
     </main>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    const variants = @json($product->variants);
+
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành công!',
+            text: "{{ session('success') }}",
+            showConfirmButton: false,
+            timer: 1500
+        });
+    @endif
+</script>
+@endpush
