@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Quản lý Đơn hàng')
+@section('title', 'Quản lý Nhập hàng')
 @section('subtitle', '')
 
 @section('content')

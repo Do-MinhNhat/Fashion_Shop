@@ -13,6 +13,7 @@ use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
+use App\Http\Controllers\Admin\ImportProductController as AdminImportProductController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\VariantController as AdminVariantController;
 use App\Http\Controllers\User\ReviewController;
@@ -104,7 +105,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/nhan/them', [AdminTagController::class, 'store'])->name('admin.tag.store');
 
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
-            Route::get('/nhap-hang', [AdminOrderController::class, 'index'])->name('admin.import.index');
+            Route::get('/nhap-hang', [AdminImportProductController::class, 'index'])->name('admin.import.index');
         });
         // Cau hinh
         Route::middleware('role:admin-head')->group(function () {
