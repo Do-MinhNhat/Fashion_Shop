@@ -29,6 +29,14 @@ class ProductController extends Controller
             ->with(['variants.color', 'variants.size'])
             ->firstOrFail();
 
+    /**
+     * Display the specified resource.
+     */
+    public function show(Product $product)
+    {
+        $viewData = [];
+        $viewData['title'] = $product->name;
+        $viewData['subtitle'] = $product->name;
         // Lấy Color duy nhất và đang active
         $colors = $product->variants
             ->pluck('color')

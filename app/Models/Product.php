@@ -5,13 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    protected $fillable = ['name', 'slug', 'description', 'thumbnail', 'status', 'category_id', 'brand_id'];
 
     // Tự động thêm Slug khi thêm name
     protected function name(): Attribute
@@ -30,9 +34,9 @@ class Product extends Model
         return 'slug';
     }
 
-    public function category()
+    public function reviews(): HasMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->hasMany(Review::class);
     }
 
     public function variants(): HasMany
@@ -50,6 +54,21 @@ class Product extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(Image::class);
+    }
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
     protected function price(): Attribute
     {
         return Attribute::make(
@@ -62,8 +81,41 @@ class Product extends Model
     {
         return Attribute::make(
             get: function () {
-                return $this->variants->where('sale_price', '>', '0')->min('sale_price') ?? 0;
+                return $this->variants->where('sale_price', '>', '0')->sum('sale_price') ?? 0;
             }
         );
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('id', $search);
+            });
+        });
+
+        $query->when($filters['category'] ?? null, function ($query, $categoryId) {
+            $query->where('category_id', $categoryId);
+        });
+
+        $query->when($filters['brand'] ?? null, function ($query, $brandId) {
+            $query->where('brand_id', $brandId);
+        });
+
+        $query->when(isset($filters['status']), function ($query) use ($filters) {
+            $query->where('status', $filters['status']);
+        });
+
+        $query->when($filters['tags'] ?? null, function ($query, $tagList) {
+            $count = count($tagList);
+            if ($count > 0) {
+                $query->whereHas('tags', function ($qTag) use ($tagList) {
+                    $qTag->whereIn('id', $tagList);
+                }, $count);
+            }
+        });
+
+        return $query;
     }
 }

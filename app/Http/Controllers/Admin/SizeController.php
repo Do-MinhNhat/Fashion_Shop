@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Size;
 use App\Http\Controllers\Controller;
@@ -30,7 +30,14 @@ class SizeController extends Controller
      */
     public function store(StoreSizeRequest $request)
     {
-        //
+        $size = Size::create($request->validated());
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $size,
+            ], 201);
+        }
+        return redirect()->back()->with('success', "Đã thêm màu sắc: '{$size->name}!");
     }
 
     /**

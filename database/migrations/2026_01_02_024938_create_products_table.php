@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('rating',2,1)->default(0);
             $table->boolean('status')->default(1)->index();
             $table->integer('view')->default(0)->index();
+            $table->decimal('price', 15, 2)->default(0);
             $table->foreignIdFor(Category::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Brand::class)->constrained()->onDelete('cascade');
             $table->timestamps();

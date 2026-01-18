@@ -13,7 +13,7 @@ class VariantPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -21,7 +21,7 @@ class VariantPolicy
      */
     public function view(User $user, Variant $variant): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -29,7 +29,7 @@ class VariantPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -37,7 +37,7 @@ class VariantPolicy
      */
     public function update(User $user, Variant $variant): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -45,7 +45,7 @@ class VariantPolicy
      */
     public function delete(User $user, Variant $variant): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -53,7 +53,7 @@ class VariantPolicy
      */
     public function restore(User $user, Variant $variant): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -61,6 +61,6 @@ class VariantPolicy
      */
     public function forceDelete(User $user, Variant $variant): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 }

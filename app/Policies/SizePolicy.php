@@ -13,7 +13,7 @@ class SizePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -21,7 +21,7 @@ class SizePolicy
      */
     public function view(User $user, Size $size): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -29,7 +29,7 @@ class SizePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -37,7 +37,7 @@ class SizePolicy
      */
     public function update(User $user, Size $size): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -45,7 +45,7 @@ class SizePolicy
      */
     public function delete(User $user, Size $size): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -53,7 +53,7 @@ class SizePolicy
      */
     public function restore(User $user, Size $size): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -61,6 +61,6 @@ class SizePolicy
      */
     public function forceDelete(User $user, Size $size): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 }
