@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Review;
 
 class ProductController extends Controller
 {
@@ -23,29 +24,55 @@ class ProductController extends Controller
     // Hiển thị chi tiết sản phẩm
     public function show($slug)
     {
-        // 1. Lấy sản phẩm, kèm theo Variants VÀ thông tin chi tiết Color/Size
         $product = Product::where('slug', $slug)
-            ->where('status', true)
-            ->with(['variants.color', 'variants.size']) 
+            ->where('status', 1)
+            ->with(['variants.color', 'variants.size'])
             ->firstOrFail();
 
-        // 2. Lấy danh sách Màu (Object) duy nhất
-        $colors = $product->variants->map(function ($variant) {
-            return $variant->color;
-        })->filter()->unique('id')->values();
+        // Lấy Color duy nhất và đang active
+        $colors = $product->variants
+            ->pluck('color')
+            ->filter(fn($c) => $c && $c->status == 1)
+            ->unique('id')
+            ->values();
 
-        // 3. Lấy danh sách Size (Object) duy nhất
-        $sizes = $product->variants->map(function ($variant) {
-            return $variant->size;
-        })->filter()->unique('id')->values();
+        // Lấy Size duy nhất và đang active
+        $sizes = $product->variants
+            ->pluck('size')
+            ->filter(fn($s) => $s && $s->status == 1)
+            ->unique('id')
+            ->values();
 
-        // 4. Logic khác giữ nguyên...
         $product->increment('view');
-        $relatedProducts = Product::where('category_id', $product->category_id)
-            ->where('id', '!=', $product->id)
-            ->with('variants')
-            ->inRandomOrder()->take(4)->get();
 
-        return view('user.product.show', compact('product', 'relatedProducts', 'colors', 'sizes'));
+        $relatedProducts = Product::where('id', '!=', $product->id)
+            ->with(['variants', 'category'])
+            ->orderByDesc('view')
+            ->take(4)
+            ->get();
+
+        $reviews = $product->reviews()
+            ->with(['user'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
+        $totalRating = $product->reviews()->count();
+
+        $starCounts = $product->reviews()
+            ->select('rating', Review::raw('count(*) as total'))
+            ->groupBy('rating')
+            ->pluck('total', 'rating')
+            ->toArray();
+
+        $ratingDist = [];
+        for ($i = 5; $i >= 1; $i--) {
+            $ratingDist[$i] = $starCounts[$i] ?? 0;
+        }
+
+        $averageRating = $totalRating > 0 ? round($product->reviews()->avg('rating'), 1) : 0;
+
+        return view('user.product.show', compact(
+            'product', 'relatedProducts', 'colors', 'sizes', 'reviews', 'ratingDist', 'starCounts', 'averageRating', 'totalRating'
+        ));
     }
 }

@@ -1,4 +1,4 @@
-<aside class="w-72 hidden lg:block border-r border-gray-100 p-8 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto custom-scrollbar">
+<aside class="w-72 hidden lg:block border-r border-gray-100 p-8 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto custom-scrollbar pt-10">
     <div class="flex justify-between items-center mb-8">
         <h3 class="font-serif text-lg font-bold">Bộ lọc</h3>
         <button class="text-xs text-gray-400 underline hover:text-black">Xóa tất cả</button>

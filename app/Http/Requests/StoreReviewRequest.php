@@ -23,20 +23,31 @@ class StoreReviewRequest extends FormRequest
     {
         return [
             'product_id' => 'required|exists:products,id',
-            'rating'     => 'required|integer|min:1|max:5',
-            'comment'    => 'nullable|string|max:1000',
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|max:1000',
         ];
     }
     public function messages(): array
     {
         return [
             'product_id.required' => 'Sản phẩm đánh giá không được để trống.',
-            'product_id.exists'   => 'Sản phẩm không tồn tại trên hệ thống.',
-            'rating.required'     => 'Vui lòng chọn số sao đánh giá.',
-            'rating.integer'      => 'Số sao phải là số nguyên.',
-            'rating.min'          => 'Đánh giá thấp nhất là 1 sao.',
-            'rating.max'          => 'Đánh giá cao nhất là 5 sao.',
-            'comment.max'         => 'Nội dung bình luận không được vượt quá 1000 ký tự.',
+            'rating.required' => 'Vui lòng chọn số sao.',
+            'comment.required' => 'Vui lòng nhập nhận xét.',
         ];
+    }
+
+    public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        if (request()->expectsJson()) {
+            throw new \Illuminate\Http\Exceptions\HttpResponseException(
+                response()->json([
+                    'status' => 'validation_error',
+                    'errors' => $validator->errors(),
+                    'message' => 'Vui lòng kiểm tra dữ liệu!'
+                ], 422)
+            );
+        }
+
+        parent::failedValidation($validator);
     }
 }
