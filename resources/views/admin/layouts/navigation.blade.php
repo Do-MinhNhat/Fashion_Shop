@@ -160,7 +160,7 @@
               ? 'bg-white/10 text-white' 
               : 'text-gray-400 hover:bg-white/5 hover:text-white' 
            }}">
-            <i class="fas fa-cog w-9 text-lg transition-all duration-300 {{ $isActive ? 'text-gray-200' : 'group-hover:text-white group-hover:rotate-90' }}"></i>
+            <i class="fas fa-cog mr-3 text-lg transition-all duration-300 {{ $isActive ? 'text-gray-200' : 'group-hover:text-white group-hover:rotate-90' }}"></i>
             <span class="font-medium tracking-wide">Cấu hình hệ thống</span>
         </a>
     </div>
