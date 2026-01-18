@@ -19,5 +19,9 @@ class Size extends Model
         return Attribute::make(
             set: fn(string $value) => strtoupper($value),
         );
+
+    public function variants()
+    {
+        return $this->hasMany(Variant::class);
     }
 }

@@ -14,7 +14,7 @@
     @yield('style')
 </head>
 
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body class="bg-gray-50 text-gray-800">
     <div class="flex h-screen overflow-hidden bg-gray-50">
         <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black opacity-50 z-20 hidden md:hidden"></div>
         <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white transition-transform duration-300 transform -translate-x-full md:translate-x-0 md:static md:inset-0 flex flex-col">
@@ -23,7 +23,6 @@
             </div>
             @include('admin.layouts.navigation')
         </aside>
-
         <main class="flex-1 flex flex-col overflow-hidden">
             @include('admin.layouts.header')
             @yield('content')

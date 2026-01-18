@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ColorController as AdminColorController;
+use App\Http\Controllers\User\AddressController;
 use App\Http\Controllers\User\CartDetailController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\User\HomeController;
@@ -12,32 +13,54 @@ use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\VariantController as AdminVariantController;
+use App\Http\Controllers\User\ReviewController;
+use App\Http\Controllers\User\OrderController;
+use App\Http\Controllers\User\ProfileController as UserProfileController;
+use App\Http\Controllers\User\WishlistController;
 use Illuminate\Support\Facades\Route;
 //User Checkout Route
-Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
 //-----------------------------
 //User Home Route
 Route::get('/', [HomeController::class, 'index'])->name('user.home.index');
 //-----------------------------
 //User Product Route
 Route::get('/san-pham', [ProductController::class, 'index'])->name('user.product.index');
-Route::get('/san-pham/{product}', [ProductController::class, 'show'])->name('user.product.show');
+Route::get('/san-pham/{product:slug}', [ProductController::class, 'show'])->name('user.product.show');
+
 //-----------------------------
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+//User ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    // Profile 
+    Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'index'])->name('user.profile.index');
+        // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'edit'])->name('user.profile.edit');
+        // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'update'])->name('user.profile.update');
+        // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'destroy'])->name('user.profile.destroy');
+    // Order
+    Route::get('/ho-so-ca-nhan/don-hang', [OrderController::class, 'index'])->name('user.profile.order.index');
+    // Address
+    Route::get('/ho-so-ca-nhan/dia-chi', [AddressController::class, 'index'])->name('user.profile.address.index');
+    // Cart
     Route::get('/gio-hang', [CartDetailController::class, 'index'])->name('user.cart.index');
+    Route::post('/gio-hang', [CartDetailController::class, 'store'])->name('user.cart.store');
+    Route::delete('/gio-hang/xoa/{id}', [CartDetailController::class, 'destroy'])->name('user.cart.destroy');
+    Route::patch('/gio-hang/cap-nhat/{id}', [CartDetailController::class, 'update'])->name('user.cart.update');
+    // Wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('user.profile.wishlist.index');
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('user.wishlist.toggle');
+    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'destroy'])->name('user.wishlist.destroy');
+    Route::delete('/wishlist/clear', [WishlistController::class, 'clear'])->name('user.wishlist.clear');
+    // Checkout
+    Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
+    // Review
+    Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('user.review.store');
 
-    //User ^^^^^^^^^^^^^^^^^^^^^^^^^^
-    //Admin vvvvvvvvvvvvvvvvvvvvvvvvv
+
+//Admin vvvvvvvvvvvvvvvvvvvvvvvvv
     Route::middleware('is_admin')->prefix('quan-ly')->group(function () {
         Route::get('/', [AdminHomeController::class, 'index'])->name('admin.home.index');
         Route::middleware('role:admin-user,admin-head')->group(function () {

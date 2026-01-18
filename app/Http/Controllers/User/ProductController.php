@@ -6,36 +6,28 @@ use App\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Review;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $viewData = [];
-        $viewData['title'] = 'Sản phẩm - Fasion Shop';
-        $viewData['subtitle'] = 'Danh sách sản phẩm';
-        $products = Product::where('status', true)->with('variants')->Paginate(2)->withQueryString();
-        return view('user.product.index', compact('products', 'viewData'));
+        $products = Product::where('status', true)
+            ->with('variants')
+            ->latest()
+            ->paginate(12) 
+            ->withQueryString();
+
+        return view('user.product.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Hiển thị chi tiết sản phẩm
+    public function show($slug)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreProductRequest $request)
-    {
-        //
-    }
+        $product = Product::where('slug', $slug)
+            ->where('status', 1)
+            ->with(['variants.color', 'variants.size'])
+            ->firstOrFail();
 
     /**
      * Display the specified resource.
@@ -45,30 +37,50 @@ class ProductController extends Controller
         $viewData = [];
         $viewData['title'] = $product->name;
         $viewData['subtitle'] = $product->name;
-        return view('user.product.show', compact('product', 'viewData'));
-    }
+        // Lấy Color duy nhất và đang active
+        $colors = $product->variants
+            ->pluck('color')
+            ->filter(fn($c) => $c && $c->status == 1)
+            ->unique('id')
+            ->values();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
+        // Lấy Size duy nhất và đang active
+        $sizes = $product->variants
+            ->pluck('size')
+            ->filter(fn($s) => $s && $s->status == 1)
+            ->unique('id')
+            ->values();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateProductRequest $request, Product $product)
-    {
-        //
-    }
+        $product->increment('view');
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
+        $relatedProducts = Product::where('id', '!=', $product->id)
+            ->with(['variants', 'category'])
+            ->orderByDesc('view')
+            ->take(4)
+            ->get();
+
+        $reviews = $product->reviews()
+            ->with(['user'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
+        $totalRating = $product->reviews()->count();
+
+        $starCounts = $product->reviews()
+            ->select('rating', Review::raw('count(*) as total'))
+            ->groupBy('rating')
+            ->pluck('total', 'rating')
+            ->toArray();
+
+        $ratingDist = [];
+        for ($i = 5; $i >= 1; $i--) {
+            $ratingDist[$i] = $starCounts[$i] ?? 0;
+        }
+
+        $averageRating = $totalRating > 0 ? round($product->reviews()->avg('rating'), 1) : 0;
+
+        return view('user.product.show', compact(
+            'product', 'relatedProducts', 'colors', 'sizes', 'reviews', 'ratingDist', 'starCounts', 'averageRating', 'totalRating'
+        ));
     }
 }

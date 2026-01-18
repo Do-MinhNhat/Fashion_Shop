@@ -6,7 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use App\Models\CartDetail;
 
 class User extends Authenticatable
 {
@@ -46,8 +48,23 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function role(): BelongsTo
+
+    public function cartDetails(): HasMany
     {
+        return $this->hasMany(CartDetail::class);
+    }
+
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function role(): BelongsTo{
         return $this->belongsTo(Role::class);
     }
 

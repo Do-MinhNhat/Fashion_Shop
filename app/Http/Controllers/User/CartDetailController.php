@@ -2,76 +2,153 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\CartDetail;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCartDetailRequest;
 use App\Http\Requests\UpdateCartDetailRequest;
+use App\Models\CartDetail;
+use App\Models\Product;
 use App\Models\User;
+use App\Models\Variant;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class CartDetailController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $user = User::find(Auth::id());
-        $items = $user->cart_details()->get();
-        return view('user.cart.index', compact('items'));
+        /** @var User $user */
+        $user = Auth::user();
+        
+        // 1. Sản phẩm được thêm vào Giỏ hàng
+        $items = $user->cartDetails()
+            ->with('variant.product.category')
+            ->get();
+
+        // 2. LOGIC GỢI Ý SẢN PHẨM MỚI
+        // Lấy ID các sản phẩm đang có trong giỏ để loại trừ
+        $cartProductIds = $items->pluck('variant.product_id')->unique()->toArray();
+        
+        // Lấy ID các danh mục của sản phẩm trong giỏ
+        $categoryIds = $items->pluck('variant.product.category_id')->unique()->toArray();
+
+        // Query sản phẩm gợi ý
+        $query = Product::where('status', 1)
+                    ->whereNotIn('id', $cartProductIds)
+                    ->with('variants');
+
+        if (!empty($categoryIds)) {
+            // Nếu giỏ có hàng: Gợi ý sản phẩm cùng danh mục
+            $query->whereIn('category_id', $categoryIds)->inRandomOrder();
+        } else {
+            // Nếu giỏ trống: Gợi ý sản phẩm Best Seller / Hot
+            $query->orderByDesc('view');
+        }
+
+        // Lấy 4 sản phẩm
+        $suggestedProducts = $query->take(4)->get();
+
+        // Nếu số lượng gợi ý quá ít (ví dụ < 4), fill thêm bằng sản phẩm mới nhất
+        if ($suggestedProducts->count() < 4) {
+            $needed = 4 - $suggestedProducts->count();
+            $moreProducts = Product::where('status', 1)
+                ->whereNotIn('id', $cartProductIds)
+                ->whereNotIn('id', $suggestedProducts->pluck('id'))
+                ->latest()
+                ->with('variants')
+                ->take($needed)
+                ->get();
+            
+            $suggestedProducts = $suggestedProducts->merge($moreProducts);
+        }
+
+        return view('user.cart.index', compact('items', 'suggestedProducts'));
     }
 
-    public function checkout()
-    {
-        $user = User::find(Auth::id());
-        $items = $user->cart_details()->get();
-        return view('user.cart.index', compact('items'));
-    }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Hàm thêm sản phẩm vào giỏ
     public function store(StoreCartDetailRequest $request)
     {
-        //
+        $user = Auth::user();
+
+        // Kiểm tra xem biến thể này có tồn tại và còn hàng không
+        $variant = Variant::find($request->variant_id);
+        if (!$variant) {
+            return back()->with('error', 'Sản phẩm không tồn tại.');
+        }
+
+        if ($variant->quantity < $request->quantity) {
+            return back()->with('error', 'Sản phẩm chỉ còn ' . $variant->quantity . ' cái.');
+        }
+
+        // Kiểm tra sản phẩm đã có trong giỏ chưa
+        $cartItem = CartDetail::where('user_id', $user->id)
+            ->where('variant_id', $request->variant_id)
+            ->first();
+
+        if ($cartItem) {
+            // Nếu có rồi thì cộng dồn số lượng
+            $newQty = $cartItem->quantity + $request->quantity;
+            
+            // Đảm bảo không vượt quá kho
+            $finalQty = min($newQty, $variant->quantity);
+            
+            $cartItem->update(['quantity' => $finalQty]);
+        } else {
+            // Nếu chưa có thì tạo mới
+            CartDetail::create([
+                'user_id'    => $user->id,
+                'variant_id' => $request->variant_id,
+                'quantity'   => $request->quantity,
+            ]);
+        }
+
+        return back()->with('success', 'Đã thêm vào giỏ hàng!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(CartDetail $cartDetail)
+    // Hàm cập nhật số lượng (Cho nút +/- trong trang giỏ hàng)
+    public function update(UpdateCartDetailRequest $request, $id)
     {
-        //
+        $cartDetail = CartDetail::findOrFail($id);
+
+        // Bảo mật: Kiểm tra xem item này có phải của user đang đăng nhập không
+        if ($cartDetail->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $qty = $request->input('quantity');
+        
+        // Validate số lượng
+        if ($qty < 1) {
+            return response()->json(['error' => 'Số lượng phải lớn hơn 0'], 400);
+        }
+
+        // Check tồn kho
+        $stock = $cartDetail->variant->quantity;
+        if ($qty > $stock) {
+            return response()->json([
+                'error' => 'Kho chỉ còn ' . $stock . ' sản phẩm',
+                'current_qty' => $stock
+            ], 400);
+        }
+
+        $cartDetail->update(['quantity' => $qty]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cập nhật thành công'
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CartDetail $cartDetail)
+    // Hàm xóa sản phẩm khỏi giỏ
+    public function destroy($id)
     {
-        //
-    }
+        $cartDetail = CartDetail::findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCartDetailRequest $request, CartDetail $cartDetail)
-    {
-        //
-    }
+        if ($cartDetail->user_id !== Auth::id()) {
+            abort(403, 'Bạn không có quyền xóa sản phẩm này');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(CartDetail $cartDetail)
-    {
-        //
+        $cartDetail->delete();
+
+        return back()->with('success', 'Đã xóa sản phẩm khỏi giỏ hàng');
     }
 }
