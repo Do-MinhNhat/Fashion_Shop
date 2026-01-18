@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Admin\ImportProductController as AdminImportProductController;
+use App\Http\Controllers\Admin\ShipController as AdminShipController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\VariantController as AdminVariantController;
 use App\Http\Controllers\User\ReviewController;
@@ -69,9 +70,9 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:admin-user,admin-head')->group(function () {
             Route::get('/nguoi-dung', [AdminUserController::class, 'index'])->name('admin.user.index');
         });
-        // Quan ly don hang
+        // Giao hang
         Route::middleware('role:admin-shipper,admin-head')->group(function () {
-            Route::get('/giao-hang', [AdminOrderController::class, 'index'])->name('admin.ship.index');
+            Route::get('/giao-hang', [AdminShipController::class, 'index'])->name('admin.ship.index');
         });
         // Quan ly san pham
         Route::middleware('role:admin-product,admin-head')->group(function () {
