@@ -1,6 +1,6 @@
 <header class="relative">
-    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-300 transition-all duration-300 shadow-lg">
+        <div class="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
             {{-- Mobile --}}
             <button class="lg:hidden">
                 <i class="fa-solid fa-bars text-xl"></i>

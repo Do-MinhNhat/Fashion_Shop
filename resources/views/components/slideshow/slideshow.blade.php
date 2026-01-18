@@ -1,49 +1,98 @@
-<section class="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900">
-    <div id="hero-slider" class="absolute inset-0 w-full h-full">
-        <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
-            class="slider-img absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-1000 ease-in-out"
-        alt="Slide 1">
+<section id="fashion-slider"
+    class="relative h-screen overflow-hidden bg-black">
 
-        <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
-            class="slider-img absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out"
-        alt="Slide 2">
+    {{-- SLIDES --}}
+    <div class="absolute inset-0">
+        @foreach ($slides as $index => $slide)
+            <div class="fashion-slide absolute inset-0 transition-opacity duration-1000 ease-in-out
+                        {{ $index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }}"
+                 data-title="{{ $slide->title }}"
+                 data-description="{{ $slide->description }}"
+                 data-url="{{ $slide->url }}">
 
-        <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop"
-            class="slider-img absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out"
-        alt="Slide 3">
-
-        <div class="absolute inset-0 bg-black/20 z-10"></div>
+                <img
+                    src="{{ asset('storage/' . $slide->image) }}"
+                    class="w-full h-full object-cover scale-105 transition-transform duration-[6000ms]"
+                    alt="{{ $slide->title }}">
+            </div>
+        @endforeach
     </div>
 
-    <div class="relative z-20 text-center text-white px-4 animate-fade-in-up">
-        <h2 class="text-sm md:text-base uppercase tracking-[0.5em] mb-4 drop-shadow-md">Bộ sưu tập Xuân Hè 2026</h2>
-        <h1 class="text-5xl md:text-8xl  font-bold mb-8 drop-shadow-lg">The Art of Silence</h1>
-        <a href="/Client/Product/ProductList.html" class="inline-block border border-white px-10 py-4 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-sm bg-white/10">
-            Khám phá ngay <i class="fa-solid fa-arrow-right ml-2"></i>
-        </a>
+    {{-- OVERLAY --}}
+    <div class="absolute inset-0 bg-black/25 z-20"></div>
+
+    {{-- CONTENT --}}
+    <div class="relative z-30 h-full flex items-center justify-center text-white text-center px-6">
+        <div class="max-w-3xl">
+            <p id="slider-subtitle"
+               class="text-xs md:text-sm uppercase tracking-[0.45em] mb-4 opacity-0 translate-y-6 transition-all duration-700">
+            </p>
+
+            <h1 id="slider-title"
+                class="text-4xl md:text-7xl font-serif font-bold mb-8 opacity-0 translate-y-8 transition-all duration-700 delay-150">
+            </h1>
+
+            <a id="slider-link" href="{{ route('user.product.index') }}"
+               class="inline-block border border-white px-10 py-4 text-xs uppercase tracking-widest opacity-0 translate-y-10 transition-all duration-700 delay-300
+                    hover:bg-white hover:text-black">
+                Khám phá ngay
+            </a>
+        </div>
     </div>
 </section>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const slides = document.querySelectorAll('.slider-img');
-        let currentSlide = 0;
-        const slideInterval = 5000;
+document.addEventListener("DOMContentLoaded", () => {
+    const slides = document.querySelectorAll('.fashion-slide');
+    const title = document.getElementById('slider-title');
+    const subtitle = document.getElementById('slider-subtitle');
+    const link = document.getElementById('slider-link');
 
-        function nextSlide() {
-            // 1. Ẩn ảnh hiện tại
-            slides[currentSlide].classList.remove('opacity-100');
-            slides[currentSlide].classList.add('opacity-0');
+    let current = 0;
+    const interval = 6000;
+    let timer;
 
-            // 2. Tăng chỉ số (nếu hết ảnh thì quay về 0)
-            currentSlide = (currentSlide + 1) % slides.length;
+    function animateText(slide) {
+        // reset
+        title.classList.add('opacity-0', 'translate-y-8');
+        subtitle.classList.add('opacity-0', 'translate-y-6');
+        link.classList.add('opacity-0', 'translate-y-10');
 
-            // 3. Hiện ảnh kế tiếp
-            slides[currentSlide].classList.remove('opacity-0');
-            slides[currentSlide].classList.add('opacity-100');
-        }
+        setTimeout(() => {
+            subtitle.textContent = slide.dataset.description ?? '';
+            title.textContent = slide.dataset.title ?? '';
+            link.href = slide.dataset.url ?? '#';
 
-        // Kích hoạt vòng lặp
-        setInterval(nextSlide, slideInterval);
-    });
+            subtitle.classList.remove('opacity-0', 'translate-y-6');
+            title.classList.remove('opacity-0', 'translate-y-8');
+            link.classList.remove('opacity-0', 'translate-y-10');
+        }, 300);
+    }
+
+    function showSlide(index) {
+        slides.forEach((s, i) => {
+            s.classList.toggle('opacity-100', i === index);
+            s.classList.toggle('opacity-0', i !== index);
+            s.classList.toggle('z-10', i === index);
+            s.classList.toggle('z-0', i !== index);
+        });
+
+        animateText(slides[index]);
+    }
+
+    function nextSlide() {
+        current = (current + 1) % slides.length;
+        showSlide(current);
+    }
+
+    if (slides.length) {
+        showSlide(0);
+        timer = setInterval(nextSlide, interval);
+    }
+
+    // Pause on hover (fashion standard)
+    const slider = document.getElementById('fashion-slider');
+    slider.addEventListener('mouseenter', () => clearInterval(timer));
+    slider.addEventListener('mouseleave', () => timer = setInterval(nextSlide, interval));
+});
 </script>
