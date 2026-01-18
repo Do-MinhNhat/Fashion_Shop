@@ -13,7 +13,6 @@
     <a href="{{ route('admin.order.index') }}" class="flex items-center px-6 py-3 hover:bg-slate-800 transition-colors text-gray-300 hover:text-white group">
         <i class="fas fa-shopping-cart w-6 group-hover:text-blue-400 transition-colors"></i>
         <span>Đơn hàng</span>
-        <span class="ml-auto bg-red-500 text-white text-[10px] font-bold py-0.5 px-2 rounded-full">3</span>
     </a>
     <a href="{{ route('admin.user.index') }}" class="flex items-center px-6 py-3 hover:bg-slate-800 transition-colors text-gray-300 hover:text-white group">
         <i class="fas fa-users w-6 group-hover:text-blue-400 transition-colors"></i>

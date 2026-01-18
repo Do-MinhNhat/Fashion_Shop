@@ -13,6 +13,7 @@ use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\VariantController as AdminVariantController;
 use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\User\OrderController;
@@ -63,12 +64,15 @@ Route::middleware('auth')->group(function () {
 //Admin vvvvvvvvvvvvvvvvvvvvvvvvv
     Route::middleware('is_admin')->prefix('quan-ly')->group(function () {
         Route::get('/', [AdminHomeController::class, 'index'])->name('admin.home.index');
+        // Quan ly nguoi dung
         Route::middleware('role:admin-user,admin-head')->group(function () {
-            Route::get('/nguoi-dung', [AdminHomeController::class, 'index'])->name('admin.user.index');
+            Route::get('/nguoi-dung', [AdminUserController::class, 'index'])->name('admin.user.index');
         });
+        // Quan ly don hang
         Route::middleware('role:admin-shipper,admin-head')->group(function () {
             Route::get('/giao-hang', [AdminOrderController::class, 'index'])->name('admin.ship.index');
         });
+        // Quan ly san pham
         Route::middleware('role:admin-product,admin-head')->group(function () {
             //Product
             Route::get('/san-pham', [AdminProductController::class, 'index'])->name('admin.product.index');
@@ -102,6 +106,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
             Route::get('/nhap-hang', [AdminOrderController::class, 'index'])->name('admin.import.index');
         });
+        // Cau hinh
         Route::middleware('role:admin-head')->group(function () {
             Route::get('/cau-hinh', [AdminHomeController::class, 'index'])->name('admin.setting.index');
         });
