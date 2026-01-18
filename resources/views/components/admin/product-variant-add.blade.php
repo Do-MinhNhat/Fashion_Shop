@@ -33,7 +33,6 @@
                     <div class="flex-col overflow-y-auto max-w-2xl shrink-0">
                         <div class="flex justify-between items-center p-6 border-b">
                             <h3 class="text-lg font-bold mr-2">Thêm biến thể mới</h3>
-                            <button @click="$refs.variantForm.reset()" type="button" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200 mr-auto">Làm mới</button>
                             <button @click="open = false" class="text-gray-400 hover:text-red-500 transition text-xl px-2">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -42,7 +41,6 @@
                         <div class="p-6 overflow-y-auto custom-scrollbar">
                             <form method="POST" action="{{ route('admin.variant.store') }}" x-ref="variantForm" class="space-y-6" @submit="handleSubmit($event)">
                                 @csrf
-                                <!-- Tên -->
                                 @foreach ($errors->variantAdd->all() as $error)
                                 <li class="text-red-700 text-sm flex items-start">
                                     <i class="fas fa-caret-right mt-1 mr-2 text-red-400"></i>
@@ -262,7 +260,6 @@
                     this.oldData.category_id = String(product.category_id);
                     this.oldData.product_id = String(product.id);
                     this.loadSizesByCategory(this.oldData.category_id);
-                    console.table(product);
                 })
 
                 if (this.oldData) {

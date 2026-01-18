@@ -4,12 +4,28 @@
         <i class="fas fa-chart-line w-6"></i>
         <span class="font-medium">Dashboard</span>
     </a>
-
-    <div class="px-4 mt-6 mb-2 text-xs text-gray-400 uppercase tracking-wider">Quản lý Bán hàng</div>
+    <div class="px-4 mt-6 mb-2 text-xs text-gray-400 uppercase tracking-wider">Quản lý sản phẩm</div>
     <a href="{{ route('admin.product.index') }}" class="flex items-center px-6 py-3 hover:bg-slate-800 transition-colors text-gray-300 hover:text-white group">
         <i class="fas fa-box w-6 group-hover:text-blue-400 transition-colors"></i>
         <span>Sản phẩm</span>
     </a>
+    <a href="{{ route('admin.category.index') }}" class="flex items-center px-6 py-3 hover:bg-slate-800 transition-colors text-gray-300 hover:text-white group">
+        <i class="fas fa-box w-6 group-hover:text-blue-400 transition-colors"></i>
+        <span>Danh mục</span>
+    </a>
+    <a href="{{ route('admin.brand.index') }}" class="flex items-center px-6 py-3 hover:bg-slate-800 transition-colors text-gray-300 hover:text-white group">
+        <i class="fas fa-box w-6 group-hover:text-blue-400 transition-colors"></i>
+        <span>Nhãn hiệu</span>
+    </a>
+    <a href="{{ route('admin.size.index') }}" class="flex items-center px-6 py-3 hover:bg-slate-800 transition-colors text-gray-300 hover:text-white group">
+        <i class="fas fa-box w-6 group-hover:text-blue-400 transition-colors"></i>
+        <span>Kích cỡ</span>
+    </a>
+    <a href="{{ route('admin.color.index') }}" class="flex items-center px-6 py-3 hover:bg-slate-800 transition-colors text-gray-300 hover:text-white group">
+        <i class="fas fa-box w-6 group-hover:text-blue-400 transition-colors"></i>
+        <span>Màu sắc</span>
+    </a>
+    <div class="px-4 mt-6 mb-2 text-xs text-gray-400 uppercase tracking-wider">Quản lý Bán hàng</div>
     <a href="{{ route('admin.order.index') }}" class="flex items-center px-6 py-3 hover:bg-slate-800 transition-colors text-gray-300 hover:text-white group">
         <i class="fas fa-shopping-cart w-6 group-hover:text-blue-400 transition-colors"></i>
         <span>Đơn hàng</span>

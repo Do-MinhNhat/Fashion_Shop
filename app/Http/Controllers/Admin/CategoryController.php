@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Size;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -14,22 +15,22 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $viewData = [];
+        $viewData['title'] = 'Admin - Sản phẩm';
+        $viewData['subtitle'] = 'Quản lý sản phẩm - Danh mục';
+
+        $categories = Category::query()->filter($request->all())->paginate(10)->withQueryString();
+
+        $counts = Category::selectRaw("
+            sum(case when status = 1 then 1 else 0 end) as active_count,
+            sum(case when status = 0 then 1 else 0 end) as inactive_count
+        ")->first();
+
+        return view('admin.category.index', compact('categories', 'counts', 'viewData'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreCategoryRequest $request)
     {
         $category = Category::create($request->validated());
@@ -40,14 +41,6 @@ class CategoryController extends Controller
             ], 201);
         }
         return redirect()->back()->with('success', "Đã thêm danh mục: '{$category->name}'!");
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
-    {
-        //
     }
 
     /**
@@ -63,15 +56,46 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        //
+        $category->update($request->validated());
+        return back()->with('success', "Đã cập nhật danh mục: '{$category->name}' ID: '{$category->id}'");
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function delete(Category $category)
     {
-        //
+        $category->delete();
+        return back()->with('success', "Đã xóa danh mục '{$category->name}' ID: '{$category->id}'");
+    }
+    public function restore(Category $category)
+    {
+        $category->restore();
+        return back()->with('success', "Khôi phục danh mục '{$category->name}' ID: '{$category->id}'");
+    }
+    public function forceDelete(Category $category)
+    {
+        $name = $category->name;
+        $id = $category->id;
+        try {
+            $category->forceDelete();
+        } catch (QueryException $error) {
+            if ($error->getCode() == "23000") { //Kiểm tra khóa ngoại
+                return back()->with('error', 'Dữ liệu này đang được sử dụng ở nơi khác, không thể xóa vĩnh viễn!');
+            }
+            return back()->with('error', 'Lỗi hệ thống: Không thể thực hiện lệnh xóa.');
+        }
+        return back()->with('success', "Đã xóa vĩnh viễn sản phẩm {$name} ID: {$id}");
+    }
+    public function trash(Request $request)
+    {
+        $viewData = [];
+        $viewData['title'] = 'Admin - Sản phẩm';
+        $viewData['subtitle'] = 'Thùng rác sản phẩm - Danh mục';
+
+        $categories = Category::query()->filter($request->all())->onlyTrashed()->paginate(15)->withQueryString();
+
+        return view('admin.category.trash', compact('categories', 'viewData'));
     }
 
     public function getSizes(Request $request)

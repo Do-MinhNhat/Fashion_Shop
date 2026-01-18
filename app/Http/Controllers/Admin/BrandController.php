@@ -6,17 +6,27 @@ use App\Models\Brand;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
-
-use function Pest\Laravel\json;
+use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $viewData = [];
+        $viewData['title'] = 'Admin - Sản phẩm';
+        $viewData['subtitle'] = 'Quản lý sản phẩm - Danh mục';
+
+        $brands = Brand::query()->filter($request->all())->Paginate(10)->withQueryString();
+
+        $counts = Brand::selectRaw("
+            sum(case when status = 1 then 1 else 0 end) as active_count,
+            sum(case when status = 0 then 1 else 0 end) as inactive_count
+        ")->first();
+
+        return view('admin.brand.index', compact('brands', 'viewData', 'counts'));
     }
 
     /**

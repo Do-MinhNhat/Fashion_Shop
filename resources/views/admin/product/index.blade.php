@@ -136,7 +136,7 @@
         </div>
     </div>
     <x-admin.product-add :categories="$categories" :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
-    <x-admin.product-edit :categories="$categories" :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
+    <x-admin.product-edit :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
     <x-admin.product-filter :categories="$categories" :brands="$brands" :tags="$tags" />
     <x-admin.product-variant-add :categories="$categories" :brands="$brands" :colors="$colors" :sizes="$sizes" />
     @if($products->isEmpty())
@@ -144,12 +144,9 @@
         <div class="relative mb-6">
             <i class="fas fa-search-minus text-gray-200 text-8xl"></i>
         </div>
-        <h3 class="text-2xl font-semibold text-gray-700 mb-2">Không tìm thấy sản phẩm</h3>
+        <h3 class="text-2xl font-semibold text-gray-700 mb-2">Không tìm thấy</h3>
         <p class="text-gray-500 text-center max-w-sm mb-8">
-            Hãy thử tìm lại với tham số khác!
-        </p>
-        <p class="text-gray-500 text-center max-w-sm mb-8">
-            Hoặc do chưa có sản phẩm nào, hãy thêm một sản phẩm mới!
+            Hãy thử tìm lại với tham số khác hoặc thêm mới!
         </p>
     </div>
     @else

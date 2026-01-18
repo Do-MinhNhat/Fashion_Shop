@@ -13,7 +13,12 @@ class Category extends Model
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'slug'];
+    protected $fillable = ['name', 'slug', 'status'];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     protected function name(): Attribute
     {
@@ -31,5 +36,22 @@ class Category extends Model
 
     public function products(): HasMany{
         return $this->hasMany(Product::class);
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('id', $search);
+            });
+        });
+
+        $query->when(isset($filters['status']), function ($query) use ($filters) {
+            $query->where('status', $filters['status']);
+        });
+
+        return $query;
     }
 }

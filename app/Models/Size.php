@@ -26,4 +26,21 @@ class Size extends Model
     {
         return $this->hasMany(Variant::class);
     }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('id', $search);
+            });
+        });
+
+        $query->when(isset($filters['status']), function ($query) use ($filters) {
+            $query->where('status', $filters['status']);
+        });
+
+        return $query;
+    }
 }
