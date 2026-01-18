@@ -17,7 +17,7 @@
 
     <div class="relative z-20 text-center text-white px-4 animate-fade-in-up">
         <h2 class="text-sm md:text-base uppercase tracking-[0.5em] mb-4 drop-shadow-md">Bộ sưu tập Xuân Hè 2026</h2>
-        <h1 class="text-5xl md:text-8xl font-serif font-bold mb-8 drop-shadow-lg">The Art of Silence</h1>
+        <h1 class="text-5xl md:text-8xl  font-bold mb-8 drop-shadow-lg">The Art of Silence</h1>
         <a href="/Client/Product/ProductList.html" class="inline-block border border-white px-10 py-4 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-500 backdrop-blur-sm bg-white/10">
             Khám phá ngay <i class="fa-solid fa-arrow-right ml-2"></i>
         </a>

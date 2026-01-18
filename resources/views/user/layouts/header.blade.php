@@ -7,7 +7,7 @@
             </button>
 
             {{-- Logo --}}
-            <a href="{{ route('user.home.index') }}" class="text-3xl font-serif font-bold tracking-widest uppercase">
+            <a href="{{ route('user.home.index') }}" class="text-3xl  font-bold tracking-widest uppercase">
                 CDHN.
             </a>
 
@@ -71,10 +71,10 @@
 
         {{-- MOBILE MENU --}}
         <div id="mobile-menu" class="fixed inset-0 z-40 bg-white transform -translate-x-full transition-transform duration-300 lg:hidden flex flex-col pt-24 px-6 space-y-6">
-            <a href="{{ route('user.product.index', ['gender' => 'men']) }}" class="text-xl font-serif font-bold border-b pb-2">Nam</a>
-            <a href="{{ route('user.product.index', ['gender' => 'women']) }}" class="text-xl font-serif font-bold border-b pb-2">Nữ</a>
-            <a href="{{ route('user.product.index', ['category' => 'giay']) }}" class="text-xl font-serif font-bold border-b pb-2">Giày</a>
-            <a href="{{ route('user.product.index') }}" class="text-xl font-serif font-bold border-b pb-2">Bộ sưu tập</a>
+            <a href="{{ route('user.product.index', ['gender' => 'men']) }}" class="text-xl  font-bold border-b pb-2">Nam</a>
+            <a href="{{ route('user.product.index', ['gender' => 'women']) }}" class="text-xl  font-bold border-b pb-2">Nữ</a>
+            <a href="{{ route('user.product.index', ['category' => 'giay']) }}" class="text-xl  font-bold border-b pb-2">Giày</a>
+            <a href="{{ route('user.product.index') }}" class="text-xl  font-bold border-b pb-2">Bộ sưu tập</a>
             <a href="{{ route('login') }}" class="text-center w-full py-3 border border-black uppercase font-bold text-sm tracking-widest mt-4">Đăng nhập</a>
             <a href="{{ route('register') }}" class="text-center w-full py-3 bg-black text-white uppercase font-bold text-sm tracking-widest">Đăng ký ngay</a>
         </div>

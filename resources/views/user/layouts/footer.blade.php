@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto px-6">
         @if(!Auth::check())
         <div class="flex flex-col items-center text-center mb-16 max-w-2xl mx-auto">
-            <h2 class="font-serif text-3xl md:text-4xl font-medium mb-4">Join the CDHN World</h2>
+            <h2 class=" text-3xl md:text-4xl font-medium mb-4">Join the CDHN World</h2>
             <p class="text-gray-500 text-sm mb-8 leading-relaxed">
                 Đăng ký để nhận những cập nhật mới nhất về bộ sưu tập, sự kiện nghệ thuật và ưu đãi độc quyền dành riêng cho thành viên.
             </p>
@@ -16,7 +16,7 @@
         @endif
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 border-t border-gray-100 pt-12">
             <div class="space-y-4">
-                <a href="#" class="text-2xl font-serif font-bold tracking-widest uppercase block">CDHN.</a>
+                <a href="#" class="text-2xl  font-bold tracking-widest uppercase block">CDHN.</a>
                 <p class="text-xs text-gray-500 leading-6">
                     Vietnam Office<br>
                     65 Huynh Thuc Khang Street, District 1<br>

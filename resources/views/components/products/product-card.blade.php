@@ -12,8 +12,9 @@
 @endphp
 
 <div class="group relative product-card-item" data-id="{{ $product->id }}">
-    {{-- IMAGE CONTAINER --}}
+    
     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100 w-full rounded-lg">
+        {{-- IMAGE --}}
         <a href="{{ route('user.product.show', $product->slug) }}" class="block w-full h-full">
             <img
                 src="{{ $imageUrl }}"
@@ -64,7 +65,7 @@
     {{-- INFO --}}
     <div class="text-center">
         <a href="{{ route('user.product.show', $product->slug) }}">
-            <h4 class="font-serif text-base text-gray-900 group-hover:underline transition-colors line-clamp-1 px-2">
+            <h4 class="text-base text-gray-900 group-hover:underline transition-colors line-clamp-1 px-2">
                 {{ $product->name }}
             </h4>
             <div class="flex justify-center items-center gap-2 mt-1">

@@ -10,7 +10,7 @@
         <div class="flex flex-col md:flex-row justify-between items-end mb-10 pb-4 border-b border-gray-100">
             <div>
                 <span class="text-xs text-gray-400 uppercase tracking-widest">Kết quả tìm kiếm cho</span>
-                <h1 class="text-3xl font-serif mt-1 italic">"Váy dạ hội" <span class="text-lg not-italic text-gray-400 ">(12 kết quả)</span></h1>
+                <h1 class="text-3xl  mt-1 italic">"Váy dạ hội" <span class="text-lg not-italic text-gray-400 ">(12 kết quả)</span></h1>
             </div>
 
             <div class="flex gap-4 mt-4 md:mt-0 w-full md:w-auto">
@@ -101,7 +101,7 @@
                     {{-- Info card --}}
                     <div>
                         <a href="{{ route('user.product.show',$product) }}">
-                            <h4 class="font-serif text-lg group-hover:underline decoration-1 underline-offset-4 truncate">{{ $product->name }}</h4>
+                            <h4 class=" text-lg group-hover:underline decoration-1 underline-offset-4 truncate">{{ $product->name }}</h4>
                             <div class="flex justify-between items-center mt-1">
                                 @if ($product->sale_price > 0)
                                 <p class="text-red-600 text-sm">

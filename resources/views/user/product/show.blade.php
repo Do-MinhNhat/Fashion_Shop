@@ -41,7 +41,7 @@
                 <span class="text-sm text-gray-400 tracking-widest uppercase block mb-2">
                     {{ $product->category->name ?? 'Collection' }}
                 </span>
-                <h1 class="text-3xl md:text-4xl font-serif mb-4 text-gray-900">
+                <h1 class="text-3xl md:text-4xl  mb-4 text-gray-900">
                     {{ $product->name }}
                 </h1>
                 <div class="flex items-end gap-4 mb-6">
@@ -171,7 +171,7 @@
 
     {{-- Gợi ý sản phẩm liên quan --}}
     <div class="py-16 border-t border-gray-100">
-        <h3 class="font-serif text-2xl mb-8 text-center">Các sản phẩm liên quan </h3>
+        <h3 class=" text-2xl mb-8 text-center">Các sản phẩm liên quan </h3>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
             @foreach($relatedProducts as $relatedProduct)
                 @include('components.products.product-card', ['relatedProduct' => $product])
@@ -181,12 +181,12 @@
 
     {{-- Đánh giá sản phẩm --}}
     <div class="py-16 border-t border-gray-100 mt-16" id="reviews-section">
-        <h3 class="font-serif text-2xl mb-10">Đánh giá khách hàng</h3>
+        <h3 class=" text-2xl mb-10">Đánh giá khách hàng</h3>
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
             {{-- THỐNG KÊ RATING --}}
             <div class="lg:col-span-4 space-y-8">
                 <div class="bg-gray-50 p-8 text-center">
-                    <div class="text-5xl font-serif font-bold text-gray-900 mb-2">{{ $product->rating }}</div>
+                    <div class="text-5xl  font-bold text-gray-900 mb-2">{{ $product->rating }}</div>
                     <div class="flex justify-center gap-1 text-yellow-500 text-sm mb-2">
                         @for ($i = 1; $i <= 5; $i++)
                             @if ($i <= floor($averageRating))
