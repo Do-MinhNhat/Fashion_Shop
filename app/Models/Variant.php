@@ -4,11 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Variant extends Model
 {
     /** @use HasFactory<\Database\Factories\VariantFactory> */
     use HasFactory;
+
+    protected $fillable = ['product_id', 'size_id', 'color_id', 'price', 'sale_price', 'quantity', 'status'];
 
     protected static function booted()
     {
@@ -17,20 +21,18 @@ class Variant extends Model
             $variant->product->update(['price' => $minPrice]);
         });
     }
-
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
-
-    public function color()
+  
+    public function color(): BelongsTo
     {
         return $this->belongsTo(Color::class);
     }
 
-    public function size()
+    public function size(): BelongsTo
     {
         return $this->belongsTo(Size::class);
     }
-}
 
+    public function product(): BelongsTo{
+        return $this->belongsTo(Product::class);
+    }
+}

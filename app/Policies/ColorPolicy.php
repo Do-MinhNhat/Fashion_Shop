@@ -13,23 +13,14 @@ class ColorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Color $color): bool
-    {
-        return false;
-    }
-
     /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -37,7 +28,7 @@ class ColorPolicy
      */
     public function update(User $user, Color $color): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -45,7 +36,7 @@ class ColorPolicy
      */
     public function delete(User $user, Color $color): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -53,7 +44,7 @@ class ColorPolicy
      */
     public function restore(User $user, Color $color): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 
     /**
@@ -61,6 +52,6 @@ class ColorPolicy
      */
     public function forceDelete(User $user, Color $color): bool
     {
-        return false;
+        return in_array($user->role->name, ['admin-product', 'admin-head']);
     }
 }

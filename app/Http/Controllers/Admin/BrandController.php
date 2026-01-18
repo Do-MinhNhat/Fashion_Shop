@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Brand;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
+
+use function Pest\Laravel\json;
 
 class BrandController extends Controller
 {
@@ -30,7 +32,14 @@ class BrandController extends Controller
      */
     public function store(StoreBrandRequest $request)
     {
-        //
+        $brand = Brand::create($request->validated());
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $brand,
+            ], 201);
+        }
+        return redirect()->back()->with('success', "Đã thêm thương hiệu: '{$brand->name}'!");
     }
 
     /**

@@ -15,7 +15,7 @@ class ProductController extends Controller
         $products = Product::where('status', true)
             ->with('variants')
             ->latest()
-            ->paginate(12) 
+            ->paginate(12)
             ->withQueryString();
 
         return view('user.product.index', compact('products'));
@@ -28,6 +28,10 @@ class ProductController extends Controller
             ->where('status', 1)
             ->with(['variants.color', 'variants.size'])
             ->firstOrFail();
+
+        $viewData = [];
+        $viewData['title'] = $product->name;
+        $viewData['subtitle'] = $product->name;
 
         // Lấy Color duy nhất và đang active
         $colors = $product->variants

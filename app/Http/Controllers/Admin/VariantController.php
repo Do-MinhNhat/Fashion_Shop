@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Variant;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVariantRequest;
 use App\Http\Requests\UpdateVariantRequest;
+use Illuminate\Database\QueryException;
 
 class VariantController extends Controller
 {
@@ -30,7 +31,8 @@ class VariantController extends Controller
      */
     public function store(StoreVariantRequest $request)
     {
-        //
+        $variant = Variant::create($request->validated());
+        return back()->with('success', "Đã thêm biến thể cho '{$variant->product->name}!");
     }
 
     /**
@@ -60,8 +62,19 @@ class VariantController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Variant $variant)
+    public function delete(Variant $variant)
     {
-        //
+        if($variant->product->variants->count() == 1){
+            return back()->with('error', 'Bạn không thể xóa biến thể cuối cùng');
+        }
+        try {
+            $variant->delete();
+        } catch (QueryException $error) {
+            if ($error->getCode() == "23000") { //Kiểm tra khóa ngoại
+                return back()->with('error', 'Dữ liệu này đang được sử dụng ở nơi khác, không thể xóa vĩnh viễn!');
+            }
+            return back()->with('error', 'Lỗi hệ thống: Không thể thực hiện lệnh xóa.');
+        }
+        return back()->with('success', 'Đã xóa biến thể');
     }
 }

@@ -70,6 +70,6 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role()->where('name','like','admin%')->exists();
+        return $this->role()->where('name', 'like', 'admin%')->exists();
     }
 }

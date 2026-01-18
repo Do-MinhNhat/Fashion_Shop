@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Tag;
 use App\Http\Controllers\Controller;
@@ -30,7 +30,14 @@ class TagController extends Controller
      */
     public function store(StoreTagRequest $request)
     {
-        //
+        $tag = Tag::create($request->validated());
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $tag,
+            ], 201);
+        }
+        return redirect()->back()->with('success', 'Đã thêm nhãn:' . $tag->name . '!');
     }
 
     /**
