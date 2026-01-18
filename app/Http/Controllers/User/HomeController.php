@@ -10,8 +10,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $viewData["title"] = "Trang chủ - Fashion Shop";
-
         // 1. Sản phẩm mới
         $newProducts = Product::with('variants')
             ->where('status', 1)
