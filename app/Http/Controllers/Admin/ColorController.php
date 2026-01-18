@@ -37,7 +37,7 @@ class ColorController extends Controller
                 'data' => $color,
             ], 201);
         }
-        return redirect()->back()->with('success', 'Đã thêm màu sắc:' . $color->name . '!');
+        return redirect()->back()->with('success', "Đã thêm màu sắc: '{$color->name}'!");
     }
 
     /**

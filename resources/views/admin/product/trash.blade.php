@@ -1,6 +1,9 @@
 @extends('admin.layouts.app')
 @section('title', $viewData['title'])
 @section('subtitle', $viewData['subtitle'])
+@section('link')
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+@endsection
 @section('head-script')
 <script>
     tailwind.config = {
@@ -19,6 +22,11 @@
             }
         }
     }
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
     window.axios = axios;
     window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -27,10 +35,8 @@
         window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
     }
 </script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @endsection
 @section('content')
-
 @if (session('error'))
 <div class="flex justify-center m-5">
     <div style="color: #721c24; padding: 10px; border: 1px solid #721c24; background: #f8d7da;">
@@ -47,7 +53,6 @@
 @endif
 
 <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
-    @if(!$products->isEmpty())
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div class="flex gap-3 w-full md:w-auto">
             <a href="{{ route('admin.product.index') }}">
@@ -56,16 +61,32 @@
                 </button>
             </a>
             <div class="relative w-full md:w-96">
-                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input type="text" placeholder="Tìm kiếm sản phẩm..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
+                <i class="fas fa-search fa-lg absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input form="filter-form" value="{{ request('search') }}" name="search" type="text" placeholder="Tìm kiếm theo ID, tên sản phẩm" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
             </div>
         </div>
-        <div class="flex gap-3 w-full md:w-auto">
-            <button class="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm">
-                <i class="fas fa-filter mr-2"></i> Bộ lọc
-            </button>
+        <div class="flex gap-3 w-full md:w-auto" x-data="{}">
+            <div id="unfill-button"></div>
+            <div id="fill-button"></div>
+            <div id="filter-button"></div>
         </div>
     </div>
+    <x-admin.product-filter :categories="$categories" :brands="$brands" :tags="$tags" />
+    @if($products->isEmpty())
+    <div class="flex flex-col items-center justify-center py-16 px-4">
+        <div class="relative mb-6">
+            <i class="fas fa-trash-alt text-gray-200 text-8xl"></i>
+            <div class="absolute -bottom-2 -right-2 bg-white rounded-full p-1">
+                <i class="fas fa-check-circle text-green-500 text-3xl"></i>
+            </div>
+        </div>
+        <h3 class="text-2xl font-semibold text-gray-700 mb-2">Thùng rác trống</h3>
+        <p class="text-gray-500 text-center max-w-sm mb-8">
+            Hiện tại vẫn chưa có gì bị xóa cả! <br />
+            Hoặc do không tìm thấy sản phẩm nào, hãy thử lại với tham số khác!
+        </p>
+    </div>
+    @else
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-100 border-b border-gray-200">
@@ -189,24 +210,6 @@
         <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
             {{ $products->links() }}
         </div>
-    </div>
-    @else
-    <div class="flex flex-col items-center justify-center py-16 px-4">
-        <div class="relative mb-6">
-            <i class="fas fa-trash-alt text-gray-200 text-8xl"></i>
-            <div class="absolute -bottom-2 -right-2 bg-white rounded-full p-1">
-                <i class="fas fa-check-circle text-green-500 text-3xl"></i>
-            </div>
-        </div>
-        <h3 class="text-2xl font-semibold text-gray-700 mb-2">Thùng rác trống</h3>
-        <p class="text-gray-500 text-center max-w-sm mb-8">
-            Hiện tại vẫn chưa có gì bị xóa cả!
-        </p>
-        <a href="{{ route('admin.product.index') }}"
-            class="flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-black text-white rounded-full transition-all shadow-lg hover:shadow-xl active:scale-95">
-            <i class="fas fa-arrow-left"></i>
-            <span>Quay lại</span>
-        </a>
     </div>
     @endif
 </div>

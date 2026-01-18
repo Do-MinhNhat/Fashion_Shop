@@ -32,7 +32,7 @@ class UpdateProductRequest extends FormRequest
             'description' => 'nullable|string|max:10000',
             'thumbnail' => 'nullable|shop_image',
             'status' => 'nullable|boolean',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'prohibited',
             'brand_id' => 'required|exists:brands,id',
             //Variant
             'variants' => [
@@ -69,9 +69,7 @@ class UpdateProductRequest extends FormRequest
             'slug.unique' => 'Slug đã tồn tại',
             'description.max' => 'mô tả sản phẩm không quá 10000 ký tự',
             'status.boolean' => 'Trạng thái không hợp lệ',
-            'category_id.exists' => 'Danh mục không tồn tại',
-            'brand_id.exists' => 'Thương hiệu không tồn tại',
-            'category_id.exists' => 'Danh mục không tồn tại',
+            'category_id.prohibited' => 'Không được phép chỉnh sửa danh mục!',
             'brand_id.exists' => 'Thương hiệu không tồn tại',
 
 

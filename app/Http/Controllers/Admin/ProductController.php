@@ -13,8 +13,7 @@ use App\Models\Color;
 use App\Models\Size;
 use App\Models\Tag;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Carbon;
-use SebastianBergmann\Environment\Console;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -22,25 +21,31 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $viewData = [];
         $viewData['title'] = 'Admin - Sản phẩm';
         $viewData['subtitle'] = 'Quản lý sản phẩm';
 
-        $products = Product::with(['variants', 'tags', 'images'])->Paginate(5)->withQueryString();
+        $products = Product::query()->filter($request->all())->with(['variants', 'tags', 'images'])->Paginate(10)->withQueryString();
 
         $brands = Brand::where('status', true)->get();
 
         $categories = Category::where('status', true)->with('sizes')->get();
 
+        $tags = Tag::where('status', true)->get();
+
         $colors = Color::where('status', true)->get();
 
-        $tags = Tag::where('status', true)->get();
 
         $sizes = Size::where('status', true)->get();
 
-        return view('admin.product.index', compact('products', 'viewData', 'brands', 'categories', 'colors', 'tags', 'sizes'));
+        $counts = Product::selectRaw("
+            sum(case when status = 1 then 1 else 0 end) as active_count,
+            sum(case when status = 0 then 1 else 0 end) as inactive_count
+        ")->first();
+
+        return view('admin.product.index', compact('products', 'viewData', 'brands', 'categories', 'colors', 'tags', 'sizes', 'counts'));
     }
     /**
      * Show the form for creating a new resource.
@@ -147,12 +152,12 @@ class ProductController extends Controller
     public function delete(Product $product)
     {
         $product->delete();
-        return back()->with('success', 'Đã xóa sản phẩm "' . $product->name . '" ID: ' . $product->id);
+        return back()->with('success', "Đã xóa sản phẩm '{$product->name}' ID: '{$product->id}'");
     }
     public function restore(Product $product)
     {
         $product->restore();
-        return back()->with('success', 'Khôi phục sản phẩm "' . $product->name . '" ID: ' . $product->id);
+        return back()->with('success', "Khôi phục sản phẩm '{$product->name}' ID: '{$product->id}'");
     }
     public function forceDelete(Product $product)
     {
@@ -172,14 +177,22 @@ class ProductController extends Controller
         foreach ($images as $img) {
             $this->deleteImage($img);
         }
-        return back()->with('success', 'Đã xóa vĩnh viễn sản phẩm "' . $name . 'ID: "' . $id);
+        return back()->with('success', "Đã xóa vĩnh viễn sản phẩm {$name} ID: {$id}");
     }
-    public function trash()
+    public function trash(Request $request)
     {
         $viewData = [];
         $viewData['title'] = 'Admin - Sản phẩm';
         $viewData['subtitle'] = 'Thùng rác sản phẩm';
-        $products = Product::onlyTrashed()->with('variants')->paginate(10);
-        return view('admin.product.trash', compact('products', 'viewData'));
+
+        $products = Product::query()->filter($request->all())->onlyTrashed()->with('variants')->paginate(15)->withQueryString();
+
+        $brands = Brand::where('status', true)->get();
+
+        $categories = Category::where('status', true)->get();
+
+        $tags = Tag::where('status', true)->get();
+
+        return view('admin.product.trash', compact('products', 'viewData', 'brands', 'tags', 'categories'));
     }
 }

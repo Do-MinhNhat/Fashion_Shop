@@ -73,16 +73,16 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng sản phẩm</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $products->count() }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $products->total() }}</p>
             </div>
         </div>
         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
             <div class="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center text-xl">
-                <i class="fas fa-exclamation-triangle"></i>
+                <i class="fas fa-eye-slash"></i>
             </div>
             <div>
-                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Sắp hết hàng</p>
-                <p class="text-2xl font-bold text-red-500">12</p>
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Không hoạt động</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $counts->inactive_count }}</p>
             </div>
         </div>
         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -90,8 +90,8 @@
                 <i class="fas fa-eye"></i>
             </div>
             <div>
-                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Đang hiển thị</p>
-                <p class="text-2xl font-bold text-gray-900">1,180</p>
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Đang hoạt động</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $counts->active_count }}</p>
             </div>
         </div>
     </div>
@@ -122,8 +122,8 @@
                 </button>
             </a>
             <div class="relative w-full md:w-96">
-                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input name="search" type="text" placeholder="Tìm kiếm theo ID, tên sản phẩm, từ khóa..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
+                <i class="fas fa-search fa-lg absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input form="filter-form" value="{{ request('search') }}" name="search" type="text" placeholder="Tìm kiếm theo ID, tên sản phẩm" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
             </div>
         </div>
         <div class="flex gap-3 w-full md:w-auto" x-data="{}">
@@ -139,6 +139,20 @@
     <x-admin.product-edit :categories="$categories" :brands="$brands" :tags="$tags" :colors="$colors" :sizes="$sizes" />
     <x-admin.product-filter :categories="$categories" :brands="$brands" :tags="$tags" />
     <x-admin.product-variant-add :categories="$categories" :brands="$brands" :colors="$colors" :sizes="$sizes" />
+    @if($products->isEmpty())
+    <div class="flex flex-col items-center justify-center py-16 px-4">
+        <div class="relative mb-6">
+            <i class="fas fa-search-minus text-gray-200 text-8xl"></i>
+        </div>
+        <h3 class="text-2xl font-semibold text-gray-700 mb-2">Không tìm thấy sản phẩm</h3>
+        <p class="text-gray-500 text-center max-w-sm mb-8">
+            Hãy thử tìm lại với tham số khác!
+        </p>
+        <p class="text-gray-500 text-center max-w-sm mb-8">
+            Hoặc do chưa có sản phẩm nào, hãy thêm một sản phẩm mới!
+        </p>
+    </div>
+    @else
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-100 border-b border-gray-200">
@@ -184,13 +198,16 @@
                         {{ $product->brand->name }}
                     </td>
                     <td class="p-4 text-center">
+
+                        @if($product->status)
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
-                            @if($product->status)
                             <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Hoạt động
-                            @else
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Không hoạt động
-                            @endif
                         </span>
+                        @else
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Không hoạt động
+                        </span>
+                        @endif
                     </td>
                     <td class="p-4 text-center">
                         <span class="text-sm text-gray-600">{{ $product->variants->sum('quantity') }}</span>
@@ -268,12 +285,12 @@
                 </tr>
             </tbody>
             @endforeach
-            </tbody>
         </table>
         <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
             {{ $products->links() }}
         </div>
     </div>
+    @endif
 </div>
 @endsection
 @push('scripts')

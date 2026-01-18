@@ -63,7 +63,7 @@
                                     <div>
                                         <label class="text-xs font-semibold uppercase text-gray-500">Danh mục</label>
                                         <span x-ref="categoryError" class="text-xs text-red-500 italic">Kích cỡ dựa trên danh mục!</span>
-                                        <select x-ref="categorySelect" name="category_id" class="cursor-pointer" disabled>
+                                        <select x-ref="categorySelect" class="cursor-pointer" disabled>
                                             <option value="" disabled selected hidden>Chọn danh mục...</option>
                                             @foreach ($categories as $category)
                                             <option value="{{$category->id}}" @selected(old('category_id')==$category->id)>{{$category->name}}</option>

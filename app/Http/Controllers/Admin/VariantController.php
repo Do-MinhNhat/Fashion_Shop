@@ -32,7 +32,7 @@ class VariantController extends Controller
     public function store(StoreVariantRequest $request)
     {
         $variant = Variant::create($request->validated());
-        return redirect()->back()->with("success', 'Đã thêm biến thể cho '{$variant->product->name}'!");
+        return back()->with('success', "Đã thêm biến thể cho '{$variant->product->name}!");
     }
 
     /**

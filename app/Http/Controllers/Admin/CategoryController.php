@@ -39,7 +39,7 @@ class CategoryController extends Controller
                 'data' => $category,
             ], 201);
         }
-        return redirect()->back()->with('success', 'Đã thêm danh mục:' . $category->name . '!');
+        return redirect()->back()->with('success', "Đã thêm danh mục: '{$category->name}'!");
     }
 
     /**

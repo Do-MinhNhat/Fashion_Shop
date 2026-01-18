@@ -1,5 +1,5 @@
 @props(['categories', 'brands', 'tags'])
-<div x-data="{ isFilterOpen: {{ request()->anyFilled(['search','brands' , 'category', 'min_price', 'max_price']) ? 'true' : 'false' }} }">
+<div x-data="{ isFilterOpen: {{ request()->anyFilled(['tags', 'brand', 'category', 'status']) ? 'true' : 'false' }} }">
     <template x-teleport="#filter-button">
         <button @click="isFilterOpen = !isFilterOpen" class="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 shadow-sm" :class="isFilterOpen ? 'ring-2 ring-blue-500 border-blue-500 text-blue-600' : 'text-gray-700'">
             <i class="fas fa-filter mr-2"></i> Bộ lọc
@@ -12,14 +12,14 @@
         x-transition:enter-end="opacity-100 translate-y-0"
         class="bg-white border border-gray-200 rounded-xl p-6 mb-6 shadow-inner"
         style="display: none;" class="bg-white">
-        <form action="{{ url()->current() }}" method="GET">
+        <form id="filter-form" action="{{ url()->current() }}" method="GET">
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Từ khóa</label>
-                    <select id="tag-filter" name="tag" multiple>
+                    <select id="tag-filter" name="tags[]" multiple>
                         <option value="">Chọn nhiều từ khóa...</option>
                         @foreach($tags as $tag)
-                        <option value="{{ $tag->id }}" {{ request('tag') == $tag->id ? 'selected' : '' }}>{{ $tag->name }}</option>
+                        <option value="{{ $tag->id }}" {{ in_array($tag->id, (array)request('tags')) ? 'selected' : '' }}>{{ $tag->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -45,11 +45,11 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nhãn hiệu</label>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Trạng thái</label>
                     <select id="status-filter" name="status">
                         <option value="">Tất cả</option>
-                        <option value="1" {{ request('status') == 1? 'selected' : '' }}>Hoạt động</option>
-                        <option value="0" {{ request('status') === 0? 'selected' : '' }}>Không hoạt động</option>
+                        <option value="1" {{ request('status') === '1'? 'selected' : '' }}>Hoạt động</option>
+                        <option value="0" {{ request('status') === '0'? 'selected' : '' }}>Không hoạt động</option>
                     </select>
                 </div>
                 <div class="flex gap-4 items-center mt-3">

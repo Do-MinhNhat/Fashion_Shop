@@ -37,7 +37,7 @@ class SizeController extends Controller
                 'data' => $size,
             ], 201);
         }
-        return redirect()->back()->with('success', 'Đã thêm màu sắc:' . $size->name . '!');
+        return redirect()->back()->with('success', "Đã thêm màu sắc: '{$size->name}!");
     }
 
     /**

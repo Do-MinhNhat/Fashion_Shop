@@ -39,7 +39,7 @@ class BrandController extends Controller
                 'data' => $brand,
             ], 201);
         }
-        return redirect()->back()->with('success', 'Đã thêm thương hiệu: ' . $brand->name . '1');
+        return redirect()->back()->with('success', "Đã thêm thương hiệu: '{$brand->name}'!");
     }
 
     /**
