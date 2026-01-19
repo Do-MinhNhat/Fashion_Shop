@@ -320,6 +320,7 @@
         </div>
     </template>
 </div>
+@once
 @push('scripts')
 <script>
     function productEditManager() {
@@ -665,3 +666,4 @@
     }
 </script>
 @endpush
+@endonce

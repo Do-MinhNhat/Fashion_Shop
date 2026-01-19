@@ -128,6 +128,7 @@
         </div>
     </template>
 </div>
+@once
 @push('scripts')
 <script>
     function productVariantAddManager() {
@@ -332,3 +333,4 @@
     }
 </script>
 @endpush
+@endonce

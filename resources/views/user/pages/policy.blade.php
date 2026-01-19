@@ -1,4 +1,3 @@
-            Khách hàng có quyền kiểm tra sản phẩm trước khi thanh toán.
 @extends('user.layouts.app')
 @section('title', 'Chính sách bảo mật')
 
