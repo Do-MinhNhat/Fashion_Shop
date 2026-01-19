@@ -87,7 +87,7 @@
                                         <div class="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center
                                             transition-all duration-200 hover:scale-110
                                             peer-checked:ring-2 peer-checked:ring-offset-1 peer-checked:ring-black peer-checked:border-transparent"
-                                            style="background: {{ $color->name }};">
+                                            style="background: {{ $color->hex_code }};">
                                         </div>
                                     </label>
                                 @endforeach
@@ -174,7 +174,7 @@
         <h3 class=" text-2xl mb-8 text-center">Các sản phẩm liên quan </h3>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
             @foreach($relatedProducts as $relatedProduct)
-                @include('components.products.product-card', ['relatedProduct' => $product])
+                <x-products.product-card :product="$relatedProduct" />
             @endforeach
         </div>
     </div>
@@ -233,7 +233,7 @@
             <div class="lg:col-span-8">
                 <div class="space-y-8 pt-4">
                     @forelse($reviews as $review)
-                        @include('components.cardReview.review-card', ['review' => $review])
+                        <x-cardReview.review-card :review="$review" />
                     @empty
                         <div class="text-center py-10">
                             <p class="text-gray-500">Chưa có đánh giá nào cho sản phẩm này.</p>

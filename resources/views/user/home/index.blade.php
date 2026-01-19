@@ -3,7 +3,7 @@
 
 @section('content')
 
-@include('components.slideshow.slideshow', ['slides' => $slides])
+<x-slideshow.slideshow :slides="$slides" />
 
 <!-- Content -->
 <main class="max-w-7xl mx-auto">
@@ -21,7 +21,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12">
             <!-- Product Card -->
             @foreach($newProducts as $product)
-                @include('components.products.product-card', ['product' => $product])
+                <x-products.product-card :product="$product" />
             @endforeach
         </div>
     </section>
@@ -40,7 +40,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12">
             <!-- Product Card -->
             @foreach($featuredProducts as $product)
-                @include('components.products.product-card', ['product' => $product])
+                <x-products.product-card :product="$product" />
             @endforeach
         </div>
     </section>
@@ -59,7 +59,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12">
             <!-- Product Card -->
             @foreach($collectionProducts as $product)
-                @include('components.products.product-card', ['product' => $product])
+                <x-products.product-card :product="$product" />
             @endforeach
         </div>
     </section>
@@ -78,7 +78,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12">
             <!-- Product Card -->
             @foreach($bestSellerProducts as $product)
-                @include('components.products.product-card', ['product' => $product])
+                <x-products.product-card :product="$product" />
             @endforeach
         </div>
     </section>

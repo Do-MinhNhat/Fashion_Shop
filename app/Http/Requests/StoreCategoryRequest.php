@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 
 class StoreCategoryRequest extends FormRequest
 {
+    protected $errorBag = 'add';
+
     public function authorize(): bool
     {
         return $this->user()->isAdmin();
@@ -20,8 +22,9 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:categories,name',
+            'name' => 'required|string|max:255',
             'slug' => 'required|unique:categories,slug',
+            'status' => 'nullable|boolean',
         ];
     }
 
@@ -29,7 +32,6 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên danh mục không được để trống',
-            'name.unique' => 'Tên danh mục đã tồn tại',
             'slug.unique' => 'Tên danh mục đã tồn tại',
         ];
     }

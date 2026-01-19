@@ -1,13 +1,12 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\admin;
 
 use Closure;
-use App\Models\Contact as  ContactModel;
-use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use Illuminate\Contracts\View\View;
 
-class Contact extends Component
+class tag-add extends Component
 {
     /**
      * Create a new component instance.
@@ -22,6 +21,6 @@ class Contact extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.contact',['contact'=>ContactModel::where('status',true)->get()]);
+        return view('components.admin.tag-add');
     }
 }
