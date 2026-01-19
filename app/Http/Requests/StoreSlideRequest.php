@@ -22,9 +22,12 @@ class StoreSlideRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required|shop_image',
-            'url' => 'required|string|max:255',
-            'status' => 'required|boolean',
+            'title'       => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'url'         => 'nullable|string|max:255',
+            'sort_order'  => 'required|integer',
+            'status'      => 'required|boolean',
+            'image'       => 'required|shop_image',
         ];
     }
     public function messages(): array
@@ -32,6 +35,7 @@ class StoreSlideRequest extends FormRequest
         return [
             'image.required' => 'Vui lòng chọn ảnh cho slide.',
             'url.required' => 'Đường dẫn liên kết không được để trống.',
+            'sort_order.required' => 'Vui lòng nhập thứ tự hiển thị.',
             'status.required' => 'Vui lòng chọn trạng thái hiển thị.',
             'status.boolean' => 'Trạng thái không hợp lệ',
         ];
