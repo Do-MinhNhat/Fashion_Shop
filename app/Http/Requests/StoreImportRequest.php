@@ -23,6 +23,7 @@ class StoreImportRequest extends FormRequest
     {
         return [
             'products' => 'required|array|min:1',
+            'status' => 'nullable|boolean',
             'products.*.variant_id' => 'required|distinct|exists:variants,id',
             'products.*.quantity' => 'required|integer|min:1',
             'products.*.price' => 'required|numeric|min:0',

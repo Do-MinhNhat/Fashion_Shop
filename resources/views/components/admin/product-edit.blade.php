@@ -1,5 +1,5 @@
-@props(['categories', 'brands', 'tags', 'colors', 'sizes'])
-<div x-data="{ open: {{ $errors->edit->any()? 'true' : 'false' }}, product: {{ $errors->edit->any()? json_encode(old()) : json_encode((object)[]) }} }"
+@props(['brands', 'tags', 'colors', 'sizes'])
+<div x-data="{ open: {{ $errors->edit->any()? 'true' : 'false' }}, oldData: {{ $errors->edit->any()? json_encode(old()) : json_encode((object)[]) }}, product: {} }"
     x-show="open"
     x-on:open-edit-modal.window="open = true; product = $event.detail"
     style="display: none;"
@@ -41,21 +41,21 @@
                         </div>
                         <!-- Content -->
                         <div class="p-6 overflow-y-auto custom-scrollbar">
-                            <form method="POST" :action="'{{ route('admin.product.update', ['product' => ':slug']) }}'.replace(':slug', product.slug)" x-ref="productForm" class="space-y-6" enctype="multipart/form-data" @submit="handleSubmit($event)">
+                            <form method="POST" :action="'{{ route('admin.product.update', ['product' => ':slug']) }}'.replace(':slug', oldData.slug)" x-ref="productForm" class="space-y-6" enctype="multipart/form-data" @submit="handleSubmit($event)">
                                 @method('PUT')
                                 @csrf
+                                @foreach ($errors->edit->all() as $error)
+                                <li class="text-red-700 text-sm flex items-start">
+                                    <i class="fas fa-caret-right mt-1 mr-2 text-red-400"></i>
+                                    {{ $error }}
+                                </li>
+                                @endforeach
                                 <!-- Tên -->
                                 <div class=" grid grid-cols-1 md:grid-cols-1">
                                     <div>
-                                        @foreach ($errors->edit->all() as $error)
-                                        <li class="text-red-700 text-sm flex items-start">
-                                            <i class="fas fa-caret-right mt-1 mr-2 text-red-400"></i>
-                                            {{ $error }}
-                                        </li>
-                                        @endforeach
                                         <label class="text-xs font-semibold uppercase text-gray-500">Tên sản phẩm</label>
                                         <span x-ref="nameError" class="text-xs text-red-500 italic">*</span>
-                                        <input x-model="product.name" x-ref="nameInput" type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255">
+                                        <input x-model="oldData.name" x-ref="nameInput" type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Nhập tên sản phẩm" maxlength="255">
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -63,12 +63,7 @@
                                     <div>
                                         <label class="text-xs font-semibold uppercase text-gray-500">Danh mục</label>
                                         <span x-ref="categoryError" class="text-xs text-red-500 italic">Kích cỡ dựa trên danh mục!</span>
-                                        <select x-ref="categorySelect" class="cursor-pointer" disabled>
-                                            <option value="" disabled selected hidden>Chọn danh mục...</option>
-                                            @foreach ($categories as $category)
-                                            <option value="{{$category->id}}" @selected(old('category_id')==$category->id)>{{$category->name}}</option>
-                                            @endforeach
-                                        </select>
+                                        <input x-ref="categoryName" value="{{ old('category_name') }}" name="category_name" class="w-full h-9 p-2.5 border rounded text-sm" readonly>
                                     </div>
                                     <!-- Nhãn hiệu -->
                                     <div>
@@ -77,7 +72,7 @@
                                         <select x-ref="brandSelect" name="brand_id" class="cursor-pointer">
                                             <option value="" disabled selected hidden>Chọn nhãn hiệu...</option>
                                             @foreach ($brands as $brand)
-                                            <option value="{{$brand->id}}" @selected(old('brand_id')==$brand->id)>{{$brand->name}}</option>
+                                            <option value="{{$brand->id}}">{{$brand->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -113,14 +108,14 @@
                                         <span class="text-xs font-semibold uppercase text-gray-500">Trạng thái của sản phẩm</span>
                                         <div class="inline-flex p-1 bg-gray-100 rounded-lg">
                                             <label class="cursor-pointer">
-                                                <input type="radio" name="status" value="1" class="peer hidden" x-model="product.status">
+                                                <input type="radio" name="status" value="1" class="peer hidden" x-model="oldData.status">
                                                 <span class="flex items-center px-4 py-2 text-xs font-bold rounded-md transition-all peer-checked:bg-white peer-checked:text-green-600 peer-checked:shadow-sm text-gray-400 hover:text-gray-600">
                                                     <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
                                                     Hoạt động
                                                 </span>
                                             </label>
                                             <label class="cursor-pointer">
-                                                <input type="radio" name="status" value="0" class="peer hidden" x-model="product.status">
+                                                <input type="radio" name="status" value="0" class="peer hidden" x-model="oldData.status">
                                                 <span class="flex items-center px-4 py-2 text-xs font-bold rounded-md transition-all peer-checked:bg-white peer-checked:text-red-500 peer-checked:shadow-sm text-gray-400 hover:text-gray-600">
                                                     <span class="w-2 h-2 rounded-full bg-red-400 mr-2"></span>
                                                     Tạm ẩn
@@ -245,7 +240,7 @@
                                     <select x-ref="tagSelect" name="tags[]" multiple>
                                         <option value="" disabled selected hidden>Chọn nhiều nhãn...</option>
                                         @foreach ($tags as $tag)
-                                        <option value="{{$tag->id}}" @selected(in_array($tag->id, old('tags', [])))>{{$tag->name}}</option>
+                                        <option value="{{$tag->id}}">{{$tag->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -253,15 +248,17 @@
                                 <!-- Mô tả -->
                                 <div>
                                     <label class="text-xs font-semibold uppercase text-gray-500">Mô tả</label>
-                                    <textarea x-model="product.description" name="description" rows="3" class="w-full p-2.5 border rounded text-sm" placeholder="Mô tả ngắn sản phẩm..."></textarea>
+                                    <textarea x-model="oldData.description" name="description" rows="3" class="w-full p-2.5 border rounded text-sm" placeholder="Mô tả ngắn sản phẩm..."></textarea>
                                 </div>
-
                                 <!-- Footer -->
                                 <div class="flex justify-end gap-3 pt-3 border-t">
                                     <button type="button" @click="open = false" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
                                     <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu sản phẩm</button>
                                 </div>
                                 <input type="hidden" x-ref="variantsInput" name="variants_data" :value="JSON.stringify(variants)">
+                                <input type="hidden" x-ref="slugInput" name="slug" x-model="oldData.slug">
+                                <input type="hidden" name="old_thumbnail" x-model="oldData.old_thumbnail">
+                                <input type="hidden" name="old_images" x-model="oldData.old_images">
                                 <input type="file" x-ref="thumbnailInput" name="cropped-thumbnail" class="hidden">
                                 <input type="file" x-ref="imagesInput" name="cropped-images[]" class="hidden" multiple>
                             </form>
@@ -329,49 +326,11 @@
         return {
             isExpanded: false,
             variants: JSON.parse(`{!! old('variants_data', '[]') !!}`),
-            colorMap: JSON.parse('@json($colors -> pluck("hex_code", "id"))'),
+            colorMap: JSON.parse('@json($colors -> pluck("hex_code", "id") ?? [])'),
             sizeName: JSON.parse('@json($sizes -> pluck("name", "id"))'),
 
             init() {
-                console.table(this.product);
                 const self = this;
-                this.tsCategory = new TomSelect(this.$refs.categorySelect, {
-                    create: async function(input, callback) {
-                        if (confirm('Xác nhận thêm?')) {
-                            const data = {
-                                name: input
-                            };
-                            const msg = self.$refs.categoryError;
-                            try {
-                                msg.innerHTML = "...";
-                                const res = await axios.post("{{ route('admin.category.store') }}", data)
-                                const result = res.data;
-                                callback({
-                                    value: result.data.id,
-                                    text: result.data.name,
-                                });
-                                msg.className = 'text-xs text-green-500 italic'
-                                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
-                            } catch (error) {
-                                callback(false);
-                                if (error.response) {
-                                    msg.className = 'text-xs text-red-500 italic';
-                                    msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
-                                } else {
-                                    console.log('Fetch error:', error);
-                                    alert('Không thể kết nối đến server');
-                                }
-                            }
-                        } else {
-                            callback(false);
-                        }
-                    },
-                    sortField: {
-                        field: "text",
-                        order: "asc"
-                    },
-                });
-
                 this.tsBrand = new TomSelect(this.$refs.brandSelect, {
                     create: async function(input, callback) {
                         if (confirm('Xác nhận thêm?')) {
@@ -533,30 +492,24 @@
                 });
 
                 this.$watch('product', (product) => {
-                    this.tsCategory.setValue(String(product.category_id));
+                    this.$refs.categoryName.value = String(product.category.name);
+                    this.oldData.slug = String(product.slug);
+                    this.oldData.name = String(product.name);
+                    this.oldData.description = String(product.description);
+                    this.oldData.status = String(product.status);
+                    this.oldData.old_thumbnail = String(product.thumbnail);
+                    if (product.images) this.oldData.old_images = product.images.map(i => i.url);
+                    this.variants = Object.values(product.variants);
                     this.tsBrand.setValue(String(product.brand_id));
                     this.tsTag.setValue(product.tags.map(t => String(t.id)));
-                    this.variants = Object.values(product.variants);
+                    this.$refs['preview-1'].src = '{{ asset("storage") }}/' + product.thumbnail;
 
                     const imgs = [];
 
-                    for (let i = 1; i <= 5; i++) {
-                        this.$refs['preview-' + i].classList.add('hidden');
-                        this.$refs['preview-' + i].src = '';
-                        this.$refs['upload-' + i].value = '';
-                        this.$refs['image-' + i].classList.remove('hidden');
-                        this.$refs['btn-replace-' + i].classList.add('hidden');
-                    }
-
-                    product.images.forEach(i => {
-                        imgs.push(i.url);
-                    })
-
-                    //Thumbnail
-                    this.$refs['preview-1'].classList.remove('hidden');
-                    this.$refs['preview-1'].src = '{{ asset("storage") }}/' + product.thumbnail;
-                    this.$refs['image-1'].classList.add('hidden');
-                    this.$refs['btn-replace-1'].classList.remove('hidden');
+                    if (product.images)
+                        product.images.forEach(i => {
+                            imgs.push(i.url);
+                        })
 
                     imgs.forEach((img) => {
                         let index = Number(img.split('.').shift().split('_').pop());
@@ -566,6 +519,37 @@
                         this.$refs['btn-replace-' + index].classList.remove('hidden');
                     })
                 });
+
+                if (this.oldData) {
+                    this.tsBrand.setValue(String(this.oldData.brand_id));
+                    if (this.oldData.tags)
+                        this.tsTag.setValue(this.oldData.tags);
+
+                    for (let i = 1; i <= 5; i++) {
+                        this.$refs['preview-' + i].classList.add('hidden');
+                        this.$refs['preview-' + i].src = '';
+                        this.$refs['upload-' + i].value = '';
+                        this.$refs['image-' + i].classList.remove('hidden');
+                        this.$refs['btn-replace-' + i].classList.add('hidden');
+                    }
+
+                    //Thumbnail
+                    this.$refs['preview-1'].classList.remove('hidden');
+                    this.$refs['preview-1'].src = '{{ asset("storage") }}/' + this.oldData.old_thumbnail;
+                    this.$refs['image-1'].classList.add('hidden');
+                    this.$refs['btn-replace-1'].classList.remove('hidden');
+
+                    if (this.oldData.old_images) {
+                        const imgs = this.oldData.old_images.split(',');
+                        imgs.forEach((img) => {
+                            let index = Number(img.split('.').shift().split('_').pop());
+                            this.$refs['preview-' + index].classList.remove('hidden');
+                            this.$refs['preview-' + index].src = '{{ asset("storage") }}/' + img;
+                            this.$refs['image-' + index].classList.add('hidden');
+                            this.$refs['btn-replace-' + index].classList.remove('hidden');
+                        })
+                    }
+                }
             },
 
             handleSubmit(e) {
@@ -579,7 +563,6 @@
                 //Kiểm tra trước khi submit
                 const name = this.$refs.nameInput;
                 const brand = this.$refs.brandSelect;
-                const category = this.$refs.categorySelect;
 
                 // Kiểm tra rỗng
                 if (!variantsRaw || variantsRaw === '[]') {
@@ -601,16 +584,6 @@
                     e.preventDefault();
                     const brandMsg = this.$refs.brandError;
                     brandMsg.innerHTML = "Vui lòng chọn nhãn hiệu!";
-                    brandMsg.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    })
-                }
-
-                if (!category.value) {
-                    e.preventDefault();
-                    const brandMsg = this.$refs.categoryError;
-                    brandMsg.innerHTML = "Vui lòng chọn danh mục!";
                     brandMsg.scrollIntoView({
                         behavior: 'smooth',
                         block: 'center'
