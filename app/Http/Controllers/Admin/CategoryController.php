@@ -19,7 +19,7 @@ class CategoryController extends Controller
     {
         $viewData = [];
         $viewData['title'] = 'Admin - Sản phẩm';
-        $viewData['subtitle'] = 'Quản lý sản phẩm - Danh mục';
+        $viewData['subtitle'] = 'Quản lý danh mục';
 
         $categories = Category::query()->filter($request->all())->paginate(10)->withQueryString();
 
@@ -92,7 +92,7 @@ class CategoryController extends Controller
     {
         $viewData = [];
         $viewData['title'] = 'Admin - Sản phẩm';
-        $viewData['subtitle'] = 'Thùng rác sản phẩm - Danh mục';
+        $viewData['subtitle'] = 'Quản lý danh mục - Thùng rác';
 
         $categories = Category::query()->filter($request->all())->onlyTrashed()->paginate(15)->withQueryString();
 

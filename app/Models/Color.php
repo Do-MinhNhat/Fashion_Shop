@@ -13,7 +13,7 @@ class Color extends Model
     /** @use HasFactory<\Database\Factories\ColorFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'hex_code'];
+    protected $fillable = ['name', 'hex_code', 'status'];
 
     protected function name(): Attribute
     {

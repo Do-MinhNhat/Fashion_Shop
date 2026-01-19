@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreColorRequest extends FormRequest
 {
+    protected $errorBag = 'add';
+
     public function authorize(): bool
     {
         return $this->user()->isAdmin();
@@ -18,7 +20,8 @@ class StoreColorRequest extends FormRequest
             'hex_code' => [
                 'required',
                 'regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/',
-            ]
+            ],
+            'status' => 'nullable|boolean',
         ];
     }
 

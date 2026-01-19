@@ -20,6 +20,7 @@ class UpdateVariantRequest extends FormRequest
             'price'        => 'required|numeric|min:0',
             'sale_price'   => 'nullable|numeric|min:0|lte:price',
             'quantity'     => 'required|integer|min:0',
+            'status' => 'nullable|boolean',
         ];
     }
 

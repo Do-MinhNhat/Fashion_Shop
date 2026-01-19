@@ -2,7 +2,6 @@
 @section('title', $viewData['title'])
 @section('subtitle', $viewData['subtitle'])
 @section('link')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
 <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 @endsection
 @section('head-script')
@@ -24,7 +23,6 @@
         }
     }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -69,10 +67,10 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
             <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
-                <i class="fas fa-list"></i>
+                <i class="fas fa-tag"></i>
             </div>
             <div>
-                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng thương hiệu</p>
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng nhãn</p>
                 <p class="text-2xl font-bold text-gray-900">{{ $counts->total_count }}</p>
             </div>
         </div>
@@ -116,7 +114,7 @@
     </div>
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div class="flex gap-3 w-full md:w-auto">
-            <a href="{{ route('admin.brand.trash') }}">
+            <a href="{{ route('admin.tag.trash') }}">
                 <button class="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm">
                     <i class="fas fa-trash mr-2"></i> Thùng rác
                 </button>
@@ -132,9 +130,9 @@
             </button>
         </div>
     </div>
-    <x-admin.brand-add />
-    <x-admin.brand-edit />
-    @if($brands->isEmpty())
+    <x-admin.tag-add />
+    <x-admin.tag-edit />
+    @if($tags->isEmpty())
     <div class="flex flex-col items-center justify-center py-16 px-4">
         <div class="relative mb-6">
             <i class="fas fa-search-minus text-gray-200 text-8xl"></i>
@@ -151,30 +149,25 @@
                 <tr>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">STT</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mã số</th>
-                    <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tên thương hiệu</th>
+                    <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tên nhãn</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Trạng thái</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Thao tác</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 text-center" x-data="{}">
-                @foreach ($brands as $brand)
+                @foreach ($tags as $tag)
                 <tr class="group hover:bg-blue-50 transition border-b transition-colors duration-300">
                     <td class="p-4 text-sm border-r font-medium text-center">
                         {{ $loop->iteration }}
                     </td>
                     <td class="p-4 text-sm font-medium text-center">
-                        {{ $brand->id }}
+                        {{ $tag->id }}
                     </td>
                     <td class="p-4">
-                        <div class="flex items-center gap-4">
-                            <img src="{{ asset('storage/'.$brand->image) }}" class="w-10 h-10 object-cover rounded bg-gray-100">
-                            <div>
-                                <p class="font-medium text-gray-900 group-hover:text-blue-600 transition">{{ $brand->name }}</p>
-                            </div>
-                        </div>
+                        <p class="font-medium text-gray-900 group-hover:text-blue-600 transition">{{ $tag->name }}</p>
                     </td>
                     <td class="p-4 text-center">
-                        @if($brand->status)
+                        @if($tag->status)
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Hoạt động
                         </span>
@@ -185,8 +178,8 @@
                         @endif
                     </td>
                     <td class="p-4 flex flex-row justify-center gap-2">
-                        <button @click="$dispatch('open-edit-modal', @js($brand))" class=" text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit fa-lg"></i></button>
-                        <form action="{{ route('admin.brand.delete', $brand) }}" method="POST" style="display:inline;">
+                        <button @click="$dispatch('open-edit-modal', @js($tag))" class=" text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit fa-lg"></i></button>
+                        <form action="{{ route('admin.tag.delete', $tag) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="text-gray-400 hover:text-red-500 p-2 transition" @click="if(!confirm('Bạn có chắc chắn muốn xóa?')) $event.preventDefault()">
@@ -199,7 +192,7 @@
             </tbody>
         </table>
         <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            {{ $brands->links() }}
+            {{ $tags->links() }}
         </div>
     </div>
     @endif

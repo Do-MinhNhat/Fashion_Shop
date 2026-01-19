@@ -5,7 +5,7 @@
             <input value="{{ request('search') }}" name="search" type="text" placeholder="Tìm kiếm mã số, tên" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
         </div>
         <div>
-            <select id="status-filter" name="status" @change="$el.closest('form').submit()" class="h-[42px] w-full pl-4 pr-10 py-2 bg-white border border-gray-200 rounded-xl text-sm
+            <select id="status-filter" name="status" @change="$el.form.submit()" class="h-[42px] w-full pl-4 pr-10 py-2 bg-white border border-gray-200 rounded-xl text-sm
            appearance-none cursor-pointer
            focus:outline-none focus:ring-4 focus:ring-black/5 focus:border-black
            transition-all shadow-sm">

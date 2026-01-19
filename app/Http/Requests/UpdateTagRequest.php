@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTagRequest extends FormRequest
 {
+    protected $errorBag = 'edit';
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -23,17 +24,16 @@ class UpdateTagRequest extends FormRequest
     {
         $id = $this->route('tag')->id;
         return [
-            'name' => 'required|string|max:255|unique:tags,name,' . $id,
-            'slug' => 'required|string|max:255|unique:tags,slug,' . $id,
+            'name' => 'required|string|max:255',
+            'slug' => 'required|unique:tags,slug,' . $id,
+            'status' => 'required|boolean',
         ];
     }
     public function messages(): array
     {
         return [
-            'name.max'      => 'Tên tag tối đa 255 ký tự',
-            'name.unique'   => 'Tên tag đã tồn tại',
-            'slug.max'      => 'Slug tối đa 255 ký tự',
-            'slug.unique'   => 'Slug đã tồn tại',
+            'name.required' => 'Tên Nhãn không được để trống',
+            'slug.unique'   => 'Nhãn đã tồn tại đã tồn tại',
         ];
     }
 }

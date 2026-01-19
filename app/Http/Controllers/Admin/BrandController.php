@@ -19,7 +19,7 @@ class BrandController extends Controller
     {
         $viewData = [];
         $viewData['title'] = 'Admin - Sản phẩm';
-        $viewData['subtitle'] = 'Quản lý sản phẩm - Danh mục';
+        $viewData['subtitle'] = 'Quản lý thương hiệu';
 
         $brands = Brand::query()->filter($request->all())->Paginate(10)->withQueryString();
 
@@ -57,13 +57,13 @@ class BrandController extends Controller
      */
     public function update(UpdateBrandRequest $request, Brand $brand)
     {
-        $brand->update($request->validated());
+        $data = $request->validated();
         if ($request->hasFile('image')) {
-            $this->deleteImage($brand->image);
+            $this->deleteImage($brand->getOriginal('image'));
             $imgName = "{$brand->id}_{$brand->slug}." . $request->file('image')->extension();
-            $imgPath = $this->uploadImage($imgName, $request->file('image'), 'brand');
-            $brand->update(['image' => $imgPath]);
+            $data['image'] = $this->uploadImage($imgName, $request->file('image'), 'brand');
         }
+        $brand->update($data);
         return back()->with('success', "Đã cập nhật thương hiệu: '{$brand->name}' ID: '{$brand->id}'");
     }
 
@@ -99,8 +99,11 @@ class BrandController extends Controller
 
     public function trash(Request $request)
     {
-        $brands = Brand::query()->filter($request->all())->onlyTrashed()->paginate(15)->withQueryString();
+        $viewData = [];
+        $viewData['title'] = 'Admin - Sản phẩm';
+        $viewData['subtitle'] = 'Quản lý thương hiệu - Thùng rác';
 
-        return view('admin.brand.trash', compact('brands'));
+        $brands = Brand::query()->filter($request->all())->onlyTrashed()->paginate(15)->withQueryString();
+        return view('admin.brand.trash', compact('brands', 'viewData'));
     }
 }
