@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ToggleWishlistRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -20,24 +21,16 @@ class WishlistController extends Controller
         return view('user.profile.wishlist.index', compact('wishlists'));
     }    
 
-    public function toggle(Request $request)
+    public function toggle(ToggleWishlistRequest $request)
     {
         // 1. Check Login
         if (!Auth::check()) {
             return response()->json(['status' => 'error', 'message' => 'Bạn cần đăng nhập.'], 401);
         }
 
-        // 2. Validate
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'variant_id' => 'nullable|exists:variants,id', 
-        ]);
-
-        $userId = Auth::id();
+        $userId    = Auth::id();
         $productId = $request->product_id;
-        
-        // Nếu JS không gửi variant_id thì mặc định là null
-        $variantId = $request->input('variant_id'); 
+        $variantId = $request->input('variant_id');
 
         // 3. Query tìm kiếm
         $wishlist = Wishlist::where('user_id', $userId)
@@ -46,30 +39,25 @@ class WishlistController extends Controller
                             ->first();
 
         if ($wishlist) {
-            // --- XÓA ---
             $wishlist->delete();
-            
-            // SỬA TẠI ĐÂY: status phải là 'success' để JS nhận biết
             return response()->json([
-                'status' => 'success', 
-                'action' => 'removed', // Thêm biến action để tracking nếu cần
+                'status' => 'success',
+                'action' => 'removed',
                 'message' => 'Đã xóa khỏi yêu thích'
             ]);
-        } else {
-            // --- TẠO MỚI ---
-            Wishlist::create([
-                'user_id' => $userId,
-                'product_id' => $productId,
-                'variant_id' => $variantId 
-            ]);
-            
-            // SỬA TẠI ĐÂY: status phải là 'success'
-            return response()->json([
-                'status' => 'success', 
-                'action' => 'added',
-                'message' => 'Đã thêm vào yêu thích'
-            ]);
         }
+
+        Wishlist::create([
+            'user_id'    => $userId,
+            'product_id' => $productId,
+            'variant_id' => $variantId
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'action' => 'added',
+            'message' => 'Đã thêm vào yêu thích'
+        ]);
     }
 
     public function destroy($id)
