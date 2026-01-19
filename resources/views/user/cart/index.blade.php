@@ -2,7 +2,6 @@
 @section('title', 'Giỏ hàng')
 
 @section('content')
-@include('user.layouts.navigation')
 
 <div class="pt-24 pb-20 max-w-7xl mx-auto px-6 text-gray-900 bg-white">
     <div class="text-center mb-16 animate-fade-in-up">
@@ -142,7 +141,7 @@
         {{-- Grid sản phẩm --}}
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 gap-y-10">
             @foreach($suggestedProducts as $product)
-                @include('components.products.product-card')
+                <x-products.product-card :product="$product" />
             @endforeach
         </div>
     </div>

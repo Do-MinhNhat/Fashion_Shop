@@ -4,7 +4,7 @@
 
 <div class="max-w-[1440px] pt-20 mx-auto flex min-h-screen bg-white">
     <!-- Filter -->
-    @include('components.sidebar.product-sidebar-filter')
+    <x-sidebar.product-sidebar-filter />
 
     <main class="flex-1 p-6 lg:p-10">
         <div class="flex flex-col md:flex-row justify-between items-end mb-10 pb-4 border-b border-gray-100">
@@ -95,7 +95,7 @@
                         </div>
 
                         {{-- BADGES --}}
-                        @include('components.badges.badges', ['product' => $product])
+                        <x-badges.badges :product="$product" />
                     </div>
 
                     {{-- Info card --}}
