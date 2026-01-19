@@ -57,8 +57,8 @@
             <div>
                 <h4 class="font-bold text-xs uppercase tracking-widest mb-6">Về CDHN</h4>
                 <ul class="space-y-3 text-sm text-gray-500">
-                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Điều khoản dịch vụ</a></li>
-                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Chính sách bảo mật</a></li>
+                    <li><a href="{{ route('terms') }}" class="hover:text-black hover:underline underline-offset-4 transition">Điều khoản dịch vụ</a></li>
+                    <li><a href="{{ route('privacy') }}"class="hover:text-black hover:underline underline-offset-4 transition">Chính sách bảo mật</a></li>
                 </ul>
             </div>
         </div>
