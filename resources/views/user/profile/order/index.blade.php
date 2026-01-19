@@ -7,7 +7,7 @@
     @include('components.sidebar.profile-sidebar')
 
     <main class="flex-1 bg-white p-8 shadow-sm">
-        <h2 class="text-xl font-serif font-bold mb-6">Đơn hàng của tôi</h2>
+        <h2 class="text-xl  font-bold mb-6">Đơn hàng của tôi</h2>
         
         <div class="space-y-6">
             <div class="border border-gray-100 rounded-lg p-6 hover:shadow-md transition">

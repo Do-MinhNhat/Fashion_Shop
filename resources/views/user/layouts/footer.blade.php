@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto px-6">
         @if(!Auth::check())
         <div class="flex flex-col items-center text-center mb-16 max-w-2xl mx-auto">
-            <h2 class="font-serif text-3xl md:text-4xl font-medium mb-4">Join the CDHN World</h2>
+            <h2 class=" text-3xl md:text-4xl font-medium mb-4">Join the CDHN World</h2>
             <p class="text-gray-500 text-sm mb-8 leading-relaxed">
                 Đăng ký để nhận những cập nhật mới nhất về bộ sưu tập, sự kiện nghệ thuật và ưu đãi độc quyền dành riêng cho thành viên.
             </p>
