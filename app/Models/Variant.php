@@ -21,7 +21,7 @@ class Variant extends Model
             $variant->product->update(['price' => $minPrice]);
         });
     }
-  
+
     public function color(): BelongsTo
     {
         return $this->belongsTo(Color::class);

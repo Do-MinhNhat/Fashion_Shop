@@ -11,8 +11,18 @@ use App\Models\Review;
 
 class ReviewController extends Controller
 {
+    public function index()
+    {
+         $reviews = Review::with('product')
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('user.review.index', compact('reviews'));
+    }
     public function store(StoreReviewRequest $request, $productId)
     {
+        
         $userId = Auth::id();
 
         // Kiểm tra đã mua + đã nhận hàng (status 4)

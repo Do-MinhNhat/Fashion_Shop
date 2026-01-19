@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 
 class StoreBrandRequest extends FormRequest
 {
+    protected $errorBag = 'add';
+
     public function authorize(): bool
     {
         return $this->user()->isAdmin();
@@ -18,22 +20,14 @@ class StoreBrandRequest extends FormRequest
             'slug' => Str::slug($this->name),
         ]);
     }
-    //Thêm thông báo lỗi của slug vào name
-    protected function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            $errors = $validator->errors();
-            if ($errors->has('slug')) {
-                $errors->add('name', $errors->first('slug'));
-            }
-        });
-    }
+
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:brands,name',
+            'name' => 'required|string|max:255',
             'slug' => 'required|unique:brands,slug',
             'image' => 'nullable|shop_image',
+            'status' => 'nullable|boolean',
         ];
     }
 
@@ -41,7 +35,6 @@ class StoreBrandRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên thương hiệu không được để trống',
-            'name.unique' => 'Tên thương hiệu đã tồn tại',
             'slug.unique' => 'Tên thương hiệu đã tồn tại',
         ];
     }
