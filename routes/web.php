@@ -23,6 +23,8 @@ use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\User\WishlistController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ContactController;
+
 //User Checkout Route
 //-----------------------------
 //User Home Route
@@ -38,7 +40,8 @@ Route::get('/san-pham/{product:slug}', [ProductController::class, 'show'])->name
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
+// route thong tin lien he
+Route::get('/contact',[ContactController::class,'index'])->name('user.contact');
 Route::middleware('auth')->group(function () {
     //User ^^^^^^^^^^^^^^^^^^^^^^^^^^
     // Profile
@@ -151,6 +154,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:admin-head')->group(function () {
             Route::get('/cau-hinh', [AdminHomeController::class, 'index'])->name('admin.setting.index');
         });
+        
     });
 });
 
