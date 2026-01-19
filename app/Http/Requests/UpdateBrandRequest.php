@@ -3,12 +3,22 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class UpdateBrandRequest extends FormRequest
 {
+    protected $errorBag = 'edit';
+
     public function authorize(): bool
     {
         return $this->user()->isAdmin();
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'slug' => Str::slug($this->name),
+        ]);
     }
 
     public function rules(): array

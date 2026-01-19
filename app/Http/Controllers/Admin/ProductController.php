@@ -41,6 +41,7 @@ class ProductController extends Controller
         $sizes = Size::where('status', true)->get();
 
         $counts = Product::selectRaw("
+            count(*) as total_count,
             sum(case when status = 1 then 1 else 0 end) as active_count,
             sum(case when status = 0 then 1 else 0 end) as inactive_count
         ")->first();

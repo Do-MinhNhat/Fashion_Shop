@@ -24,6 +24,7 @@ class CategoryController extends Controller
         $categories = Category::query()->filter($request->all())->paginate(10)->withQueryString();
 
         $counts = Category::selectRaw("
+            count(*) as total_count,
             sum(case when status = 1 then 1 else 0 end) as active_count,
             sum(case when status = 0 then 1 else 0 end) as inactive_count
         ")->first();

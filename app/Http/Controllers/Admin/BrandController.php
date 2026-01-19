@@ -6,10 +6,12 @@ use App\Models\Brand;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
+use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
+    use ImageTrait;
     /**
      * Display a listing of the resource.
      */
@@ -22,6 +24,7 @@ class BrandController extends Controller
         $brands = Brand::query()->filter($request->all())->Paginate(10)->withQueryString();
 
         $counts = Brand::selectRaw("
+            count(*) as total_count,
             sum(case when status = 1 then 1 else 0 end) as active_count,
             sum(case when status = 0 then 1 else 0 end) as inactive_count
         ")->first();
@@ -30,19 +33,16 @@ class BrandController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreBrandRequest $request)
     {
         $brand = Brand::create($request->validated());
+        if ($request->hasFile('image')) {
+            $imgName = "{$brand->id}_{$brand->slug}." . $request->file('image')->extension();
+            $imgPath = $this->uploadImage($imgName, $request->file('image'), 'brand');
+            $brand->update(['image' => $imgPath]);
+        }
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => 'success',
@@ -53,27 +53,17 @@ class BrandController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Brand $brand)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Brand $brand)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateBrandRequest $request, Brand $brand)
     {
         $brand->update($request->validated());
+        if ($request->hasFile('image')) {
+            $this->deleteImage($brand->image);
+            $imgName = "{$brand->id}_{$brand->slug}." . $request->file('image')->extension();
+            $imgPath = $this->uploadImage($imgName, $request->file('image'), 'brand');
+            $brand->update(['image' => $imgPath]);
+        }
         return back()->with('success', "Đã cập nhật thương hiệu: '{$brand->name}' ID: '{$brand->id}'");
     }
 

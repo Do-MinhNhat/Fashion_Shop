@@ -38,7 +38,7 @@
                         </div>
                         <!-- Content -->
                         <div class="p-6 overflow-y-auto custom-scrollbar">
-                            <form method="POST" :action="'{{ route('admin.brand.update', ['brand' => ':slug']) }}'.replace(':slug', oldData.slug)" x-ref="brandForm" class="space-y-6" @submit="handleSubmit($event)">
+                            <form method="POST" :action="'{{ route('admin.brand.update', ['brand' => ':slug']) }}'.replace(':slug', oldData.slug)" x-ref="brandForm" class="space-y-6" @submit="handleSubmit($event)" enctype="multipart/form-data">
                                 @method('PUT')
                                 @csrf
                                 @foreach ($errors->edit->all() as $error)
@@ -79,7 +79,7 @@
                                                                 <p class="text-xs text-gray-400 font-medium">PNG, JPG hoặc JPEG (Tỉ lệ 1:1)</p>
                                                                 <p class="text-xs text-gray-400 font-medium">Tối đa: 2MB</p>
                                                             </div>
-                                                            <input x-ref="upload-1" data-index="1" @change="handleImageChange($event)" type="file" class="hidden" accept="image/*" />
+                                                            <input x-ref="upload-1" @change="handleImageChange($event)" type="file" class="hidden" accept="image/*" />
                                                         </label>
                                                     </div>
                                                     <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 hidden" x-ref="preview-1" src="">
@@ -119,6 +119,8 @@
                                     <button type="button" @click="open = false" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
                                     <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu</button>
                                 </div>
+                                <input type="hidden" x-ref="slugInput" name="slug" x-model="oldData.slug">
+                                <input type="hidden" name="old_image" x-model="oldData.old_image">
                                 <input type="file" x-ref="imageInput" name="image" class="hidden">
                             </form>
                         </div>
@@ -133,7 +135,7 @@
     function brandEditManager() {
         return {
             init() {
-                window.croppedEditImages = null;
+                window.croppedEditImages = {};
                 var el = this.$refs.uploadCrop;
                 if (el) {
                     this.uploadCrop = new Croppie(el, {
@@ -165,8 +167,8 @@
                     this.uploadCrop.result({
                         type: 'blob',
                         size: {
-                            width: 1000,
-                            height: 1000,
+                            width: 700,
+                            height: 700,
                         } // Tỉ lệ 1:1
                     }).then((blob) => {
                         // 2. Hiển thị xem trước vào đúng ô
@@ -184,9 +186,8 @@
                             this.$refs.imageArea.classList.remove('hidden');
                             this.$refs.imageError.innerHTML = '';
                         }
-                        // 3. Lưu blob vào mảng toàn cục theo Index
-                        window.croppedEditImages = blob;
-
+                        // 3. Lưu blob vào mảng toàn cục
+                        window.croppedEditImages[1] = blob;
                         //Ẩn vùng cắt ảnh
                         this.$refs.cropArea.classList.add('hidden');
                     });
@@ -195,9 +196,11 @@
                 this.$watch('brand', (brand) => {
                     this.oldData.name = String(brand.name);
                     this.oldData.slug = String(brand.slug);
-                    this.oldData.image = String(brand.image);
                     this.oldData.status = String(brand.status);
+                    this.oldData.old_image = String(brand.image);
+                    this.$refs['preview-1'].src = '{{ asset("storage") }}/' + brand.image;
                 })
+
                 if (this.oldData) {
                     //Clear
                     this.$refs['preview-1'].classList.add('hidden');
@@ -206,8 +209,8 @@
                     this.$refs['image-1'].classList.remove('hidden');
                     this.$refs['btn-replace-1'].classList.add('hidden');
                     //Hiện
+                    this.$refs['preview-1'].src = '{{ asset("storage") }}/' + this.oldData.old_image;
                     this.$refs['preview-1'].classList.remove('hidden');
-                    this.$refs['preview-1'].src = '{{ asset("storage") }}/' + this.oldData.image;
                     this.$refs['image-1'].classList.add('hidden');
                     this.$refs['btn-replace-1'].classList.remove('hidden');
                 }
@@ -228,9 +231,9 @@
                 }
 
                 const image = new DataTransfer();
-                const blob = window.croppedEditImages;
+                const blob = window.croppedEditImages[1];
                 if (!blob) return;
-                const file = new File([blob], `${index}.png`, {
+                const file = new File([blob], `1.png`, {
                     type: "image/png"
                 });
                 image.items.add(file);
@@ -239,9 +242,7 @@
 
             handleImageChange(event) {
                 const msg = this.$refs.imageError;
-                const index = event.target.getAttribute('data-index'); // Lấy số 1, 2, 3...
                 if (event.target.files && event.target.files[0]) {
-
                     if (!event.target.files[0].type.startsWith('image/')) {
                         msg.innerHTML = 'Chỉ được chọn hình ảnh!';
                         event.target.value = '';
@@ -258,11 +259,6 @@
                         this.uploadCrop.bind({
                             url: e.target.result
                         });
-
-                        // Lưu lại index hiện tại
-                        this.$refs.cropButton.setAttribute('data-target', index);
-                        this.$refs.cropCancelButton.setAttribute('data-target', index);
-
                         msg.innerHTML = '';
                     }
 

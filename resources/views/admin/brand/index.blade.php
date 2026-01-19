@@ -73,7 +73,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng thương hiệu</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $brands->total() }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $counts->total_count }}</p>
             </div>
         </div>
         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -82,7 +82,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Không hoạt động</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $counts->inactive_count ?? 0 }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $counts->inactive_count }}</p>
             </div>
         </div>
         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -91,7 +91,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Đang hoạt động</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $counts->active_count ?? 0 }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $counts->active_count }}</p>
             </div>
         </div>
     </div>
@@ -166,7 +166,12 @@
                         {{ $brand->id }}
                     </td>
                     <td class="p-4">
-                        <p class="font-medium text-gray-900 group-hover:text-blue-600 transition">{{ $brand->name }}</p>
+                        <div class="flex items-center gap-4">
+                            <img src="{{ asset('storage/'.$brand->image) }}" class="w-10 h-10 object-cover rounded bg-gray-100">
+                            <div>
+                                <p class="font-medium text-gray-900 group-hover:text-blue-600 transition">{{ $brand->name }}</p>
+                            </div>
+                        </div>
                     </td>
                     <td class="p-4 text-center">
                         @if($brand->status)

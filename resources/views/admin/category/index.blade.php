@@ -71,7 +71,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng danh mục</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $categories->total() }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $counts->total_count }}</p>
             </div>
         </div>
         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -80,7 +80,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Không hoạt động</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $counts->inactive_count ?? 0 }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $counts->inactive_count }}</p>
             </div>
         </div>
         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -89,7 +89,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Đang hoạt động</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $counts->active_count ?? 0 }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $counts->active_count }}</p>
             </div>
         </div>
     </div>

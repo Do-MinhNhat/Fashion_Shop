@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 
 class StoreBrandRequest extends FormRequest
 {
+    protected $errorBag = 'add';
+
     public function authorize(): bool
     {
         return $this->user()->isAdmin();
@@ -18,16 +20,7 @@ class StoreBrandRequest extends FormRequest
             'slug' => Str::slug($this->name),
         ]);
     }
-    //Thêm thông báo lỗi của slug vào name
-    protected function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            $errors = $validator->errors();
-            if ($errors->has('slug')) {
-                $errors->add('name', $errors->first('slug'));
-            }
-        });
-    }
+
     public function rules(): array
     {
         return [

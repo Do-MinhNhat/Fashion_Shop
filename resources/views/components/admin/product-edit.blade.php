@@ -257,6 +257,8 @@
                                 </div>
                                 <input type="hidden" x-ref="variantsInput" name="variants_data" :value="JSON.stringify(variants)">
                                 <input type="hidden" x-ref="slugInput" name="slug" x-model="oldData.slug">
+                                <input type="hidden" name="old_thumbnail" x-model="oldData.old_thumbnail">
+                                <input type="hidden" name="old_images" x-model="oldData.old_images">
                                 <input type="file" x-ref="thumbnailInput" name="cropped-thumbnail" class="hidden">
                                 <input type="file" x-ref="imagesInput" name="cropped-images[]" class="hidden" multiple>
                             </form>
@@ -495,17 +497,33 @@
                     this.oldData.name = String(product.name);
                     this.oldData.description = String(product.description);
                     this.oldData.status = String(product.status);
+                    this.oldData.old_thumbnail = String(product.thumbnail);
+                    if (product.images) this.oldData.old_images = product.images.map(i => i.url);
                     this.variants = Object.values(product.variants);
                     this.tsBrand.setValue(String(product.brand_id));
                     this.tsTag.setValue(product.tags.map(t => String(t.id)));
+                    this.$refs['preview-1'].src = '{{ asset("storage") }}/' + product.thumbnail;
+
+                    const imgs = [];
+
+                    if (product.images)
+                        product.images.forEach(i => {
+                            imgs.push(i.url);
+                        })
+
+                    imgs.forEach((img) => {
+                        let index = Number(img.split('.').shift().split('_').pop());
+                        this.$refs['preview-' + index].classList.remove('hidden');
+                        this.$refs['preview-' + index].src = '{{ asset("storage") }}/' + img;
+                        this.$refs['image-' + index].classList.add('hidden');
+                        this.$refs['btn-replace-' + index].classList.remove('hidden');
+                    })
                 });
 
                 if (this.oldData) {
                     this.tsBrand.setValue(String(this.oldData.brand_id));
                     if (this.oldData.tags)
                         this.tsTag.setValue(this.oldData.tags);
-
-                    const imgs = [];
 
                     for (let i = 1; i <= 5; i++) {
                         this.$refs['preview-' + i].classList.add('hidden');
@@ -515,24 +533,22 @@
                         this.$refs['btn-replace-' + i].classList.add('hidden');
                     }
 
-                    if (this.oldData.images)
-                        this.oldData.images.forEach(i => {
-                            imgs.push(i.url);
-                        })
-
                     //Thumbnail
                     this.$refs['preview-1'].classList.remove('hidden');
-                    this.$refs['preview-1'].src = '{{ asset("storage") }}/' + this.oldData.thumbnail;
+                    this.$refs['preview-1'].src = '{{ asset("storage") }}/' + this.oldData.old_thumbnail;
                     this.$refs['image-1'].classList.add('hidden');
                     this.$refs['btn-replace-1'].classList.remove('hidden');
 
-                    imgs.forEach((img) => {
-                        let index = Number(img.split('.').shift().split('_').pop());
-                        this.$refs['preview-' + index].classList.remove('hidden');
-                        this.$refs['preview-' + index].src = '{{ asset("storage") }}/' + img;
-                        this.$refs['image-' + index].classList.add('hidden');
-                        this.$refs['btn-replace-' + index].classList.remove('hidden');
-                    })
+                    if (this.oldData.old_images) {
+                        const imgs = this.oldData.old_images.split(',');
+                        imgs.forEach((img) => {
+                            let index = Number(img.split('.').shift().split('_').pop());
+                            this.$refs['preview-' + index].classList.remove('hidden');
+                            this.$refs['preview-' + index].src = '{{ asset("storage") }}/' + img;
+                            this.$refs['image-' + index].classList.add('hidden');
+                            this.$refs['btn-replace-' + index].classList.remove('hidden');
+                        })
+                    }
                 }
             },
 

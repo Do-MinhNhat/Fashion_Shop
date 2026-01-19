@@ -13,7 +13,7 @@ class Brand extends Model
     /** @use HasFactory<\Database\Factories\BrandFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'slug', 'image'];
+    protected $fillable = ['name', 'slug', 'image', 'status'];
 
     public function getRouteKeyName()
     {
