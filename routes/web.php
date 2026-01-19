@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Route;
 //-----------------------------
 //User Home Route
 Route::get('/', [HomeController::class, 'index'])->name('user.home.index');
+Route::get('/policy', function () {return view('user.pages.policy');})->name('policy');
+Route::get('/terms', function () {return view('user.pages.terms');})->name('terms');
 //-----------------------------
 //User Product Route
 Route::get('/san-pham', [ProductController::class, 'index'])->name('user.product.index');
