@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 
 class StoreTagRequest extends FormRequest
 {
+    protected $errorBag = 'add';
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -28,15 +29,15 @@ class StoreTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:tags,name',
+            'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:tags,slug',
+            'status' => 'nullable|boolean',
         ];
     }
     public function messages(): array
     {
         return [
             'name.required' => 'Tên nhãn không được để trống',
-            'name.unique' => 'Nhãn đã tồn tại',
             'slug.unique' => 'Nhãn đã tồn tại',
         ];
     }

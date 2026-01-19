@@ -7,6 +7,8 @@ use Illuminate\Validation\Rule;
 
 class StoreSizeRequest extends FormRequest
 {
+    protected $errorBag = 'add';
+
     public function authorize(): bool
     {
         return $this->user()->isAdmin();
@@ -24,6 +26,7 @@ class StoreSizeRequest extends FormRequest
                 })
             ],
             'category_id' => 'required|exists:categories,id',
+            'status' => 'nullable|boolean',
         ];
     }
 

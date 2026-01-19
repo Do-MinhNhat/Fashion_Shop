@@ -29,18 +29,18 @@ class ProductController extends Controller
 
         $products = Product::query()->filter($request->all())->with(['variants', 'tags', 'images'])->Paginate(10)->withQueryString();
 
-        $brands = Brand::where('status', true)->get();
+        $brands = Brand::all();
 
-        $categories = Category::where('status', true)->with('sizes')->get();
+        $categories = Category::all();
 
-        $tags = Tag::where('status', true)->get();
+        $tags = Tag::all();
 
-        $colors = Color::where('status', true)->get();
+        $colors = Color::all();
 
-
-        $sizes = Size::where('status', true)->get();
+        $sizes = Size::all();
 
         $counts = Product::selectRaw("
+            count(*) as total_count,
             sum(case when status = 1 then 1 else 0 end) as active_count,
             sum(case when status = 0 then 1 else 0 end) as inactive_count
         ")->first();
@@ -187,12 +187,12 @@ class ProductController extends Controller
 
         $products = Product::query()->filter($request->all())->onlyTrashed()->with('variants')->paginate(15)->withQueryString();
 
-        $brands = Brand::where('status', true)->get();
+        $brands = Brand::all();
 
-        $categories = Category::where('status', true)->get();
+        $categories = Category::all();
 
-        $tags = Tag::where('status', true)->get();
-
+        $tags = Tag::all();
+        
         return view('admin.product.trash', compact('products', 'viewData', 'brands', 'tags', 'categories'));
     }
 }

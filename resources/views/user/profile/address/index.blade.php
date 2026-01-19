@@ -5,7 +5,8 @@
 
 <div class="max-w-6xl mx-auto pt-20 pb-10 px-4 flex flex-col md:flex-row gap-8 bg-gray-50  text-gray-800">
     <!-- Sidebar -->
-    @include('components.sidebar.profile-sidebar')
+    <x-sidebar.profile-sidebar />
+
 
     <main class="flex-1 bg-white p-8 shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-end mb-8 border-b border-gray-100 pb-4 gap-4">

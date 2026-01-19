@@ -27,7 +27,7 @@ class UpdateProductRequest extends FormRequest
         $id = $this->route('product')->id;
 
         return [
-            'name' => 'required|string|max:255|unique:products,name,' . $id,
+            'name' => 'required|string|max:255|',
             'slug' => 'required|string|max:255|unique:products,slug,' . $id,
             'description' => 'nullable|string|max:10000',
             'thumbnail' => 'nullable|shop_image',
@@ -64,9 +64,7 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên sản phẩm không được để trống',
-            'name.unique' => 'Tên sản phẩm đã tồn tại',
-            'slug.required' => 'Slug không được để trống',
-            'slug.unique' => 'Slug đã tồn tại',
+            'slug.unique' => 'Tên sản phẩm đã tồn tại',
             'description.max' => 'mô tả sản phẩm không quá 10000 ký tự',
             'status.boolean' => 'Trạng thái không hợp lệ',
             'category_id.prohibited' => 'Không được phép chỉnh sửa danh mục!',

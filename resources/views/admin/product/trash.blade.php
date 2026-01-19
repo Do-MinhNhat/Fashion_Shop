@@ -23,7 +23,6 @@
         }
     }
 </script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
@@ -82,8 +81,7 @@
         </div>
         <h3 class="text-2xl font-semibold text-gray-700 mb-2">Thùng rác trống</h3>
         <p class="text-gray-500 text-center max-w-sm mb-8">
-            Hiện tại vẫn chưa có gì bị xóa cả! <br />
-            Hoặc do không tìm thấy sản phẩm nào, hãy thử lại với tham số khác!
+            Không tìm thấy hoặc chưa có gì cả!
         </p>
     </div>
     @else
