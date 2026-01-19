@@ -4,7 +4,7 @@
 <div class="bg-white rounded-2xl shadow p-6">
 
     <!-- Tiêu đề -->
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 mt-16">
         📇 Thông tin liên hệ
     </h2>
 
