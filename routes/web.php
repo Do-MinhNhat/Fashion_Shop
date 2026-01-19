@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
     // Review
     Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('user.review.store');
-
+    Route::get('/reviews',[ReviewController::class,'index'])->name('user.review.index');
 
 //Admin vvvvvvvvvvvvvvvvvvvvvvvvv
     Route::middleware('is_admin')->prefix('quan-ly')->group(function () {
