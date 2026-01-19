@@ -16,9 +16,10 @@ class UpdateBrandRequest extends FormRequest
         $id = $this->route('brand')->id;
 
         return [
-            'name'  => 'required|string|max:255|unique:brands,name,' . $id,
+            'name'  => 'required|string|max:255',
             'slug'  => 'required|string|max:255|unique:brands,slug,' . $id,
             'image' => 'nullable|shop_image',
+            'status' => 'required|boolean',
         ];
     }
 
@@ -26,9 +27,7 @@ class UpdateBrandRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên thương hiệu không được để trống',
-            'name.unique' => 'Tên thương hiệu đã tồn tại',
-            'slug.required' => 'Slug không được để trống',
-            'slug.unique' => 'Slug đã tồn tại',
+            'slug.unique' => 'Tên thương hiệu đã tồn tại',
         ];
     }
 }

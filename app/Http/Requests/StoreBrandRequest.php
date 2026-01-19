@@ -31,7 +31,7 @@ class StoreBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:brands,name',
+            'name' => 'required|string|max:255',
             'slug' => 'required|unique:brands,slug',
             'image' => 'nullable|shop_image',
         ];
@@ -41,7 +41,6 @@ class StoreBrandRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên thương hiệu không được để trống',
-            'name.unique' => 'Tên thương hiệu đã tồn tại',
             'slug.unique' => 'Tên thương hiệu đã tồn tại',
         ];
     }
