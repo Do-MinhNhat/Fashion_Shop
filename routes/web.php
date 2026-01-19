@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\ShipController as AdminShipController;
 use App\Http\Controllers\Admin\SlideShowController as AdminSlideShowController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\VariantController as AdminVariantController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
@@ -31,6 +32,8 @@ Route::get('/', [HomeController::class, 'index'])->name('user.home.index');
 //User Product Route
 Route::get('/san-pham', [ProductController::class, 'index'])->name('user.product.index');
 Route::get('/san-pham/{product:slug}', [ProductController::class, 'show'])->name('user.product.show');
+Route::get('/chat/messages', [ChatController::class, 'index']);
+Route::post('/chat/send', [ChatController::class, 'store']);
 
 //-----------------------------
 Route::get('/dashboard', function () {
