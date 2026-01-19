@@ -3,7 +3,7 @@
 
 @section('content')
 
-@include('components.slideshow.slideshow')
+@include('components.slideshow.slideshow', ['slides' => $slides])
 
 <!-- Content -->
 <main class="max-w-7xl mx-auto">
@@ -11,7 +11,7 @@
     <section class="px-6 py-12 mt-6">
         <!-- Title -->
         <div class="flex flex-col md:flex-row justify-between items-end mb-10 border-b border-gray-200 pb-4">
-            <h3 class="text-3xl font-serif">Sản phẩm mới</h3>
+            <h3 class="text-3xl font-bold">Sản phẩm mới</h3>
 
             <div class="flex space-x-4 mt-4 md:mt-0 text-sm">
                 <a href="{{ route('user.product.index') }}" class="hover:underline">View All</a>
@@ -30,7 +30,7 @@
     <section class="px-6 py-12">
         <!-- Title -->
         <div class="flex flex-col md:flex-row justify-between items-end mb-10 border-b border-gray-200 pb-4">
-            <h3 class="text-3xl font-serif">Sản Phẩm Nổi Bật</h3>
+            <h3 class="text-3xl font-bold">Sản Phẩm Nổi Bật</h3>
 
             <div class="flex space-x-4 mt-4 md:mt-0 text-sm">
                 <a href="{{ route('user.product.index') }}" class="hover:underline">View All </a>
@@ -49,7 +49,7 @@
     <section class="px-6 py-12">
         <!-- Title -->
         <div class="flex flex-col md:flex-row justify-between items-end mb-10 border-b border-gray-200 pb-4">
-            <h3 class="text-3xl font-serif">Bộ sưu tập hot</h3>
+            <h3 class="text-3xl font-bold">Bộ sưu tập hot</h3>
 
             <div class="flex space-x-4 mt-4 md:mt-0 text-sm">
                 <a href="{{ route('user.product.index') }}" class="hover:underline">View All </a>
@@ -68,7 +68,7 @@
     <section class="px-6 py-12">
         <!-- Title -->
         <div class="flex flex-col md:flex-row justify-between items-end mb-10 border-b border-gray-200 pb-4">
-            <h3 class="text-3xl font-serif">Sản phẩm bán chạy</h3>
+            <h3 class="text-3xl font-bold">Sản phẩm bán chạy</h3>
 
             <div class="flex space-x-4 mt-4 md:mt-0 text-sm">
                 <a href="{{ route('user.product.index') }}" class="hover:underline">View All </a>

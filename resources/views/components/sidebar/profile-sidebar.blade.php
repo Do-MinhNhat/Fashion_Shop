@@ -8,7 +8,7 @@
 
     {{-- User Info --}}
     <div class="flex items-center gap-3 mb-8 pb-8 border-b border-gray-100">
-        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-xl font-serif">
+        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-xl ">
             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
         </div>
         <div>

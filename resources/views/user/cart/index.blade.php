@@ -6,7 +6,7 @@
 
 <div class="pt-24 pb-20 max-w-7xl mx-auto px-6 text-gray-900 bg-white">
     <div class="text-center mb-16 animate-fade-in-up">
-        <h1 class="text-4xl font-serif font-bold mb-2">Giỏ hàng của bạn</h1>
+        <h1 class="text-4xl  font-bold mb-2">Giỏ hàng của bạn</h1>
         <p class="text-gray-500 text-sm tracking-wide">{{ $items->count() }} sản phẩm trong túi</p>
     </div>
 
@@ -46,7 +46,7 @@
                     
                     <div class="flex-1 text-center md:text-left w-full">
                         <div class="flex justify-between items-start">
-                            <a href="{{ route('user.product.show', $item->variant->product->slug) }}" class="font-serif text-xl font-medium hover:underline underline-offset-4">{{ $item->variant->product->name }}</a>
+                            <a href="{{ route('user.product.show', $item->variant->product->slug) }}" class=" text-xl font-medium hover:underline underline-offset-4">{{ $item->variant->product->name }}</a>
                         </div>
                         <p class="text-sm text-gray-500 mt-1">{{ $item->variant->color->name }} / Size {{ $item->variant->size->name }}</p>
                         <p class="text-sm font-bold mt-2 md:hidden">{{ number_format($price, 0, ',', '.') }} ₫</p>
@@ -92,7 +92,7 @@
 
             <div class="w-full lg:w-1/3">
                 <div class="bg-gray-50 p-8 lg:sticky lg:top-28">
-                    <h3 class="font-serif text-2xl mb-6">Tổng đơn hàng</h3>
+                    <h3 class=" text-2xl mb-6">Tổng đơn hàng</h3>
                     
                     <div class="space-y-4 border-b border-gray-200 pb-6 mb-6 text-sm">
                         <div class="flex justify-between text-gray-600">
@@ -107,7 +107,7 @@
 
                     <div class="flex justify-between items-end mb-8">
                         <span class="font-bold text-lg uppercase tracking-wide">Tổng cộng</span>
-                        <span id="grand-total" class="font-serif text-2xl font-bold">{{ number_format($total, 0, ',', '.') }} ₫</span>
+                        <span id="grand-total" class=" text-2xl font-bold">{{ number_format($total, 0, ',', '.') }} ₫</span>
                     </div>
 
                     <button id="checkoutBtn" class="block w-full bg-black text-white text-center py-4 uppercase tracking-[0.2em] text-xs font-bold hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
@@ -135,7 +135,7 @@
     @if($suggestedProducts->isNotEmpty())
     <div class="mt-24 pt-16 border-t border-gray-100 animate-fade-in-up">
         <div class="text-center mb-12">
-            <h3 class="font-serif text-2xl md:text-3xl font-bold mb-3">Có thể bạn sẽ thích</h3>
+            <h3 class=" text-2xl md:text-3xl font-bold mb-3">Có thể bạn sẽ thích</h3>
             <p class="text-gray-500 text-sm">Những lựa chọn tuyệt vời khác dành riêng cho bạn</p>
         </div>
 

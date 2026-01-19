@@ -1,22 +1,7 @@
 @extends('admin.layouts.app')
 @section('title', $viewData['title'])
 @section('subtitle', $viewData['subtitle'])
-@section('style')
-<style>
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
 
-    .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    body {
-        font-family: "Inter", sans-serif;
-    }
-</style>
-@endsection
 @section('content')
 <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
@@ -186,6 +171,7 @@
     </div>
 </div>
 @endsection
+
 @section('script')
 <script>
     const sidebar = document.getElementById('sidebar');

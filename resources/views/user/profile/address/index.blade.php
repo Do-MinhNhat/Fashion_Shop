@@ -10,7 +10,7 @@
     <main class="flex-1 bg-white p-8 shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-end mb-8 border-b border-gray-100 pb-4 gap-4">
             <div>
-                <h2 class="text-xl font-serif font-bold">Sổ địa chỉ</h2>
+                <h2 class="text-xl  font-bold">Sổ địa chỉ</h2>
                 <p class="text-sm text-gray-400 mt-1">Quản lý địa chỉ nhận hàng của bạn.</p>
             </div>
             <button onclick="openModal()" class="bg-black text-white px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition flex items-center gap-2">
@@ -112,7 +112,7 @@
                 <div id="modal-panel" class="bg-white w-full max-w-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]">
                     
                     <div class="flex justify-between items-center p-6 border-b border-gray-100">
-                        <h3 class="font-serif text-2xl font-bold">Thêm địa chỉ mới</h3>
+                        <h3 class=" text-2xl font-bold">Thêm địa chỉ mới</h3>
                         <button onclick="closeModal()" class="text-gray-400 hover:text-red-500 transition text-xl px-2">
                             <i class="fas fa-times"></i>
                         </button>

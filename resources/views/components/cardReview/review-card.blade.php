@@ -3,7 +3,7 @@
 <div class="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
     <div class="flex justify-between items-start mb-4">
         <div class="flex gap-4">
-            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-serif font-bold text-gray-600 uppercase">
+            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center  font-bold text-gray-600 uppercase">
                 {{ substr($review->user->name ?? 'A', 0, 1) }}
             </div>
             <div>

@@ -9,7 +9,7 @@
     <!-- Content -->
     <main class="flex-1 bg-white p-8 shadow-sm">
         <div class="mb-8 border-b border-gray-100 pb-4">
-            <h2 class="text-xl font-serif font-bold">Thông tin tài khoản</h2>
+            <h2 class="text-xl  font-bold">Thông tin tài khoản</h2>
             <p class="text-sm text-gray-400 mt-1">Quản lý thông tin hồ sơ và bảo mật của bạn.</p>
         </div>
 
@@ -87,7 +87,7 @@
             <div class="absolute inset-0 flex items-center justify-center p-4">
                 <div id="modal-panel" class="bg-white w-full max-w-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh]">
                     <div class="flex justify-between items-center p-6 border-b border-gray-100">
-                        <h3 class="font-serif text-2xl font-bold">Bảo mật tài khoản</h3>
+                        <h3 class=" text-2xl font-bold">Bảo mật tài khoản</h3>
                         <button onclick="closeModal()" class="text-gray-400 hover:text-red-500 transition text-xl px-2">
                             <i class="fas fa-times"></i>
                         </button>
