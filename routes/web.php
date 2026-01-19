@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 //User Checkout Route
 //-----------------------------
 // route thong tin lien he
-Route::get('/contact', [ContactController::class, 'index'])->name('user.contact');
+Route::get('/about', [ContactController::class, 'index'])->name('user.contact');
 //User Home Route
 Route::get('/', [HomeController::class, 'index'])->name('user.home.index');
 Route::get('/policy', function () {return view('user.pages.policy');})->name('policy');
@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
     // Review
     Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('user.review.store');
-    Route::get('/reviews',[ReviewController::class,'index'])->name('user.review.index');
+    Route::get('/reviews',[ReviewController::class,'index'])->name('user.reviews.index');
 
     //Admin vvvvvvvvvvvvvvvvvvvvvvvvv
     Route::middleware('is_admin')->prefix('quan-ly')->group(function () {
