@@ -22,7 +22,6 @@ class Contact extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.contact',['contact'=>ContactModel::all()]);
-    
+        return view('components.contact',['contact'=>ContactModel::where('status',true)->get()]);
     }
 }

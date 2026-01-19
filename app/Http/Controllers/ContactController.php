@@ -14,7 +14,9 @@ class ContactController extends Controller
      */
     public function index()
     {
-        //
+         $contacts = Contact::all();
+
+    return view('user.home.about', compact('contacts'));
     }
 
     /**
