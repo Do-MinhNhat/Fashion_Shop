@@ -4,7 +4,6 @@
 @section('content')
 
 <x-slideshow.slideshow :slides="$slides" />
-<x-chatbox.chatbox />
 
 <!-- Content -->
 <main class="max-w-7xl mx-auto">

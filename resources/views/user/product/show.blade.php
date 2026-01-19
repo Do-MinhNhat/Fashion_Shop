@@ -41,9 +41,16 @@
                 <span class="text-sm text-gray-400 tracking-widest uppercase block mb-2">
                     {{ $product->category->name ?? 'Collection' }}
                 </span>
-                <h1 class="text-3xl md:text-4xl  mb-4 text-gray-900">
+                <h1 class="text-3xl md:text-4xl mb-2 text-gray-900">
                     {{ $product->name }}
                 </h1>
+                <p class="text-xs text-gray-500 mb-2 flex items-center gap-4">
+                    <span>Kho: {{ $product->variants->sum('quantity') }}</span>
+                    <span>Lượt xem: {{ $product->view }}</span>
+                    <span>Lượt Yêu Thích: {{ $product->wishlist_count }}</span>
+                    <span>Đã bán: </span>
+                </p>
+                    
                 <div class="flex items-end gap-4 mb-6">
                     <p class="text-2xl font-light text-black">
                         {{ number_format($product->price) }} ₫

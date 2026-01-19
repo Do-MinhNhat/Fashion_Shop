@@ -33,6 +33,7 @@
 
     <main class="pt-10">
         @yield('content')
+        <x-chatbox.chatbox />
     </main>
 
     @include('user.layouts.footer')

@@ -12,7 +12,6 @@
 @endphp
 
 <div class="group relative product-card-item" data-id="{{ $product->id }}">
-    
     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100 w-full rounded-lg">
         {{-- IMAGE --}}
         <a href="{{ route('user.product.show', $product->slug) }}" class="block w-full h-full">
