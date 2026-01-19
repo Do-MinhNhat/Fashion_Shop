@@ -15,29 +15,13 @@
         </div>
         @endif
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 border-t border-gray-100 pt-12">
-            <div class="space-y-4">
-                <a href="#" class="text-2xl font-serif font-bold tracking-widest uppercase block">CDHN.</a>
-                <p class="text-xs text-gray-500 leading-6">
-                    Vietnam Office<br>
-                    65 Huynh Thuc Khang Street, District 1<br>
-                    Ho Chi Minh City, Vietnam
-                </p>
-                <p class="text-xs text-gray-500">contact@CDHNfashion.vn</p>
-                <p class="text-xs text-gray-500">+84 123 456 789</p>
-
-                <div class="flex space-x-4 pt-2">
-                    <a href="#" class="text-gray-400 hover:text-black transition transform hover:-translate-y-1"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-black transition transform hover:-translate-y-1"><i class="fab fa-github"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-black transition transform hover:-translate-y-1"><i class="fab fa-google"></i></a>
-                </div>
-            </div>
-
+            <x-contact/>
             <div>
                 <h4 class="font-bold text-xs uppercase tracking-widest mb-6">Cửa hàng</h4>
                 <ul class="space-y-3 text-sm text-gray-500">
-                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Thời trang Nữ</a></li>
-                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Thời trang Nam</a></li>
-                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Giày</a></li>
+                    <li><a href="{{route('user.product.index')}}" class="hover:text-black hover:underline underline-offset-4 transition">Thời trang Nữ</a></li>
+                    <li><a href="{{route('user.product.index')}}" class="hover:text-black hover:underline underline-offset-4 transition">Thời trang Nam</a></li>
+                    <li><a href="{{route('user.product.index')}}" class="hover:text-black hover:underline underline-offset-4 transition">Giày</a></li>
                     <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Bộ sưu tập mới</a></li>
                     <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition text-red-500">Sale Off</a></li>
                 </ul>
