@@ -81,9 +81,7 @@ class ProductController extends Controller
         } else {
             $imgMsg = $imgMsg . ", ảnh phụ rỗng";
         }
-        foreach ($request->variants as $variant) {
-            $product->variants()->create($variant);
-        }
+        $product->variants()->createMany($request->variants);
         $product->tags()->sync($request->tags);
         return redirect()->back()->with('success', 'Đã thêm sản phẩm "' . $product->name . '" cùng các biến thể!' . $imgMsg);
     }
@@ -192,7 +190,7 @@ class ProductController extends Controller
         $categories = Category::all();
 
         $tags = Tag::all();
-        
+
         return view('admin.product.trash', compact('products', 'viewData', 'brands', 'tags', 'categories'));
     }
 }

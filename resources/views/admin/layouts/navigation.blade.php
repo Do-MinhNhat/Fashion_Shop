@@ -44,13 +44,7 @@
             <span class="font-medium tracking-wide">Dashboard</span>
         </a>
     </div>
-
-    {{-- LABEL NHÓM --}}
-    <div class="px-8 mb-4 flex items-center justify-between">
-        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Cửa hàng</span>
-        <span class="h-px w-6 bg-white/10"></span>
-    </div>
-    {{-- SẢN PHẨM & Phiếu nhập --}}
+    {{-- SẢN PHẨM --}}
     @php
     $isProductGroup = request()->routeIs('admin.product.*') || request()->routeIs('admin.import.*') || request()->routeIs('admin.category.*') || request()->routeIs('admin.brand.*') || request()->routeIs('admin.color.*') || request()->routeIs('admin.size.*') || request()->routeIs('admin.tag.*');
     @endphp
@@ -125,14 +119,49 @@
                       : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
                 Nhãn
             </a>
+        </div>
+    </div>
 
-            {{-- Phiếu nhập --}}
+    @php
+    $isImportGroup = request()->routeIs('admin.import.*');
+    @endphp
+    <div x-data="{ open: {{ $isImportGroup ? 'true' : 'false' }} }" class="font-bold">
+        {{-- Nút Dropdown --}}
+        <button @click="open = !open"
+            class="w-full flex items-center text-left justify-between px-4 py-3.5 rounded-xl transition-all duration-300 group
+                {{ $isImportGroup
+                    ? 'bg-white/5 text-white'
+                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                }}">
+            <div class="flex items-center">
+                <i class="fas fa-box w-9 text-lg transition-colors {{ $isImportGroup ? 'text-purple-400' : 'group-hover:text-purple-400' }}"></i>
+                <span class="font-medium">Quản lý nhập hàng</span>
+            </div>
+            <i class="fas fa-chevron-right text-[10px] transition-transform duration-300 {{ $isImportGroup ? 'text-white' : 'text-gray-600' }}" :class="open ? 'rotate-90' : ''"></i>
+        </button>
+
+        {{-- Menu Con --}}
+        <div x-show="open"
+            x-cloak
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            class="mt-2 space-y-1 pl-12 pr-2 relative">
+            <div class="absolute left-8 top-2 bottom-2 w-px bg-white/10"></div>
             <a href="{{ route('admin.import.index') }}"
-                class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
-                   {{ request()->routeIs('admin.import.*')
+                class="flex items-start py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
+                   {{ request()->routeIs('admin.import.index')
                       ? 'text-white font-medium bg-white/10'
                       : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
-                Phiếu nhập
+                Xem phiếu nhập
+            </a>
+
+            <a href="{{ route('admin.import.create') }}"
+                class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
+                   {{ request()->routeIs('admin.import.create')
+                      ? 'text-white font-medium bg-white/10'
+                      : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                Tạo phiếu nhập
             </a>
         </div>
     </div>
@@ -164,7 +193,7 @@
             <a href="{{ route('admin.order.index') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
                    {{ request()->routeIs('admin.order.*') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
-                Danh sách đơn hàng
+                Quản lý đơn hàng
             </a>
 
             <a href="{{ route('admin.ship.index') }}"

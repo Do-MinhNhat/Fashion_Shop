@@ -21,6 +21,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->foreignIdFor(Role::class)->constrained();
             $table->string('phone')->unique();
+            $table->string('image')->nullable()->default('default-user.png');
             $table->boolean('gender')->default(1);
             $table->string('address')->nullable();
             $table->boolean('review')->default(1)->index();

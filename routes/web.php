@@ -13,7 +13,7 @@ use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
-use App\Http\Controllers\Admin\ImportProductController as AdminImportProductController;
+use App\Http\Controllers\Admin\ImportController as AdminImportController;
 use App\Http\Controllers\Admin\ShipController as AdminShipController;
 use App\Http\Controllers\Admin\SlideShowController as AdminSlideShowController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -144,7 +144,11 @@ Route::middleware('auth')->group(function () {
 
             //Quản lý bán hàng
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
-            Route::get('/nhap-hang', [AdminImportProductController::class, 'index'])->name('admin.import.index');
+
+            //Quản lý nhập hàng
+            Route::get('/phieu-nhap', [AdminImportController::class, 'index'])->name('admin.import.index');
+            Route::get('/phieu-nhap/tao-moi', [AdminImportController::class, 'create'])->name('admin.import.create');
+            Route::post('/phieu-nhap', [AdminImportController::class, 'store'])->name('admin.import.store');
         });
         // slideshow
         Route::middleware(['role:admin-head'])->group(function () {

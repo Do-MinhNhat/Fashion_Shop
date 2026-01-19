@@ -229,7 +229,6 @@
                                     <thead class="bg-blue-50 border-b border-gray-200">
                                         <tr class="text-center">
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">STT</th>
-                                            <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mã số</th>
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Màu sắc</th>
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Kích cỡ</th>
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giá gốc</th>
@@ -243,7 +242,6 @@
                                         @foreach($product->variants as $variant)
                                         <tr class="border-b text-center">
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $variant->id }}</td>
                                             <td>
                                                 <span class="border px-2 rounded-full bg-[{{$variant->color->hex_code}}] mr-1"></span>{{ $variant->color->name }}
                                             </td>

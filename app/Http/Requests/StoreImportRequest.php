@@ -13,7 +13,12 @@ class StoreImportRequest extends FormRequest
     {
         return $this->user()->isAdmin();
     }
-
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'variants' => json_decode($this->items, true),
+        ]);
+    }
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,26 +27,27 @@ class StoreImportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'products' => 'required|array|min:1',
+            'user_id' => 'required|exists:users,id',
+            'variants' => 'required|array|min:1',
             'status' => 'nullable|boolean',
-            'products.*.variant_id' => 'required|distinct|exists:variants,id',
-            'products.*.quantity' => 'required|integer|min:1',
-            'products.*.price' => 'required|numeric|min:0',
+            'variants.*.variant_id' => 'required|distinct|exists:variants,id',
+            'variants.*.quantity' => 'required|integer|min:1',
+            'variants.*.price' => 'required|numeric|min:0',
         ];
     }
     public function messages(): array
     {
         return [
-            'products.required' => 'Danh sách sản phẩm không được để trống',
-            'products.array' => 'Danh sách sản phẩm phải là 1 mảng',
-            'products.min' => 'Danh sách sản phẩm phải có ít nhất 1 sản phẩm',
-            'products.*.variant_id.required' => 'Sản phẩm không được để trống',
-            'products.*.variant_id.exists' => 'Sản phẩm không tồn tại',
-            'products.*.quantity.required' => 'Số lượng không được để trống.',
-            'products.*.quantity.integer' => 'Số lượng phải là số nguyên.',
-            'products.*.quantity.min' => 'Số lượng sản phẩm tối thiểu phải là 1.',
-            'products.*.price.numeric' => 'Giá nhập phải là số',
-            'products.*.price.min' => 'Giá nhập phải lớn hơn hoặc bằng 0',
+            'variants.required' => 'Danh sách sản phẩm không được để trống',
+            'variants.array' => 'Danh sách sản phẩm phải là 1 mảng',
+            'variants.min' => 'Danh sách sản phẩm phải có ít nhất 1 sản phẩm',
+            'variants.*.variant_id.required' => 'Sản phẩm không được để trống',
+            'variants.*.variant_id.exists' => 'Sản phẩm không tồn tại',
+            'variants.*.quantity.required' => 'Số lượng không được để trống.',
+            'variants.*.quantity.integer' => 'Số lượng phải là số nguyên.',
+            'variants.*.quantity.min' => 'Số lượng sản phẩm tối thiểu phải là 1.',
+            'variants.*.price.numeric' => 'Giá nhập phải là số',
+            'variants.*.price.min' => 'Giá nhập phải lớn hơn hoặc bằng 0',
         ];
     }
 }
