@@ -35,7 +35,6 @@
                     <div class="flex-col overflow-y-auto max-w-2xl shrink-0">
                         <div class="flex justify-between items-center p-6 border-b">
                             <h3 class="text-lg font-bold mr-2">Thêm sản phẩm mới</h3>
-                            <button @click="$refs.productForm.reset()" type="button" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200 mr-auto">Làm mới</button>
                             <button @click="open = false" class="text-gray-400 hover:text-red-500 transition text-xl px-2">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -44,18 +43,18 @@
                         <div class="p-6 overflow-y-auto custom-scrollbar">
                             <form method="POST" action="{{ route('admin.product.store') }}" x-ref="productForm" class="space-y-6" enctype="multipart/form-data" @submit="handleSubmit($event)">
                                 @csrf
+                                @foreach ($errors->add->all() as $error)
+                                <li class="text-red-700 text-sm flex items-start">
+                                    <i class="fas fa-caret-right mt-1 mr-2 text-red-400"></i>
+                                    {{ $error }}
+                                </li>
+                                @endforeach
                                 <!-- Tên -->
                                 <div class=" grid grid-cols-1 md:grid-cols-1">
                                     <div>
-                                        @foreach ($errors->add->all() as $error)
-                                        <li class="text-red-700 text-sm flex items-start">
-                                            <i class="fas fa-caret-right mt-1 mr-2 text-red-400"></i>
-                                            {{ $error }}
-                                        </li>
-                                        @endforeach
                                         <label class="text-xs font-semibold uppercase text-gray-500">Tên sản phẩm</label>
                                         <span x-ref="nameError" class="text-xs text-red-500 italic">*</span>
-                                        <input x-model="oldData.name" x-ref="nameInput" type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Ví dụ: Áo thun basic" maxlength="255">
+                                        <input x-model="oldData.name" x-ref="nameInput" type="text" name="name" class="w-full p-2.5 border rounded text-sm" placeholder="Nhập tên sản phẩm" maxlength="255">
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -124,7 +123,8 @@
                                     </div>
                                     <div class="text-center mt-5 gap-15">
                                         <button @click="isExpanded = !isExpanded" type="button" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Ẩn/Hiện danh sách</button>
-                                        <button @click="handleGenerateClick()" type="button" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Tạo biến thể</button>
+                                        <button @click="handleEdit()" type="button" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Sửa nhanh</button>
+                                        <button @click="handleGenerateClick()" type="button" class="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-800">Tạo biến thể</button>
                                     </div>
                                     <span x-ref="generateError" class="mx-auto italic text-red-500 text-xs mt-2"></span>
                                 </div>
@@ -357,7 +357,7 @@
             variants: [],
             colors: @json(old("colors", "[]")),
             sizes: @json(old("sizes", "[]")),
-            colorMap: JSON.parse('@json($colors -> pluck("hex_code", "id"))'),
+            colorMap: JSON.parse('@json($colors -> pluck("hex_code", "id") ?? [])'),
 
             init() {
                 const self = this;
@@ -466,7 +466,7 @@
                                     text: result.data.name,
                                     hex: result.data.hex_code,
                                 });
-                                this.colorMap[result.data.id] = result.data.hex_code;
+                                self.colorMap[result.data.id] = result.data.hex_code;
                                 msg.className = 'text-xs text-green-500 italic'
                                 msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
                             } catch (error) {
@@ -865,7 +865,17 @@
                 return this.colorMap[id];
             },
 
-            // Hàm này phải nằm TRONG object trả về
+            handleEdit() {
+                this.variants.forEach(variant => {
+                    let sale_price = this.$refs.inputSalePrice.value;
+                    if (sale_price) variant.sale_price = Number(sale_price);
+                    let price = this.$refs.inputPrice.value;
+                    if (price) variant.price = Number(price);
+                    let quantity = this.$refs.inputStock.value;
+                    if (quantity) variant.quantity = Number(quantity);
+                })
+            },
+
             handleGenerateClick() {
                 this.generateVariants();
                 console.log("Dữ liệu biến thể:", this.variants)

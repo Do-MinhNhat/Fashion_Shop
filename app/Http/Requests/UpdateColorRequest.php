@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateColorRequest extends FormRequest
 {
+    protected $errorBag = 'edit';
+
     public function authorize(): bool
     {
         return $this->user()->isAdmin();
@@ -16,6 +18,10 @@ class UpdateColorRequest extends FormRequest
         $id = $this->route('color')->id;
         return [
             'name' => 'required|string|max:255|unique:colors,name,' . $id,
+            'hex_code' => [
+                'required',
+                'regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/',
+            ],
             'status' => 'required|boolean',
         ];
     }
@@ -23,10 +29,12 @@ class UpdateColorRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Tên màu sắc giao hàng không được để trống.',
-            'name.unique' => 'Tên màu sắc giao hàng này đã tồn tại.',
+            'name.required' => 'Tên màu sắc không được để trống.',
+            'name.unique' => 'Tên màu sắc0 này đã tồn tại.',
             'status.required' => 'Trạng thái không được để trống',
             'status.boolean' => 'Trạng thái không hợp lệ',
+            'hex_code.required' => 'Mã màu không được để trống',
+            'hex_code.regex' => 'Mã màu không hợp lệ',
         ];
     }
 }

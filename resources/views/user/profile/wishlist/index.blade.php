@@ -13,7 +13,7 @@
 
 @section('content')
     <div class="max-w-6xl mx-auto pt-20 pb-10 px-4 flex flex-col md:flex-row gap-8 bg-gray-50 text-gray-800">
-        @include('components.sidebar.profile-sidebar')
+        <x-sidebar.profile-sidebar />
 
         <main class="flex-1 bg-white p-8 shadow-sm rounded-lg min-h-[500px]">
             <div class="flex justify-between items-center mb-6">
@@ -34,7 +34,7 @@
                     {{-- Wrapper ID để JS Global tìm và xóa --}}
                     <div id="wishlist-item-{{ $wishlist->product->id }}" class="wishlist-item-wrapper transition-all duration-300">
                         {{-- Gọi Component --}}
-                        @include('components.products.product-card', ['product' => $wishlist->product])
+                        <x-products.product-card :product="$wishlist->product" />
                     </div>
                 @endforeach
             </div>

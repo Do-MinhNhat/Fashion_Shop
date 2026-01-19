@@ -43,11 +43,11 @@
                         <td class="p-4 text-center">
                             @if($contact->status == 1)
                                 <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">
-                                    Đang hiển thị
+                                    Đang hoạt động
                                 </span>
                             @else
                                 <span class="px-3 py-1 text-xs rounded-full bg-gray-200 text-gray-600">
-                                    Không hiển thị
+                                    Không hoạt động
                                 </span>
                             @endif
                         </td>

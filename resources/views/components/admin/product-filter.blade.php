@@ -11,7 +11,7 @@
         x-transition:enter-start="opacity-0 -translate-y-4"
         x-transition:enter-end="opacity-100 translate-y-0"
         class="bg-white border border-gray-200 rounded-xl p-6 mb-6 shadow-inner"
-        style="display: none;" class="bg-white">
+        >
         <form id="filter-form" action="{{ url()->current() }}" method="GET">
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
@@ -62,7 +62,6 @@
         </form>
     </div>
 </div>
-
 @once
 @push('scripts')
 <script>

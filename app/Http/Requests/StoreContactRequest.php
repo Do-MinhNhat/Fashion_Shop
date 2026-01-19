@@ -24,6 +24,7 @@ class StoreContactRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:contacts,name',
             'url' => 'required|string|max:255',
+            'status' => 'nullable|boolean',
         ];
     }
     public function messages(): array

@@ -3,9 +3,12 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateSizeRequest extends FormRequest
 {
+    protected $errorBag = 'edit';
+
     public function authorize(): bool
     {
         return $this->user()->isAdmin();
@@ -14,8 +17,16 @@ class UpdateSizeRequest extends FormRequest
     public function rules(): array
     {
         $id = $this->route('size')->id;
+        
         return [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('sizes')->where(function ($query) {
+                    return $query->where('category_id', $this->category_id);
+                })->ignore($id)
+            ],
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|boolean',
         ];
@@ -24,6 +35,7 @@ class UpdateSizeRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'name.unique' => 'Kích cỡ này đã tồn tại!',
             'name.required' => 'Tên kích cỡ không được để trống',
             'category_id.required' => 'Danh mục không được để trống',
             'category_id.exists' => 'Danh mục không tồn tại',
