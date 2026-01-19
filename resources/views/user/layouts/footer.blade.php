@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto px-6">
         @if(!Auth::check())
         <div class="flex flex-col items-center text-center mb-16 max-w-2xl mx-auto">
-            <h2 class=" text-3xl md:text-4xl font-medium mb-4">Join The World</h2>
+            <h2 class=" text-3xl md:text-4xl font-medium mb-4">Join the CDHN World</h2>
             <p class="text-gray-500 text-sm mb-8 leading-relaxed">
                 Đăng ký để nhận những cập nhật mới nhất về bộ sưu tập, sự kiện nghệ thuật và ưu đãi độc quyền dành riêng cho thành viên.
             </p>
@@ -15,13 +15,29 @@
         </div>
         @endif
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 border-t border-gray-100 pt-12">
-            <x-contact/>
+            <div class="space-y-4">
+                <a href="#" class="text-2xl  font-bold tracking-widest uppercase block">CDHN.</a>
+                <p class="text-xs text-gray-500 leading-6">
+                    Vietnam Office<br>
+                    65 Huynh Thuc Khang Street, District 1<br>
+                    Ho Chi Minh City, Vietnam
+                </p>
+                <p class="text-xs text-gray-500">contact@CDHNfashion.vn</p>
+                <p class="text-xs text-gray-500">+84 123 456 789</p>
+
+                <div class="flex space-x-4 pt-2">
+                    <a href="#" class="text-gray-400 hover:text-black transition transform hover:-translate-y-1"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-black transition transform hover:-translate-y-1"><i class="fab fa-github"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-black transition transform hover:-translate-y-1"><i class="fab fa-google"></i></a>
+                </div>
+            </div>
+
             <div>
                 <h4 class="font-bold text-xs uppercase tracking-widest mb-6">Cửa hàng</h4>
                 <ul class="space-y-3 text-sm text-gray-500">
-                    <li><a href="{{route('user.product.index')}}" class="hover:text-black hover:underline underline-offset-4 transition">Thời trang Nữ</a></li>
-                    <li><a href="{{route('user.product.index')}}" class="hover:text-black hover:underline underline-offset-4 transition">Thời trang Nam</a></li>
-                    <li><a href="{{route('user.product.index')}}" class="hover:text-black hover:underline underline-offset-4 transition">Giày</a></li>
+                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Thời trang Nữ</a></li>
+                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Thời trang Nam</a></li>
+                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Giày</a></li>
                     <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Bộ sưu tập mới</a></li>
                     <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition text-red-500">Sale Off</a></li>
                 </ul>
@@ -39,10 +55,10 @@
             </div>
 
             <div>
-                <h4 class="font-bold text-xs uppercase tracking-widest mb-6">Về chúng tôi</h4>
+                <h4 class="font-bold text-xs uppercase tracking-widest mb-6">Về CDHN</h4>
                 <ul class="space-y-3 text-sm text-gray-500">
-                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Điều khoản dịch vụ</a></li>
-                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Chính sách bảo mật</a></li>
+                    <li><a href="{{ route('terms') }}" class="hover:text-black hover:underline underline-offset-4 transition">Điều khoản dịch vụ</a></li>
+                    <li><a href="{{ route('policy') }}"class="hover:text-black hover:underline underline-offset-4 transition">Chính sách bảo mật</a></li>
                 </ul>
             </div>
         </div>
