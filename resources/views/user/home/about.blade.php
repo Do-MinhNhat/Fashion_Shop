@@ -4,7 +4,7 @@
 <div class="bg-white rounded-2xl shadow p-6">
 
     <!-- Tiêu đề -->
-    <h2 class="text-2xl font-bold text-gray-800 mb-6 mt-16">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">
         📇 Thông tin liên hệ
     </h2>
 
@@ -43,11 +43,11 @@
                     <td class="p-4 text-center">
                         @if($contact->status == 1)
                         <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">
-                            Đang hoạt động
+                            Đang hiển thị
                         </span>
                         @else
                         <span class="px-3 py-1 text-xs rounded-full bg-gray-200 text-gray-600">
-                            Không hoạt động
+                            Không hiển thị
                         </span>
                         @endif
                     </td>

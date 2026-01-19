@@ -22,9 +22,12 @@ use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\User\WishlistController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 //User Checkout Route
 //-----------------------------
+// route thong tin lien he
+Route::get('/contact', [ContactController::class, 'index'])->name('user.contact');
 //User Home Route
 Route::get('/', [HomeController::class, 'index'])->name('user.home.index');
 Route::get('/policy', function () {return view('user.pages.policy');})->name('policy');
@@ -33,8 +36,8 @@ Route::get('/terms', function () {return view('user.pages.terms');})->name('term
 //User Product Route
 Route::get('/san-pham', [ProductController::class, 'index'])->name('user.product.index');
 Route::get('/san-pham/{product:slug}', [ProductController::class, 'show'])->name('user.product.show');
-
 //-----------------------------
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
