@@ -1,5 +1,9 @@
 @extends('user.layouts.app')
 @section('title', $product->name)
+
+@php
+    $sold_quantity = $product->variants->flatMap(fn ($variant) => $variant->orderDetails)->sum('quantity')
+@endphp
 @section('content')
 
 <div class="pt-20 lg:pt-28 max-w-7xl mx-auto px-6">
@@ -48,7 +52,7 @@
                     <span>Kho: {{ $product->variants->sum('quantity') }}</span>
                     <span>Lượt xem: {{ $product->view }}</span>
                     <span>Lượt Yêu Thích: {{ $product->wishlist_count }}</span>
-                    <span>Đã bán: </span>
+                    <span>Đã bán: {{ $sold_quantity }}</span>
                 </p>
                     
                 <div class="flex items-end gap-4 mb-6">

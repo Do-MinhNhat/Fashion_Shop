@@ -3,7 +3,6 @@
 use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ColorController as AdminColorController;
-use App\Http\Controllers\User\AddressController;
 use App\Http\Controllers\User\CartDetailController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\User\HomeController;
@@ -59,13 +58,12 @@ Route::middleware('auth')->group(function () {
     // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'destroy'])->name('user.profile.destroy');
     // Order
     Route::get('/ho-so-ca-nhan/don-hang', [OrderController::class, 'index'])->name('user.profile.order.index');
-    // Address
-    Route::get('/ho-so-ca-nhan/dia-chi', [AddressController::class, 'index'])->name('user.profile.address.index');
     // Cart
     Route::get('/gio-hang', [CartDetailController::class, 'index'])->name('user.cart.index');
     Route::post('/gio-hang', [CartDetailController::class, 'store'])->name('user.cart.store');
     Route::delete('/gio-hang/xoa/{id}', [CartDetailController::class, 'destroy'])->name('user.cart.destroy');
     Route::patch('/gio-hang/cap-nhat/{id}', [CartDetailController::class, 'update'])->name('user.cart.update');
+    Route::delete('/gio-hang/clear', [CartDetailController::class, 'clear'])->name('user.cart.clear');
     // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('user.profile.wishlist.index');
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('user.wishlist.toggle');

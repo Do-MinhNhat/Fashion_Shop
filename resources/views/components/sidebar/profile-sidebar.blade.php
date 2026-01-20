@@ -1,11 +1,10 @@
 @php
-    $active = 'bg-black text-white';
+    $active = 'bg-black text-white font-medium';
     $normal = 'text-gray-600 hover:bg-gray-100';
 @endphp
 
 
 <aside class="w-full md:w-64 bg-white p-6 shadow-sm h-fit rounded">
-
     {{-- User Info --}}
     <div class="flex items-center gap-3 mb-8 pb-8 border-b border-gray-100">
         <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-xl ">
@@ -19,9 +18,8 @@
 
     {{-- Menu --}}
     <nav class="space-y-2">
-
         <a href="{{ route('user.profile.index') }}"
-           class="block px-4 py-2 rounded text-sm font-medium transition
+           class="block px-4 py-2 rounded text-sm transition
            {{ request()->routeIs('user.profile.index') ? $active : $normal }}">
             Thông tin tài khoản
         </a>
@@ -41,11 +39,6 @@
            class="block px-4 py-2 rounded text-sm transition
            {{ request()->routeIs('user.reviews.index') ? $active : $normal }}">
             Lịch sử đánh giá
-        </a>
-        <a href="{{ route('user.profile.address.index') }}"
-           class="block px-4 py-2 rounded text-sm transition
-           {{ request()->routeIs('user.profile.address.*') ? $active : $normal }}">
-            Sổ địa chỉ
         </a>
 
         @if (Auth::user()?->isAdmin())
