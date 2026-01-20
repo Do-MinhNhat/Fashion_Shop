@@ -6,6 +6,8 @@ use App\Models\Order;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\OrderStatus;
+use App\Models\ShipStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,13 +24,16 @@ class OrderController extends Controller
 
         $orders = Order::query()->filter($request->all())->with(['user', 'orderDetails'])->paginate(10)->withQueryString();
 
+        $shipStatus = ShipStatus::all();
+        $orderStatus = OrderStatus::all();
+
         $counts = Order::selectRaw("
             count(*) as total_count,
             (select sum(total_price) from orders where order_status_id = 3) as total_price_count,
-            (select sum(quantity) from order_details) as total_items_count
+            (select sum(order_details.quantity) from order_details join orders on orders.id = order_details.order_id where orders.order_status_id = 3) as total_items_count
         ")->first();
-
-        return view('admin.order.index', compact('viewData', 'orders', 'counts'));
+        
+        return view('admin.order.index', compact('viewData', 'orders', 'counts', 'shipStatus', 'orderStatus'));
     }
 
     public function confirm(Order $order)
@@ -114,14 +119,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Order $order)
@@ -134,7 +131,12 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
+        $data = $request->validated();
+        if($data['ship_status_id'] == 1){
+            $data['shipper_id'] = null;
+        }
+        $order->update($data);
+        return back()->with('success', "Cập nhật đơn hàng #{$order->id} thành công");
     }
 
     /**
