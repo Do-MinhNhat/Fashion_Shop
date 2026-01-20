@@ -24,11 +24,15 @@ use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HelpController;
 use Illuminate\Support\Facades\Route;
 //User Checkout Route
 //-----------------------------
 // route thong tin lien he
 Route::get('/about', [ContactController::class, 'index'])->name('user.contact');
+// route user help
+Route::post('/help', [HelpController::class, 'store'])->name('help.store');
+Route::get('/help', [HelpController::class, 'index'])->name('help.index');
 //User Home Route
 Route::get('/', [HomeController::class, 'index'])->name('user.home.index');
 Route::get('/policy', function () {return view('user.pages.policy');})->name('policy');

@@ -46,7 +46,6 @@
                 </ul>
             </div>
         </div>
-
         <div class="mt-16 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
             <p class="text-[10px] text-gray-400 uppercase tracking-wide">© 2026 CDHN Studio. All rights reserved.</p>
 
