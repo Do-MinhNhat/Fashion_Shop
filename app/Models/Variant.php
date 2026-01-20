@@ -40,5 +40,34 @@ class Variant extends Model
     {
         return $this->hasMany(OrderDetail::class);
     }
+    public function importDetails()
+    {
+        return $this->hasMany(ImportDetail::class);
+    }
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('id', $search)
+                    ->orWhereHas('product', function ($q) use ($search) {
+                        $q->where('slug', 'like', "%{$search}%");
+                    });
+            });
+        });
+
+        $query->when($filters['color'] ?? null, function ($query, $color) {
+            $query->whereHas('color', function ($q) use ($color) {
+                $q->where('id', $color);
+            });
+        });
+
+        $query->when($filters['size'] ?? null, function ($query, $size) {
+            $query->whereHas('size', function ($q) use ($size) {
+                $q->where('name', 'like', "%{$size}%");
+            });
+        });
+
+        return $query;
+    }
 }
