@@ -51,9 +51,9 @@
             <ul class="space-y-1 text-sm">
                 @foreach($categories as $category)
                     <li>
-                        <a href="{{ request()->fullUrlWithQuery(['category' => $category->slug]) }}"
+                        <a href="{{ request()->fullUrlWithQuery(['category' => $category->id]) }}"
                             class="block py-1.5 pl-2 border-l-2 transition-all duration-300 
-                            {{ request('category') == $category->slug 
+                            {{ request('category') == $category->id 
                                 ? 'border-black font-bold text-black bg-gray-50' 
                                 : 'border-transparent text-gray-500 hover:text-black hover:pl-3' }}"
                         >

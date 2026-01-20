@@ -91,16 +91,8 @@ class Product extends Model
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                ->orWhere('slug', 'like', "%{$search}%");
-
-                if (is_numeric($search)) {
-                    $q->orWhere('id', (int) $search);
-                }
-
-                $q->orWhereHas('category', function ($qCat) use ($search) {
-                    $qCat->where('name', 'like', "%{$search}%")
-                        ->orWhere('slug', 'like', "%{$search}%");
-                });
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('id', $search);
 
                 $q->orWhereHas('brand', function ($qBrand) use ($search) {
                     $qBrand->where('name', 'like', "%{$search}%");
@@ -113,10 +105,8 @@ class Product extends Model
         });
         
         // Filter
-        $query->when($filters['category'] ?? null, function ($query, $category) {
-            $query->whereHas('category', function ($q) use ($category) {
-                $q->where('slug', $category);
-            });
+        $query->when($filters['category'] ?? null, function ($query, $categoryId) {
+            $query->where('category_id', $categoryId);
         });
 
         $query->when($filters['brand'] ?? null, function ($query, $brandId) {
