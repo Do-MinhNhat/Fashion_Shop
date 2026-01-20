@@ -29,26 +29,26 @@
                 <i class="fas fa-list"></i>
             </div>
             <div>
-                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng đơn hàng</p>
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng đơn hàng đã nhận</p>
                 <p class="text-2xl font-bold text-gray-900">{{ $counts->total_count }}</p>
             </div>
         </div>
         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xl">
-                <i class="fas fa-money-bill"></i>
+            <div class="w-12 h-12 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center text-xl">
+                <i class="fas fa-box"></i>
             </div>
             <div>
-                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng doanh thu</p>
-                <p class="text-2xl font-bold text-gray-900"><x-money :value="$counts->total_price_count" /></p>
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng đơn hàng chưa giao</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $counts->total_accepted_count }}</p>
             </div>
         </div>
         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
             <div class="w-12 h-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xl">
-                <i class="fas fa-cube"></i>
+                <i class="fas fa-check"></i>
             </div>
             <div>
-                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng lượng hàng đã bán</p>
-                <p class="text-2xl font-bold text-gray-900">{{ $counts->total_items_count }}</p>
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Tổng đơn hàng đã giao</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $counts->total_shipped_count }}</p>
             </div>
         </div>
     </div>
@@ -74,36 +74,21 @@
             <div class="flex gap-3 w-full md:w-auto">
                 <div class="relative w-full md:w-96">
                     <i class="fas fa-search fa-lg absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input form="filter-form" value="{{ request('search') }}" name="search" type="text" placeholder="Tìm kiếm theo ID, tên sản phẩm" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
+                    <input form="filter-form" value="{{ request('search') }}" name="search" type="text" placeholder="Tìm kiếm theo ID, Tên khách hàng, SDT" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
                 </div>
             </div>
             <div class="flex gap-2 w-full md:w-auto">
-                <a href="{{ url()->current() }}" class="px-4 py-2.5 rounded-lg text-sm font-medium transition {{ !request('status') ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                    Tất cả
+                <a href="{{ request()->fullUrlWithQuery(['ship_status' => '2']) }}" class="px-4 py-2.5 rounded-lg text-sm font-medium transition {{ request('ship_status') == '2'? 'bg-yellow-500 text-white' : 'bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-100' }}">
+                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 inline-block mr-2"></span>Đang giao
                 </a>
-                <a href="{{ route('admin.order.index', array_merge(request()->only(['search']), ['status' => '1'])) }}" class="px-4 py-2.5 rounded-lg text-sm font-medium transition {{ request('status') == '1' ? 'bg-yellow-500 text-white' : 'bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-100' }}">
-                    Chờ xác nhận
-                </a>
-                <a href="{{ route('admin.order.index', array_merge(request()->only(['search']), ['status' => '2'])) }}" class="px-4 py-2.5 rounded-lg text-sm font-medium transition {{ request('status') == '2' ? 'bg-green-500 text-white' : 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100' }}">
-                    Đã xác nhận
-                </a>
-                <a href="{{ route('admin.order.index', array_merge(request()->only(['search']), ['status' => '3'])) }}" class="px-4 py-2.5 rounded-lg text-sm font-medium transition {{ request('status') == '3' ? 'bg-purple-500 text-white' : 'bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100' }}">
-                    Đã hoàn tất
-                </a>
-                <a href="{{ route('admin.order.index', array_merge(request()->only(['search']), ['status' => '4'])) }}" class="px-4 py-2.5 rounded-lg text-sm font-medium transition {{ request('status') == '4' ? 'bg-red-500 text-white' : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100' }}">
-                    Đã hủy
+                <a href="{{ request()->fullUrlWithQuery(['ship_status' => '3']) }}" class="px-4 py-2.5 rounded-lg text-sm font-medium transition {{ request('ship_status') == '3' ? 'bg-green-500 text-white' : 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100' }}">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block mr-2"></span>Đã giao
                 </a>
             </div>
         </form>
-        <div class="flex gap-2 w-full md:w-auto">
-            <a href="{{ route('admin.order.index', ['ship_status' => '4']) }}" class="px-4 py-2.5 rounded-lg text-sm font-medium transition {{ request('ship_status') == '4' ? 'bg-red-600 text-white' : 'bg-red-50 text-red-800 border border-red-300 hover:bg-red-200' }}">
-                Thất bại
-            </a>
-        </div>
         <div id="filter-button"></div>
     </div>
     <x-admin.import-filter />
-    <x-admin.order-edit :shipStatus="$shipStatus" :orderStatus="$orderStatus" />
     @if($orders->isEmpty())
     <div class="flex flex-col items-center justify-center py-16 px-4">
         <div class="relative mb-6">
@@ -124,10 +109,11 @@
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Khách hàng</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Trị giá</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Trạng thái đơn hàng</th>
-                    <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Người giao</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Ngày tạo</th>
-                    @if(request('status') != '1')
-                    <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Thao tác</th>
+                    @if(request()->ship_status == 2)
+                    <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Thao tác</th>
+                    @else
+                    <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Ngày giao</th>
                     @endif
                 </tr>
             </thead>
@@ -148,50 +134,18 @@
                                 <p class="font-medium text-gray-900 group-hover:text-blue-600 transition">{{ $order->user->name }}</p>
                             </div>
                         </div>
-                        <span class="text-xs text-gray-500">{{ $order->user->email }} - {{ $order->phone }}</span>
-                        <p class="text-xs text-gray-500">{{ $order->address }}</p>
+                        <span class="text-xs text-gray-500">Số điện thoại: {{ $order->phone }}</span>
+                        <p class="text-xs text-gray-500">Địa chỉ: {{ $order->address }}</p>
                     </td>
                     <td class="p-4 text-sm font-medium">
                         <x-money :value="$order->total_price" />
                     </td>
                     <td class="p-4 text-sm font-medium text-center" @click.stop>
+                        @if($order->order_status_id == 2)
                         <div class="flex flex-col items-center gap-2">
-                            @if($order->order_status_id == 1)
-                            <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-100">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> {{ $order->orderStatus->name }}
-                                </span>
-                                <div class="flex gap-2">
-                                    <form method="POST" action="{{ route('admin.order.confirm', $order->id) }}" class="inline">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500 text-white hover:bg-green-600 transition">Xác nhận</button>
-                                    </form>
-                                    <form method="POST" action="{{ route('admin.order.decline', $order->id) }}" class="inline">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500 text-white hover:bg-red-600 transition">Từ chối</button>
-                                    </form>
-                                </div>
-                            </div>
-                            @elseif($order->order_status_id == 2)
-                            <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> {{ $order->orderStatus->name }}
-                                </span>
-                            </div>
-                            @elseif($order->order_status_id == 3)
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span> {{ $order->orderStatus->name }}
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Đã xác nhận
                             </span>
-                            @else($order->order_status_id == 4)
-                            <div class="flex flex-col items-center gap-2">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> {{ $order->orderStatus->name }}
-                                </span>
-                            </div>
-                            @endif
-                            @if($order->admin)
                             <div class="flex items-center gap-4">
                                 <img src=" {{ asset('storage/'.$order->admin->image) }}" class="w-6 h-6 rounded-full object-cover ring-2 ring-white/10 group-hover:ring-indigo-500/50 transition-all">
                                 <div>
@@ -199,45 +153,37 @@
                                 </div>
                             </div>
                             <span class="text-xs text-gray-500">{{ $order->admin->email }}</span>
-                            @endif
                         </div>
-                    </td>
-                    <td class="p-4 text-sm font-medium">
-                        <div class="flex flex-col items-center gap-2">
-                            @if($order->ship_status_id == 1)
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> {{ $order->shipStatus->name }}
-                            </span>
-                            @elseif($order->ship_status_id == 2)
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> {{ $order->shipStatus->name }}
-                            </span>
-                            @elseif($order->ship_status_id == 3)
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> {{ $order->shipStatus->name }}
-                            </span>
-                            @elseif($order->ship_status_id == 4)
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> {{ $order->shipStatus->name }}
-                            </span>
-                            @endif
-                            @if($order->shipper)
-                            <div class="flex items-center gap-4">
-                                <img src=" {{ asset('storage/'.$order->shipper->image) }}" class="w-6 h-6 rounded-full object-cover ring-2 ring-white/10 group-hover:ring-indigo-500/50 transition-all">
-                                <div>
-                                    <p class="text-xs font-medium text-gray-900 group-hover:text-blue-600 transition">{{ $order->shipper->name }}</p>
-                                </div>
-                            </div>
-                            <span class="text-xs text-gray-500">{{ $order->shipper->email }}</span>
-                            @endif
-                        </div>
+                        @elseif($order->order_status_id == 3)
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-100">
+                            <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span> Hoàn thành
+                        </span>
+                        @else
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Lỗi hệ thống! {{$order->order_status_id}}
+                        </span>
+                        @endif
                     </td>
                     <td class="p-4 text-sm font-medium">
                         {{ $order->created_at->format('d/m/Y H:i') }}
                     </td>
-                    @if(request('status') != '1')
+                    @if (request()->ship_status == 2)
                     <td class="p-4 text-sm font-medium" @click.stop>
-                        <button @click="$dispatch('open-modal', @js($order))" type="submit" class="px-4 py-2.5 rounded-lg font-medium bg-blue-500 text-white hover:bg-blue-600 transition">Xử lý</button>
+                        <form method="POST" action="{{ route('admin.order.shipped', $order->id) }}" class="inline">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="px-4 py-2.5 rounded-lg font-medium bg-green-500 text-white hover:bg-green-600 transition">Hoàn tất</button>
+                        </form>
+                        <form method="POST" action="{{ route('admin.order.fail', $order->id) }}" class="inline" x-data="ordersManager()" @submit.prevent="openFailOrderModal($event)">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="message" x-ref="failMessage">
+                            <button type="submit" class="px-4 py-2.5 rounded-lg font-medium bg-red-500 text-white hover:bg-red-600 transition">Thất bại</button>
+                        </form>
+                    </td>
+                    @else
+                    <td class="p-4 text-sm font-medium">
+                        {{ $order->updated_at->format('d/m/Y H:i') }}
                     </td>
                     @endif
                 </tr>
@@ -245,11 +191,6 @@
                     <template x-if="open">
                         <td colspan="9" class="p-0">
                             <div class="p-4 border-l-4 border-blue-500 ml-6">
-                                @if($order->message)
-                                <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                                    <p class="text-sm text-red-600">{{ $order->message }}</p>
-                                </div>
-                                @endif
                                 <table class="w-full text-sm">
                                     <thead class="bg-blue-50 border-b border-gray-200">
                                         <tr class="text-center">
@@ -295,3 +236,18 @@
     @endif
 </div>
 @endsection
+@push('scripts')
+<script>
+    function ordersManager() {
+        return {
+            openFailOrderModal(event) {
+                const message = prompt("Vui lòng nhập lý do thất bại cho đơn hàng này:");
+                if (message !== null) {
+                    this.$refs.failMessage.value = message;
+                    event.target.submit();
+                }
+            }
+        }
+    }
+</script>
+@endpush

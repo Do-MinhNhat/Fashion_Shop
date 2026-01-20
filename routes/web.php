@@ -153,13 +153,22 @@ Route::middleware('auth')->group(function () {
             Route::delete('/nhan/{tag}/force', [AdminTagController::class, 'forceDelete'])->name('admin.tag.forceDelete')->withTrashed();
             Route::put('/nhan/{tag}/cap-nhat', [AdminTagController::class, 'update'])->name('admin.tag.update');
 
-            //Quản lý bán hàng
+            //Quản lý đơn hàng
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
+            Route::get('/don-hang/nhan-don', [AdminOrderController::class, 'ship'])->name('admin.order.ship');
+            Route::get('/don-hang/da-nhan', [AdminOrderController::class, 'accepted'])->name('admin.order.accepted');
+            Route::put('/don-hang/{order}/cap-nhat', [AdminOrderController::class, 'update'])->name('admin.order.update');
+            Route::put('/don-hang/{order}/xac-nhan', [AdminOrderController::class, 'confirm'])->name('admin.order.confirm');
+            Route::put('/don-hang/{order}/tu-choi', [AdminOrderController::class, 'decline'])->name('admin.order.decline');
+            Route::put('/don-hang/{order}/nhan-don', [AdminOrderController::class, 'accept'])->name('admin.order.accept');
+            Route::put('/don-hang/{order}/that-bai', [AdminOrderController::class, 'fail'])->name('admin.order.fail');
+            Route::put('/don-hang/{order}/thanh-cong', [AdminOrderController::class, 'shipped'])->name('admin.order.shipped');
 
             //Quản lý nhập hàng
             Route::get('/phieu-nhap', [AdminImportController::class, 'index'])->name('admin.import.index');
             Route::get('/phieu-nhap/tao-moi', [AdminImportController::class, 'create'])->name('admin.import.create');
             Route::post('/phieu-nhap', [AdminImportController::class, 'store'])->name('admin.import.store');
+
         });
         // slideshow
         Route::middleware(['role:admin-head'])->group(function () {
