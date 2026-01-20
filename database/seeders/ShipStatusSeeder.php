@@ -10,7 +10,7 @@ class ShipStatusSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['name'=>'Chưa giao'],
+            ['name'=>'Chưa có Shipper'],
             ['name'=>'Đang giao'],
             ['name'=>'Đã giao'],
             ['name'=>'Giao thất bại'],

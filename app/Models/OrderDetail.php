@@ -24,4 +24,13 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(Variant::class);
     }
+    protected static function booted()
+    {
+        static::created(function ($detail) {
+            $detail->variant->decrement('quantity', $detail->quantity);
+        });
+        static::created(function ($detail) {
+            $detail->order->increment('total_price', $detail->price * $detail->quantity);
+        });
+    }
 }

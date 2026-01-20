@@ -192,18 +192,18 @@
 
             <a href="{{ route('admin.order.index') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
-                   {{ request()->routeIs('admin.order.*') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                   {{ request()->routeIs('admin.order.index') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
                 Đơn hàng
             </a>
 
-            <a href="{{ route('admin.ship.index') }}"
+            <a href="{{ route('admin.order.ship') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
-                   {{ request()->routeIs('admin.ship.*') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                   {{ request()->routeIs('admin.order.ship') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
                 Đơn hàng cần giao
             </a>
-            <a href="{{ route('admin.ship.index') }}"
+            <a href="{{ route('admin.order.accepted') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
-                   {{ request()->routeIs('admin.ship.*') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                   {{ request()->routeIs('admin.order.accepted') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
                 Đơn hàng đã nhận
             </a>
         </div>

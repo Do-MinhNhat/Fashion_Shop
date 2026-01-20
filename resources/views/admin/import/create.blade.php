@@ -132,9 +132,12 @@
         <div class="flex flex-col bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="p-4 border-b border-gray-200">
                 <h2 class="text-lg font-semibold text-gray-900">
-                    Sản phẩm đã chọn
+                    Danh sách sản phẩm đã chọn
                     <span class="text-sm font-normal text-gray-500"></span>
                 </h2>
+                <p>
+                    Tổng giá trị: <span x-text="items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString('vi-VN')" class="font-semibold text-gray-900"></span> VNĐ
+                </p>
             </div>
 
             <div class="flex-1 overflow-y-auto custom-scrollbar">
