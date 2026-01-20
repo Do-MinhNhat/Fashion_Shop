@@ -2,35 +2,65 @@
 @section('title', 'Danh sách sản phảm')
 @section('content')
 
-<div class="max-w-[1440px] pt-20 mx-auto flex min-h-screen bg-white">
+<div class="max-w-[1440px] pt-12 mx-auto flex min-h-screen bg-white">
     <!-- Filter -->
-    <x-sidebar.product-sidebar-filter />
+    <x-sidebar.product-sidebar-filter 
+        :categories="$categories" 
+        :brands="$brands"
+        :ratingCounts="$ratingCounts"
+    />
 
-    <main class="flex-1 p-6 lg:p-10">
+    <main class="flex-1 p-5 lg:p-6">
         <div class="flex flex-col md:flex-row justify-between items-end mb-10 pb-4 border-b border-gray-100">
             <div>
-                <span class="text-xs text-gray-400 uppercase tracking-widest">Kết quả tìm kiếm cho</span>
-                <h1 class="text-3xl  mt-1 italic">"Váy dạ hội" <span class="text-lg not-italic text-gray-400 ">(12 kết quả)</span></h1>
+                <span class="text-xs text-gray-400 uppercase tracking-widest">
+                    Kết quả tìm kiếm cho
+                </span>
+
+                <h1 class="text-3xl mt-1 italic">
+                    "{{ request('search') ?? 'Tất cả sản phẩm' }}"
+                    <span class="text-lg not-italic text-gray-400">
+                        ({{ $products->total() }} kết quả)
+                    </span>
+                </h1>
             </div>
 
             <div class="flex gap-4 mt-4 md:mt-0 w-full md:w-auto">
-                <button class="lg:hidden flex-1 border border-gray-300 px-4 py-2 text-sm uppercase font-bold flex items-center justify-center gap-2">
-                    <i class="fas fa-filter"></i> Lọc
-                </button>
-                <div class="relative group flex-1 md:flex-none">
-                    <select class="appearance-none w-full md:w-48 bg-transparent border-b border-gray-300 py-2 pr-8 text-sm focus:outline-none cursor-pointer">
-                        <option>Mới nhất</option>
-                        <option>Giá: Thấp đến Cao</option>  
-                        <option>Giá: Cao đến Thấp</option>
-                        <option>Bán chạy nhất</option>
+                <form method="GET" class="relative group flex-1 md:flex-none">
+                    @foreach (request()->except('sort', 'page') as $key => $value)
+                        @if (is_array($value))
+                            @foreach ($value as $v)
+                                <input type="hidden" name="{{ $key }}[]" value="{{ $v }}">
+                            @endforeach
+                        @else
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endif
+                    @endforeach
+
+                    <select name="sort" onchange="this.form.submit()"
+                        class="appearance-none w-full md:w-48 bg-transparent border-b border-gray-300 py-2 pr-8 text-sm focus:outline-none cursor-pointer"
+                    >
+                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>
+                            Mới nhất
+                        </option>
+                        <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>
+                            Giá: Thấp đến Cao
+                        </option>
+                        <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>
+                            Giá: Cao đến Thấp
+                        </option>
+                        <option value="best_seller" {{ request('sort') == 'best_seller' ? 'selected' : '' }}>
+                            Bán chạy nhất
+                        </option>
                     </select>
+
                     <i class="fas fa-chevron-down absolute right-0 top-3 text-xs text-gray-400 pointer-events-none"></i>
-                </div>
+                </form>
             </div>
         </div>
 
+        <!-- Product List -->
         <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
-            <!-- Product List -->
             @foreach ($products as $product)
             @php
                 $isNew = $product->created_at->diffInDays(now()) < 30;
@@ -43,7 +73,7 @@
                     $isWishlisted = auth()->user()->wishlists()->where('product_id', $product->id)->exists();
                 }
             @endphp
-                <div class="group cursor-pointer">
+                <div class="group cursor-pointer shadow px-2">
                     <div class="relative overflow-hidden aspect-[3/4] mb-4 bg-gray-100">
                         <a href="{{ route('user.product.show', $product->slug) }}" class="block w-full h-full">
                             <img

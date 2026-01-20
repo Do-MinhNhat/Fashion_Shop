@@ -91,18 +91,58 @@ class Product extends Model
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%")
-                    ->orWhere('id', $search);
+                ->orWhere('slug', 'like', "%{$search}%");
+
+                if (is_numeric($search)) {
+                    $q->orWhere('id', (int) $search);
+                }
+
+                $q->orWhereHas('category', function ($qCat) use ($search) {
+                    $qCat->where('name', 'like', "%{$search}%")
+                        ->orWhere('slug', 'like', "%{$search}%");
+                });
+
+                $q->orWhereHas('brand', function ($qBrand) use ($search) {
+                    $qBrand->where('name', 'like', "%{$search}%");
+                });
+
+                $q->orWhereHas('tags', function ($qTag) use ($search) {
+                    $qTag->where('name', 'like', "%{$search}%");
+                });
             });
         });
-
-        $query->when($filters['category'] ?? null, function ($query, $categoryId) {
-            $query->where('category_id', $categoryId);
+        
+        // Filter
+        $query->when($filters['category'] ?? null, function ($query, $category) {
+            $query->whereHas('category', function ($q) use ($category) {
+                $q->where('slug', $category);
+            });
         });
 
         $query->when($filters['brand'] ?? null, function ($query, $brandId) {
             $query->where('brand_id', $brandId);
         });
+
+        $query->when($filters['rating'] ?? null, function ($query, $rating) {
+            $query->where('products.rating', '>=', (int) $rating);
+        });
+
+        $query->when(
+            $filters['price_from'] ?? $filters['price_to'] ?? null,
+            function ($query) use ($filters) {
+
+                $query->whereHas('variants', function ($q) use ($filters) {
+
+                    if (!empty($filters['price_from'])) {
+                        $q->where('price', '>=', (int) $filters['price_from']);
+                    }
+
+                    if (!empty($filters['price_to'])) {
+                        $q->where('price', '<=', (int) $filters['price_to']);
+                    }
+                });
+            }
+        );
 
         $query->when(isset($filters['status']), function ($query) use ($filters) {
             $query->where('status', $filters['status']);
