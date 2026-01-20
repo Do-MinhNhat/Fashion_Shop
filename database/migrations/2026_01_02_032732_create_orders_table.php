@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreignIdFor(OrderStatus::class)->constrained()->default(1);
             $table->foreignIdFor(ShipStatus::class)->constrained()->default(1);
             $table->decimal('total_price',15,2)->default(0)->index();
+            $table->string('message')->nullable();
             $table->timestamps();
         });
     }

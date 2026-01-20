@@ -33,11 +33,10 @@
                     <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Tra cứu đơn hàng</a></li>
                     <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Chính sách đổi trả</a></li>
                     <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Hướng dẫn chọn size</a></li>
-                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Câu hỏi thường gặp (FAQ)</a></li>
+                    <li><a href="{{route('help.index')}}" class="hover:text-black hover:underline underline-offset-4 transition">Liên hệ hỗ trợ</a></li>
                     <li><a href="{{route('user.contact')}}" class="hover:text-black hover:underline underline-offset-4 transition">Danh sách liên hệ</a></li>
                 </ul>
             </div>
-
             <div>
                 <h4 class="font-bold text-xs uppercase tracking-widest mb-6">Về chúng tôi</h4>
                 <ul class="space-y-3 text-sm text-gray-500">

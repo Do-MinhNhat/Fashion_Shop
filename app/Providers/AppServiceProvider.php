@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Order;
+use App\Observers\OrderObserver;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
@@ -40,5 +42,7 @@ class AppServiceProvider extends ServiceProvider
                 $validator->validateMax($attribute, $value, [2048]) &&
                 $validator->validateMimes($attribute, $value, ['jpeg', 'png', 'jpg']);
         }, 'Hình ảnh phải là định dạng jpeg, png, jpg và không quá 2MB.');
+
+        Order::observe(OrderObserver::class);
     }
 }

@@ -7,6 +7,12 @@
     <div class="text-center mb-16 animate-fade-in-up">
         <h1 class="text-4xl  font-bold mb-2">Giỏ hàng của bạn</h1>
         <p class="text-gray-500 text-sm tracking-wide">{{ $items->count() }} sản phẩm trong túi</p>
+
+        <button id="btn-remove-all" onclick="confirmRemoveAll()" 
+            class="{{ $items->isEmpty() ? 'hidden' : '' }} text-xs text-red-500 hover:underline"
+        >
+            Xóa tất cả
+        </button>
     </div>
 
     @if ($items->isEmpty())
@@ -29,56 +35,56 @@
                     $price = $item->variant->price;
                     $lineTotal = $price * $item->quantity;
                 @endphp
-                <div 
-                    data-id="{{ $item->id }}" 
-                    data-price="{{ $price }}" 
-                    data-route="{{ route('user.cart.update', $item->id) }}"
-                    class="cart-item flex flex-col md:flex-row items-center gap-6 border-b border-gray-100 pb-8 group"
-                >
-                    <div class="w-full md:w-auto flex justify-center">
-                        <input type="checkbox" class="cart-checkbox w-4 h-4 text-black border-gray-300 rounded focus:ring-black" value="{{ $item->id }}" checked>
-                    </div>  
+                    <div 
+                        data-id="{{ $item->id }}" 
+                        data-price="{{ $price }}" 
+                        data-route="{{ route('user.cart.update', $item->id) }}"
+                        class="cart-item flex flex-col md:flex-row items-center gap-6 border-b border-gray-100 pb-8 group"
+                    >
+                        <div class="w-full md:w-auto flex justify-center">
+                            <input type="checkbox" class="cart-checkbox w-4 h-4 text-black border-gray-300 rounded focus:ring-black" value="{{ $item->id }}" checked>
+                        </div>  
 
-                    <div class="w-full md:w-24 aspect-[3/4] overflow-hidden bg-gray-100">
-                        <img src="{{ asset('storage/' . $item->variant->product->thumbnail) }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="{{ $item->variant->product->name }}">
-                    </div>
-                    
-                    <div class="flex-1 text-center md:text-left w-full">
-                        <div class="flex justify-between items-start">
-                            <a href="{{ route('user.product.show', $item->variant->product->slug) }}" class=" text-xl font-medium hover:underline underline-offset-4">{{ $item->variant->product->name }}</a>
+                        <div class="w-full md:w-24 aspect-[3/4] overflow-hidden bg-gray-100">
+                            <img src="{{ asset('storage/' . $item->variant->product->thumbnail) }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="{{ $item->variant->product->name }}">
                         </div>
-                        <p class="text-sm text-gray-500 mt-1">{{ $item->variant->color->name }} / Size {{ $item->variant->size->name }}</p>
-                        <p class="text-sm font-bold mt-2 md:hidden">{{ number_format($price, 0, ',', '.') }} ₫</p>
                         
-                        <form id="delete-form-{{ $item->id }}" method="POST" action="{{ route('user.cart.destroy', $item->id) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" onclick="confirmDelete({{ $item->id }})" class="text-xs text-gray-400 border-b border-gray-300 hover:text-red-500 hover:border-red-500 transition mt-3 pb-0.5 hidden md:inline-block">
-                                Xóa
-                            </button>
-                        </form>
-                    </div>
+                        <div class="flex-1 text-center md:text-left w-full">
+                            <div class="flex justify-between items-start">
+                                <a href="{{ route('user.product.show', $item->variant->product->slug) }}" class=" text-xl font-medium hover:underline underline-offset-4">{{ $item->variant->product->name }}</a>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">{{ $item->variant->color->name }} / Size {{ $item->variant->size->name }}</p>
+                            <p class="text-sm font-bold mt-2 md:hidden">{{ number_format($price, 0, ',', '.') }} ₫</p>
+                            
+                            <form id="delete-form-{{ $item->id }}" method="POST" action="{{ route('user.cart.destroy', $item->id) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" onclick="confirmDelete({{ $item->id }})" class="text-xs text-gray-400 border-b border-gray-300 hover:text-red-500 hover:border-red-500 transition mt-3 pb-0.5 hidden md:inline-block">
+                                    Xóa
+                                </button>
+                            </form>
+                        </div>
 
-                    <div class="w-full md:w-auto flex justify-center">
-                        <div class="flex items-center border border-gray-300 px-2 py-1">
-                            <button type="button" class="btn-dec w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-100 transition">-</button>
-                            <input
-                                type="text"
-                                name="quantity"
-                                value="{{ $item->quantity }}"
-                                min="1"
-                                max="{{ $item->variant->quantity }}"
-                                class="qty-input w-12 text-center rounded text-sm font-bold"
-                                data-id="{{ $item->id }}"
-                            >
-                            <button type="button" class="btn-inc w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-100 transition">+</button>
+                        <div class="w-full md:w-auto flex justify-center">
+                            <div class="flex items-center border border-gray-300 px-2 py-1">
+                                <button type="button" class="btn-dec w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-100 transition">-</button>
+                                <input
+                                    type="text"
+                                    name="quantity"
+                                    value="{{ $item->quantity }}"
+                                    min="1"
+                                    max="{{ $item->variant->quantity }}"
+                                    class="qty-input w-12 text-center rounded text-sm font-bold"
+                                    data-id="{{ $item->id }}"
+                                >
+                                <button type="button" class="btn-inc w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-100 transition">+</button>
+                            </div>
+                        </div>
+
+                        <div class="hidden md:block w-24 text-right font-medium line-total">
+                            {{ number_format($lineTotal, 0, ',', '.') }} ₫
                         </div>
                     </div>
-
-                    <div class="hidden md:block w-24 text-right font-medium line-total">
-                        {{ number_format($lineTotal, 0, ',', '.') }} ₫
-                    </div>
-                </div>
                 @endforeach
 
                 <div class="pt-6">
@@ -194,6 +200,82 @@
         if(subTotalEl) subTotalEl.innerText = formatVND(total);
         if(grandTotalEl) grandTotalEl.innerText = formatVND(total);
     };
+
+    // 2. Hàm xác nhận xóa tất cả
+    function confirmRemoveAll() {
+        Swal.fire({
+            title: 'Bạn chắc chắn chứ?',
+            text: "Toàn bộ sản phẩm trong giỏ hàng sẽ bị xóa!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#000',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) removeAllProcess();
+        });
+    }
+
+    // 3. Xử lý logic xóa tất cả
+    function removeAllProcess() {
+        const btnAll = document.getElementById('btn-remove-all');
+        if(btnAll) btnAll.innerText = 'Đang xóa...';
+
+        fetch("{{ route('user.cart.clear') }}", { 
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+
+                const items = document.querySelectorAll('.cart-item');
+
+                items.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.add('fade-out');
+                        setTimeout(() => item.remove(), 300);
+                    }, index * 50);
+                });
+
+                setTimeout(() => {
+                    recalcCart();
+                    checkEmptyCart();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Đã xoá tất cả sản phẩm trong giỏ',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                }, items.length * 50 + 400);
+
+            } else {
+                Swal.fire('Lỗi', 'Không thể xoá giỏ hàng', 'error');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            Swal.fire('Lỗi', 'Lỗi kết nối server', 'error');
+        })
+        .finally(() => {
+            if(btnAll) btnAll.innerText = 'Xóa tất cả';
+        });
+    }
+
+    function checkEmptyCart() {
+        const items = document.querySelectorAll('.cart-item');
+        if (items.length === 0) {
+            location.reload(); // Reload để hiện giao diện giỏ trống đúng Blade
+        }
+    }
 
     // Thông báo xác nhận khi xóa
     function confirmDelete(id) {

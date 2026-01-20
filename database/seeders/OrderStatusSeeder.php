@@ -10,9 +10,8 @@ class OrderStatusSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['name' => 'Chờ xác nhận'], 
+            ['name' => 'Chờ xác nhận'],
             ['name' => 'Đã xác nhận'],
-            ['name' => 'Đang xử lý'],
             ['name' => 'Hoàn thành'],
             ['name' => 'Đã hủy'],
         ];

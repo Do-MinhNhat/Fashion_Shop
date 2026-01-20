@@ -176,7 +176,7 @@
                     {{ $isOrderGroup ? 'bg-white/5 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white' }}">
             <div class="flex items-center">
                 <i class="fas fa-shopping-cart w-9 text-lg transition-colors {{ $isOrderGroup ? 'text-teal-400' : 'group-hover:text-teal-400' }}"></i>
-                <span class="font-medium">Bán hàng</span>
+                <span class="font-medium">Quản lý đơn hàng</span>
             </div>
             <i class="fas fa-chevron-right text-[10px] transition-transform duration-300 {{ $isOrderGroup ? 'text-white' : 'text-gray-600' }}"
                 :class="open ? 'rotate-90' : ''"></i>
@@ -192,14 +192,19 @@
 
             <a href="{{ route('admin.order.index') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
-                   {{ request()->routeIs('admin.order.*') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
-                Quản lý đơn hàng
+                   {{ request()->routeIs('admin.order.index') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                Đơn hàng
             </a>
 
-            <a href="{{ route('admin.ship.index') }}"
+            <a href="{{ route('admin.order.ship') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
-                   {{ request()->routeIs('admin.ship.*') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
-                Vận chuyển & Giao nhận
+                   {{ request()->routeIs('admin.order.ship') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                Đơn hàng cần giao
+            </a>
+            <a href="{{ route('admin.order.accepted') }}"
+                class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
+                   {{ request()->routeIs('admin.order.accepted') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                Đơn hàng đã nhận
             </a>
         </div>
     </div>
@@ -218,6 +223,22 @@
             @endif
             <i class="fas fa-users w-9 text-lg transition-colors duration-300 {{ $isActive ? 'text-pink-400' : 'group-hover:text-pink-400' }}"></i>
             <span class="font-medium tracking-wide">Khách hàng</span>
+        </a>
+    </div>
+
+    <div class="mt-2">
+        @php $isActive = request()->routeIs('admin.slideshow.*'); @endphp
+        <a href="{{ route('admin.slideshow.index') }}"
+            class="group flex items-center text-left px-4 py-3.5 rounded-xl transition-all duration-300 ease-out relative overflow-hidden
+               {{ $isActive
+                  ? 'bg-white/10 text-white shadow-lg shadow-black/20 ring-1 ring-white/10'
+                  : 'text-gray-400 hover:bg-white/5 hover:text-white'
+               }}">
+            @if($isActive)
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.6)]"></div>
+            @endif
+            <i class="fas fa-users w-9 text-lg transition-colors duration-300 {{ $isActive ? 'text-pink-400' : 'group-hover:text-pink-400' }}"></i>
+            <span class="font-medium tracking-wide">Slideshow</span>
         </a>
     </div>
 

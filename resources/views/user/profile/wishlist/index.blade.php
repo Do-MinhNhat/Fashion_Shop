@@ -1,6 +1,5 @@
 @extends('user.layouts.app')
 @section('title', 'Danh sách yêu thích của tôi')
-
 @push('styles')
     <style>
         .fade-out {
@@ -18,7 +17,6 @@
         <main class="flex-1 bg-white p-8 shadow-sm rounded-lg min-h-[500px]">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl  font-bold">Sản phẩm đã thích</h2>
-                
                 {{-- Nút xóa tất cả --}}
                 <button id="btn-remove-all" 
                         onclick="confirmRemoveAll()" 
@@ -28,7 +26,6 @@
             </div>
             
             {{-- GRID SẢN PHẨM --}}
-            {{-- Lưu ý: ID các item con phải khớp với logic trong toggleWishlistGlobal --}}
             <div id="wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($wishlists as $wishlist)
                     {{-- Wrapper ID để JS Global tìm và xóa --}}

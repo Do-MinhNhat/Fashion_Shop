@@ -7,27 +7,36 @@
             </button>
 
             {{-- Logo --}}
-            <a href="{{ route('user.home.index') }}" class="text-3xl  font-bold tracking-widest uppercase">
-                CDHN.
-            </a>
+            <x-logo />
 
-            <div class="hidden md:flex flex-1 max-w-md mx-auto relative border-b border-gray-300 focus-within:border-black transition">
-                <input type="text" placeholder="Tìm kiếm sản phẩm..." class="w-full py-2 bg-transparent outline-none text-sm placeholder-gray-400">
-                <button class="absolute right-0 top-2 text-gray-400 hover:text-black"><i class="fas fa-search"></i></button>
-            </div>
+            {{-- Search Desktop --}}
+            <form method="GET" action="{{ route('user.product.index') }}"
+                class="hidden md:flex flex-1 max-w-md mx-auto relative border-b border-gray-300 focus-within:border-black transition"
+            >
+                <input type="text" name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    class="w-full py-2 bg-transparent outline-none text-sm placeholder-gray-400 focus-within:border-black"
+                >
+                <button type="submit"
+                        class="absolute right-0 top-2 text-gray-400 hover:text-black">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
 
             {{-- Right --}}
             <div class="flex space-x-6 items-center">
                 {{-- Search Mobile --}}
                 <div class="max-[768px]:block hidden relative flex items-center" id="search-container">
                     <form action="{{ route('user.product.index') }}" method="GET">
-                        <input type="text"
-                            name="q" id="search-input" placeholder="Tìm kiếm sản phẩm..."
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            id="search-input" placeholder="Tìm kiếm sản phẩm..."
                             class="w-0 opacity-0 border-b border-black bg-transparent outline-none text-sm transition-all duration-300 pr-8 py-1 absolute right-0 top-[-2px] focus:w-64 focus:opacity-100 placeholder-gray-400"
                         >
                     </form>
 
-                    <button id="search-btn" class="hover:scale-110 transition-transform cursor-pointer z-50">
+                    <button type="submit" id="search-btn" class="hover:scale-110 transition-transform cursor-pointer z-50">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
@@ -47,17 +56,17 @@
                 <div class="hidden md:flex items-center gap-3">
                     @guest
                         {{-- Chưa đăng nhập --}}
-                        <a href="{{ route('login') }}"
-                        class="text-xs font-bold uppercase tracking-widest hover:text-gray-600 transition-colors whitespace-nowrap">
-                            Đăng nhập
-                        </a>
+                        <button onclick="openLoginModal()"
+ class="text-xs font-bold uppercase tracking-widest bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200 whitespace-nowrap">
+  Đăng nhập
+</button>
+
 
                         <a href="{{ route('register') }}"
                         class="text-xs font-bold uppercase tracking-widest bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200 whitespace-nowrap">
                             Đăng ký
                         </a>
                     @endguest
-
                     @auth
                         <a href="{{ Auth::check() ? route('user.profile.index') : route('login') }}" class="hover:scale-110 transition-transform">
                             <i class="fa-regular fa-user"></i>
@@ -65,6 +74,7 @@
                     @endauth
                 </div>
             </div>
+            
         </div>
 
         @include('user.layouts.navigation')
@@ -83,6 +93,7 @@
 
 @push('scripts')
 <script>
+    
     // Search Logic
     const searchBtn = document.getElementById('search-btn');
     const searchInput = document.getElementById('search-input');

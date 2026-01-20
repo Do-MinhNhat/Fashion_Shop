@@ -106,6 +106,7 @@
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Kích cỡ</th>
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giá nhập</th>
                                             <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Số lượng</th>
+                                            <th class="p-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tổng cộng</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -119,6 +120,7 @@
                                             <td>{{ $detail->variant->size->name }}</td>
                                             <td><x-money :value="$detail->price" /></td>
                                             <td>{{ $detail->quantity }}</td>
+                                            <td><x-money :value="$detail->price * $detail->quantity" /></td>
                                         </tr>
                                         @endforeach
                                     </tbody>
