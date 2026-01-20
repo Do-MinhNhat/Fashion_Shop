@@ -176,7 +176,7 @@
                     {{ $isOrderGroup ? 'bg-white/5 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white' }}">
             <div class="flex items-center">
                 <i class="fas fa-shopping-cart w-9 text-lg transition-colors {{ $isOrderGroup ? 'text-teal-400' : 'group-hover:text-teal-400' }}"></i>
-                <span class="font-medium">Bán hàng</span>
+                <span class="font-medium">Quản lý đơn hàng</span>
             </div>
             <i class="fas fa-chevron-right text-[10px] transition-transform duration-300 {{ $isOrderGroup ? 'text-white' : 'text-gray-600' }}"
                 :class="open ? 'rotate-90' : ''"></i>
@@ -193,13 +193,18 @@
             <a href="{{ route('admin.order.index') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
                    {{ request()->routeIs('admin.order.*') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
-                Quản lý đơn hàng
+                Đơn hàng
             </a>
 
             <a href="{{ route('admin.ship.index') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
                    {{ request()->routeIs('admin.ship.*') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
-                Vận chuyển & Giao nhận
+                Đơn hàng cần giao
+            </a>
+            <a href="{{ route('admin.ship.index') }}"
+                class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
+                   {{ request()->routeIs('admin.ship.*') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                Đơn hàng đã nhận
             </a>
         </div>
     </div>
