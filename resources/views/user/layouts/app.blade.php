@@ -47,19 +47,22 @@
 
     let formData = new FormData(this);
 
-    let res = await fetch("{{ route('login') }}", {
+    let res = await fetch("{{ route('ajax.login') }}", {
         method: "POST",
         headers: {
             'X-CSRF-TOKEN': document
-              .querySelector('input[name=_token]').value
+              .querySelector('input[name=_token]').value,
+            'Accept': 'application/json'
         },
         body: formData
     });
 
-    if(res.redirected){
-        window.location.href = res.url;
+    const data = await res.json();
+
+    if(data.success){
+        location.reload();
     }else{
-        alert("Sai tài khoản hoặc mật khẩu");
+        document.getElementById('loginError').innerText = data.message;
     }
 });
 

@@ -15,7 +15,7 @@
       <input type="password" name="password"
        placeholder="Mật khẩu"
        class="w-full border p-2 mb-3">
-
+      <p id="loginError" class="text-red-500 text-sm mb-3"></p>
       <button class="w-full bg-black text-white py-2">
         Đăng nhập
       </button>
