@@ -28,7 +28,7 @@ class ImportDetail extends Model
             $detail->variant->increment('quantity', $detail->quantity);
         });
         static::created(function ($detail) {
-            $detail->import->increment('total_price', $detail->price);
+            $detail->import->increment('total_price', $detail->price * $detail->quantity);
         });
     }
 }

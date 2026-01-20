@@ -24,9 +24,14 @@ use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HelpController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 //User Checkout Route
 //-----------------------------
+// route login
+Route::post('/ajax-login', [AuthController::class, 'ajaxLogin'])
+    ->name('ajax.login');
+
 // route thong tin lien he
 Route::get('/about', [ContactController::class, 'index'])->name('user.contact');
 // route user help
@@ -148,7 +153,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/nhan/{tag}/force', [AdminTagController::class, 'forceDelete'])->name('admin.tag.forceDelete')->withTrashed();
             Route::put('/nhan/{tag}/cap-nhat', [AdminTagController::class, 'update'])->name('admin.tag.update');
 
-            //Quản lý bán hàng
+            //Quản lý đơn hàng
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
             Route::get('/don-hang/{id}', [AdminOrderController::class, 'show'])->name('admin.order.show');
 
@@ -157,6 +162,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/phieu-nhap', [AdminImportController::class, 'index'])->name('admin.import.index');
             Route::get('/phieu-nhap/tao-moi', [AdminImportController::class, 'create'])->name('admin.import.create');
             Route::post('/phieu-nhap', [AdminImportController::class, 'store'])->name('admin.import.store');
+
         });
         // slideshow
         Route::middleware(['role:admin-head'])->group(function () {

@@ -56,17 +56,17 @@
                 <div class="hidden md:flex items-center gap-3">
                     @guest
                         {{-- Chưa đăng nhập --}}
-                        <a href="{{ route('login') }}"
-                        class="text-xs font-bold uppercase tracking-widest hover:text-gray-600 transition-colors whitespace-nowrap">
-                            Đăng nhập
-                        </a>
+                        <button onclick="openLoginModal()"
+ class="text-xs font-bold uppercase tracking-widest bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200 whitespace-nowrap">
+  Đăng nhập
+</button>
+
 
                         <a href="{{ route('register') }}"
                         class="text-xs font-bold uppercase tracking-widest bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200 whitespace-nowrap">
                             Đăng ký
                         </a>
                     @endguest
-
                     @auth
                         <a href="{{ Auth::check() ? route('user.profile.index') : route('login') }}" class="hover:scale-110 transition-transform">
                             <i class="fa-regular fa-user"></i>
@@ -74,6 +74,7 @@
                     @endauth
                 </div>
             </div>
+            
         </div>
 
         @include('user.layouts.navigation')
@@ -92,6 +93,7 @@
 
 @push('scripts')
 <script>
+    
     // Search Logic
     const searchBtn = document.getElementById('search-btn');
     const searchInput = document.getElementById('search-input');
