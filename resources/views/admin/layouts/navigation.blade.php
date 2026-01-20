@@ -221,6 +221,22 @@
         </a>
     </div>
 
+    <div class="mt-2">
+        @php $isActive = request()->routeIs('admin.slideshow.*'); @endphp
+        <a href="{{ route('admin.slideshow.index') }}"
+            class="group flex items-center text-left px-4 py-3.5 rounded-xl transition-all duration-300 ease-out relative overflow-hidden
+               {{ $isActive
+                  ? 'bg-white/10 text-white shadow-lg shadow-black/20 ring-1 ring-white/10'
+                  : 'text-gray-400 hover:bg-white/5 hover:text-white'
+               }}">
+            @if($isActive)
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.6)]"></div>
+            @endif
+            <i class="fas fa-users w-9 text-lg transition-colors duration-300 {{ $isActive ? 'text-pink-400' : 'group-hover:text-pink-400' }}"></i>
+            <span class="font-medium tracking-wide">Slideshow</span>
+        </a>
+    </div>
+
     {{-- CÀI ĐẶT --}}
     <div class="px-4 pb-6 mt-auto">
         <div class="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-6"></div>

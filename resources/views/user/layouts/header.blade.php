@@ -7,10 +7,9 @@
             </button>
 
             {{-- Logo --}}
-            <a href="{{ route('user.home.index') }}" class="text-3xl  font-bold tracking-widest uppercase">
-                CDHN.
-            </a>
+            <x-logo />
 
+            {{-- Search Desktop --}}
             <div class="hidden md:flex flex-1 max-w-md mx-auto relative border-b border-gray-300 focus-within:border-black transition">
                 <input type="text" placeholder="Tìm kiếm sản phẩm..." class="w-full py-2 bg-transparent outline-none text-sm placeholder-gray-400">
                 <button class="absolute right-0 top-2 text-gray-400 hover:text-black"><i class="fas fa-search"></i></button>

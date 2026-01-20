@@ -151,4 +151,10 @@ class CartDetailController extends Controller
 
         return back()->with('success', 'Đã xóa sản phẩm khỏi giỏ hàng');
     }
+
+    public function clear()
+    {
+        CartDetail::where('user_id', Auth::id())->delete();
+        return response()->json(['status' => 'success']);
+    }
 }
