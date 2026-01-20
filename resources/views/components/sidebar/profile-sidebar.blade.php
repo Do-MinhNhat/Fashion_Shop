@@ -37,7 +37,11 @@
            {{ request()->routeIs('user.profile.order.*') ? $active : $normal }}">
             Lịch sử đơn hàng
         </a>
-
+        <a href="{{ route('user.reviews.index') }}"
+           class="block px-4 py-2 rounded text-sm transition
+           {{ request()->routeIs('user.reviews.index') ? $active : $normal }}">
+            Lịch sử đánh giá
+        </a>
         <a href="{{ route('user.profile.address.index') }}"
            class="block px-4 py-2 rounded text-sm transition
            {{ request()->routeIs('user.profile.address.*') ? $active : $normal }}">

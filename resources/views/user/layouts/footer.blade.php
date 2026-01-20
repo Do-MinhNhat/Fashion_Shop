@@ -34,7 +34,7 @@
                     <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Chính sách đổi trả</a></li>
                     <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Hướng dẫn chọn size</a></li>
                     <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Câu hỏi thường gặp (FAQ)</a></li>
-                    <li><a href="#" class="hover:text-black hover:underline underline-offset-4 transition">Chăm sóc khách hàng</a></li>
+                    <li><a href="{{route('user.contact')}}" class="hover:text-black hover:underline underline-offset-4 transition">Danh sách liên hệ</a></li>
                 </ul>
             </div>
 
