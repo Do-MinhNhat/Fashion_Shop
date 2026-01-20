@@ -126,7 +126,9 @@
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Trạng thái đơn hàng</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Người giao</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Ngày tạo</th>
+                    @if(request('status') != '1')
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Thao tác</th>
+                    @endif
                 </tr>
             </thead>
             @foreach ($orders as $order)
@@ -233,9 +235,11 @@
                     <td class="p-4 text-sm font-medium">
                         {{ $order->created_at->format('d/m/Y H:i') }}
                     </td>
+                    @if(request('status') != '1')
                     <td class="p-4 text-sm font-medium" @click.stop>
                         <button @click="$dispatch('open-modal', @js($order))" type="submit" class="px-4 py-2.5 rounded-lg font-medium bg-blue-500 text-white hover:bg-blue-600 transition">Xử lý</button>
                     </td>
+                    @endif
                 </tr>
                 <tr>
                     <template x-if="open">
