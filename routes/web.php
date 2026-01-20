@@ -150,6 +150,8 @@ Route::middleware('auth')->group(function () {
 
             //Quản lý bán hàng
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
+            Route::get('/don-hang/{id}', [AdminOrderController::class, 'show'])->name('admin.order.show');
+
 
             //Quản lý nhập hàng
             Route::get('/phieu-nhap', [AdminImportController::class, 'index'])->name('admin.import.index');

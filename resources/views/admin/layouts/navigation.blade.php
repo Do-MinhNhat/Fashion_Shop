@@ -232,7 +232,7 @@
             @if($isActive)
             <div class="absolute left-0 top-0 bottom-0 w-1 bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.6)]"></div>
             @endif
-            <i class="fas fa-users w-9 text-lg transition-colors duration-300 {{ $isActive ? 'text-pink-400' : 'group-hover:text-pink-400' }}"></i>
+            <i class="fa-solid fa-images w-9 text-lg transition-colors duration-300 {{ $isActive ? 'text-pink-400' : 'group-hover:text-pink-400' }}"></i>
             <span class="font-medium tracking-wide">Slideshow</span>
         </a>
     </div>
