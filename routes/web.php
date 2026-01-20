@@ -29,9 +29,8 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 //User Checkout Route
 //-----------------------------
-// route login
-Route::post('/ajax-login', [AuthController::class, 'ajaxLogin'])
-    ->name('ajax.login');
+
+
 
 // route thong tin lien he
 Route::get('/about', [ContactController::class, 'index'])->name('user.contact');
