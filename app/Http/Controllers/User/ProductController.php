@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\OrderDetail;
 use App\Models\Review;
 
 class ProductController extends Controller
@@ -26,44 +27,53 @@ class ProductController extends Controller
     {
         $product = Product::where('slug', $slug)
             ->where('status', 1)
-            ->with(['variants.color', 'variants.size'])
+            ->with([
+                'variants.color',
+                'variants.size',
+                'reviews.user'
+            ])
+            ->withCount([
+                'wishlists as wishlist_count' => function ($q) {
+                    $q->whereNull('variant_id');
+                }
+            ])
             ->firstOrFail();
 
-        $viewData = [];
-        $viewData['title'] = $product->name;
-        $viewData['subtitle'] = $product->name;
-
-        // Lấy Color duy nhất và đang active
+        // Lấy Color duy nhất & active
         $colors = $product->variants
             ->pluck('color')
             ->filter(fn($c) => $c && $c->status == 1)
             ->unique('id')
             ->values();
 
-        // Lấy Size duy nhất và đang active
+        // Lấy Size duy nhất & active
         $sizes = $product->variants
             ->pluck('size')
             ->filter(fn($s) => $s && $s->status == 1)
             ->unique('id')
             ->values();
 
+        // Tăng lượt xem
         $product->increment('view');
 
+        // Sản phẩm liên quan
         $relatedProducts = Product::where('id', '!=', $product->id)
-            ->with(['variants', 'category'])
+            ->where('status', 1)
+            ->with('variants')
             ->orderByDesc('view')
             ->take(4)
             ->get();
 
+        // Reviews (paginate riêng)
         $reviews = $product->reviews()
-            ->with(['user'])
-            ->orderBy('created_at', 'desc')
+            ->orderByDesc('created_at')
             ->paginate(5);
 
-        $totalRating = $product->reviews()->count();
+        $totalRating = $reviews->total();
 
+        // Phân bố sao
         $starCounts = $product->reviews()
-            ->select('rating', Review::raw('count(*) as total'))
+            ->selectRaw('rating, COUNT(*) as total')
             ->groupBy('rating')
             ->pluck('total', 'rating')
             ->toArray();
@@ -73,10 +83,20 @@ class ProductController extends Controller
             $ratingDist[$i] = $starCounts[$i] ?? 0;
         }
 
-        $averageRating = $totalRating > 0 ? round($product->reviews()->avg('rating'), 1) : 0;
+        $averageRating = $totalRating > 0
+            ? round($product->reviews()->avg('rating'), 1)
+            : 0;
 
         return view('user.product.show', compact(
-            'product', 'relatedProducts', 'colors', 'sizes', 'reviews', 'ratingDist', 'starCounts', 'averageRating', 'totalRating'
+            'product',
+            'relatedProducts',
+            'colors',
+            'sizes',
+            'reviews',
+            'ratingDist',
+            'starCounts',
+            'averageRating',
+            'totalRating'
         ));
     }
 }

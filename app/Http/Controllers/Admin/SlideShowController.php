@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreSlideRequest;
+use App\Http\Requests\UpdateSlideRequest;
 use App\Models\Slide;
 use Illuminate\Http\Request;
 
@@ -22,27 +24,23 @@ class SlideShowController extends Controller
     /**
      * STORE
      */
-    public function store(Request $request)
+    public function store(StoreSlideRequest $request)
     {
-        $data = $request->validate([
-            'title'       => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'url'         => 'nullable|string|max:255',
-            'sort_order'  => 'required|integer',
-            'status'      => 'required|boolean',
-            'image'       => 'required|shop_image',
-        ]);
+        $data = $request->validated();
 
-        // Upload ảnh
         $file = $request->file('image');
         $fileName = $file->getClientOriginalName();
 
-        // lưu tên file vào DB
+        // nếu có lưu file thật
+        $file->storeAs('', $fileName, 'public');
+
         $data['image'] = $fileName;
 
         Slide::create($data);
 
-        return redirect()->route('admin.slideshow.index')->with('success', 'Thêm slide thành công');
+        return redirect()
+            ->route('admin.slideshow.index')
+            ->with('success', 'Thêm slide thành công');
     }
 
     public function edit(Slide $slide)
@@ -53,28 +51,19 @@ class SlideShowController extends Controller
     /**
      * UPDATE
      */
-    public function update(Request $request, $id)
+    public function update(UpdateSlideRequest $request, $id)
     {
         $slide = Slide::findOrFail($id);
 
-        $data = $request->validate([
-            'title'       => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'url'         => 'nullable|string|max:255',
-            'sort_order'  => 'required|integer',
-            'status'      => 'required|boolean',
-            'image'       => 'nullable|shop_image'
-        ]);
+        $data = $request->validated();
 
-        // Nếu có upload ảnh mới
         if ($request->hasFile('image')) {
-
             $file = $request->file('image');
-            $fileName = time() . '_' . $file->getClientOriginalName();
+            $fileName = $file->getClientOriginalName();
             $file->storeAs('', $fileName, 'public');
 
             $data['image'] = $fileName;
-        }
+        }   
 
         $slide->update($data);
 

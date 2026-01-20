@@ -22,9 +22,12 @@ class UpdateSlideRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'nullable|shop_image',
-            'url' => 'required|string|max:255',
-            'status' => 'required|boolean',
+            'title'       => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'url'         => 'nullable|string|max:255',
+            'sort_order'  => 'required|integer',
+            'status'      => 'required|boolean',
+            'image'       => 'nullable|shop_image',
         ];
     }
     public function messages(): array

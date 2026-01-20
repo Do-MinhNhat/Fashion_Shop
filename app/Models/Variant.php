@@ -36,6 +36,10 @@ class Variant extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
     public function importDetails()
     {
         return $this->hasMany(ImportDetail::class);

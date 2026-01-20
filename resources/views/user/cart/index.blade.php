@@ -62,7 +62,15 @@
                     <div class="w-full md:w-auto flex justify-center">
                         <div class="flex items-center border border-gray-300 px-2 py-1">
                             <button type="button" class="btn-dec w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-100 transition">-</button>
-                            <input type="text" name="qty" value="{{ $item->quantity }}" min="1" readonly class="qty-input w-8 text-center border-none focus:ring-0 text-sm font-bold bg-transparent p-0">
+                            <input
+                                type="text"
+                                name="quantity"
+                                value="{{ $item->quantity }}"
+                                min="1"
+                                max="{{ $item->variant->quantity }}"
+                                class="qty-input w-12 text-center rounded text-sm font-bold"
+                                data-id="{{ $item->id }}"
+                            >
                             <button type="button" class="btn-inc w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-100 transition">+</button>
                         </div>
                     </div>
@@ -284,6 +292,62 @@
             window.location.href = `${checkoutUrl}?${params.toString()}`;
         });
     };
+
+    document.querySelectorAll('.qty-input').forEach(input => {
+        input.addEventListener('change', function () {
+            const item = this.closest('.cart-item');
+            const updateUrl = item.dataset.route;
+
+            let oldQty = parseInt(this.dataset.oldQty || this.value);
+            let newQty = parseInt(this.value);
+
+            // Validate client
+            if (isNaN(newQty) || newQty < 1) {
+                this.value = oldQty;
+                return;
+            }
+
+            // Lưu lại số cũ để rollback nếu lỗi
+            this.dataset.oldQty = oldQty;
+
+            // Optimistic UI
+            recalcCart();
+
+            fetch(updateUrl, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ quantity: newQty })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Rất tiếc!',
+                        text: data.error,
+                        confirmButtonColor: '#000'
+                    });
+
+                    this.value = data.current_qty || oldQty;
+                    recalcCart();
+                } else {
+                    // Update lại oldQty khi thành công
+                    this.dataset.oldQty = newQty;
+                }
+            })
+            .catch(() => {
+                this.value = oldQty;
+                recalcCart();
+                alert('Có lỗi xảy ra, vui lòng thử lại');
+            });
+        });
+
+        // Ghi nhớ số ban đầu
+        input.dataset.oldQty = input.value;
+    });
 
     // Khởi tạo
     document.addEventListener('DOMContentLoaded', recalcCart);
