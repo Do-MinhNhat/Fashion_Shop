@@ -29,4 +29,9 @@ class Review extends Model
     {
         return $this->belongsTo(User::class, 'admin_id');
     }
+    
+    public function replierUser()
+    {
+        return $this->belongsTo(User::class, 'replier');
+    }
 }

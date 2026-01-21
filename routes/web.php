@@ -21,6 +21,8 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
+use App\Http\Controllers\Admin\RoleController as AdminRoleController;
+use App\Http\Controllers\Admin\VariantController as AdminVariantController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HelpController;
@@ -50,8 +52,8 @@ Route::post('/chat/send', [ChatController::class, 'store']);
 //-----------------------------
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return view('/');
+})->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     //User ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -217,6 +219,7 @@ Route::permanentRedirect('/admin', '/quan-ly');
 Route::permanentRedirect('/product', '/san-pham');
 Route::permanentRedirect('/quanly', '/quan-ly');
 Route::permanentRedirect('/sanpham', '/san-pham');
+Route::permanentRedirect('/dashboard', '/');
 
 
 

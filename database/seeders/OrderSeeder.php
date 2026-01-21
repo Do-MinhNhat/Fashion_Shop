@@ -18,8 +18,6 @@ class OrderSeeder extends Seeder
                 'name' => 'Nguyen Hoang Huy',
                 'phone' => '0123456789',
                 'address' => 'TP Hồ Chí Minh',
-                'admin_id' => 1,
-                'shipper_id' => 2,
                 'order_status_id' => 1,
                 'ship_status_id' => 1,
                 'total_price' => 499000
@@ -29,10 +27,8 @@ class OrderSeeder extends Seeder
                 'name' => 'Do Minh Nhat',
                 'phone' => '0912345678',
                 'address' => 'TP Hồ Chí Minh',
-                'admin_id' => 1,
-                'shipper_id' => 2,
-                'order_status_id' => 4,
-                'ship_status_id' => 3,
+                'order_status_id' => 1,
+                'ship_status_id' => 1,
                 'total_price' => 998000
             ],
             [
@@ -40,10 +36,8 @@ class OrderSeeder extends Seeder
                 'name' => 'Truong Manh Cuong',
                 'phone' => '0912345678',
                 'address' => 'TP Hồ Chí Minh',
-                'admin_id' => 1,
-                'shipper_id' => 2,
-                'order_status_id' => 2,
-                'ship_status_id' => 2,
+                'order_status_id' => 1,
+                'ship_status_id' => 1,
                 'total_price' => 350000
             ],
             [
@@ -51,8 +45,6 @@ class OrderSeeder extends Seeder
                 'name' => 'Nguyen Thanh Duong',
                 'phone' => '0912345678',
                 'address' => 'TP Hồ Chí Minh',
-                'admin_id' => 1,
-                'shipper_id' => 2,
                 'order_status_id' => 1,
                 'ship_status_id' => 1,
                 'total_price' => 200000
