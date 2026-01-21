@@ -24,7 +24,7 @@ class UpdateOrderRequest extends FormRequest
         return [
             'user_id' => 'prohibited',
             'name' => 'required|string|max:255',
-            'phone' => 'required|regex:/^(03|05|07|08|09)+([0-9]{8})$/',
+            'phone' => 'required|digits:10',
             'address' => 'required|string|max:255',
             'admin_id' => 'nullable|exists:users,id',
             'shipper_id' => 'nullable|exists:users,id',
@@ -38,7 +38,7 @@ class UpdateOrderRequest extends FormRequest
             'user_id.prohibited' => 'Bạn không được phép thay đổi chủ sở hữu hóa đơn',
             'name.required' => 'Tên người nhận không được để trống.',
             'phone.required' => 'Số điện thoại không được để trống.',
-            'phone.regex' => 'Số điện thoại không đúng định dạng.',
+            'phone.digits' => 'Số điện thoại không đúng định dạng.',
             'address.required' => 'Địa chỉ nhận hàng không được để trống.',
             'order_status_id.exists' => 'Trạng thái đơn hàng không hợp lệ.',
             'ship_status_id.exists'  => 'Trạng thái vận chuyển không hợp lệ.',

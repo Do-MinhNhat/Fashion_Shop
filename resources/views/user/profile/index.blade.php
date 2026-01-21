@@ -1,7 +1,6 @@
 @extends('user.layouts.app')
 @section('title', 'Tài khoản của tôi')
 @section('content')
-
 <div class="max-w-6xl mx-auto pt-20 pb-10 px-4 flex flex-col md:flex-row gap-8 bg-gray-50  text-gray-800">
     <!-- Sidebar -->
     <x-sidebar.profile-sidebar />
@@ -35,24 +34,32 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 mb-10">
                 <div class="group">
                     <label class="block text-xs uppercase font-bold text-gray-500 mb-2 group-focus-within:text-black transition">Họ và tên</label>
-                    <input type="text" value="Nguyễn Văn A" class="w-full border-b border-gray-300 py-2 focus:border-black outline-none transition bg-transparent font-medium text-gray-800">
+                    <input type="text" value="{{$user->name}}" readonly class="w-full border-b border-gray-300 py-2 focus:border-black outline-none transition bg-transparent font-medium text-gray-800">
                 </div>
 
                 <div class="group opacity-70">
                     <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Email (Không thể thay đổi)</label>
-                    <input type="email" value="nguyenvana@example.com" readonly class="w-full border-b border-gray-200 py-2 outline-none bg-transparent text-gray-500 cursor-not-allowed">
+                    <input type="email" value="{{$user->email}}" readonly class="w-full border-b border-gray-200 py-2 outline-none bg-transparent text-gray-500 cursor-not-allowed">
                 </div>
 
                 <div class="group">
                     <label class="block text-xs uppercase font-bold text-gray-500 mb-2 group-focus-within:text-black transition">Số điện thoại</label>
-                    <input type="tel" value="0901234567" class="w-full border-b border-gray-300 py-2 focus:border-black outline-none transition bg-transparent font-medium text-gray-800">
+                    <input type="tel" value="{{$user->phone}}" readonly class="w-full border-b border-gray-300 py-2 focus:border-black outline-none transition bg-transparent font-medium text-gray-800">
                 </div>
 
                 <div class="group">
-                    <label class="block text-xs uppercase font-bold text-gray-500 mb-2 group-focus-within:text-black transition">Ngày sinh</label>
-                    <input type="date" value="1995-10-20" class="w-full border-b border-gray-300 py-2 focus:border-black outline-none transition bg-transparent font-medium text-gray-800 text-sm">
+                    <label class="block text-xs uppercase font-bold text-gray-500 mb-2 group-focus-within:text-black transition">Địa Chỉ</label>
+                    <input type="text" value="{{$user->address}}" readonly class="w-full border-b border-gray-300 py-2 focus:border-black outline-none transition bg-transparent font-medium text-gray-800 text-sm">
                 </div>
-
+                <div class="relative group">
+                    <label class="block text-xs uppercase font-bold text-gray-500 mb-2 group-focus-within:text-black transition">Password</label>
+    <input type="password" id="password" class="border px-3 py-2 w-full pr-10" readonly value="{{$user->password}}">
+</div>
+                
+                <div class="group">
+                    <label class="block text-xs uppercase font-bold text-gray-500 mb-2 group-focus-within:text-black transition">Mã Khách hàng</label>
+                    <input type="text" value="MKH{{$user->id}}" readonly class="w-full border-b border-gray-300 py-2 focus:border-black outline-none transition bg-transparent font-medium text-gray-800 text-sm">
+                </div>
                 <div class="group">
                     <label class="block text-xs uppercase font-bold text-gray-500 mb-2 group-focus-within:text-black transition">Giới tính</label>
                     <div class="flex gap-6 mt-2">
@@ -71,7 +78,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="mt-12 flex justify-end gap-4">
                 <button
                     type="button"
@@ -170,7 +176,10 @@
         const modal = document.getElementById('pass-modal');
         const modalBackdrop = document.getElementById('modal-backdrop');
         const modalPanel = document.getElementById('modal-panel');
-
+        function togglePassword() {
+        const input = document.getElementById("password");
+        input.type = input.type === "password" ? "text" : "password";
+}
         function openModal() {
             modal.classList.remove('hidden');
             

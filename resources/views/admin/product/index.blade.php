@@ -194,7 +194,6 @@
                         {{ $product->brand->name }}
                     </td>
                     <td class="p-4 text-center">
-
                         @if($product->status)
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Hoạt động
