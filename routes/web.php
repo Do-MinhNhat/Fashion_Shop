@@ -91,6 +91,11 @@ Route::middleware('auth')->group(function () {
             Route::put('/nguoi-dung/{user}/mo-tai-khoan', [AdminUserController::class, 'statusOpen'])->name('admin.user.statusOpen');
             Route::put('/nguoi-dung/{user}/khoa-danh-gia', [AdminUserController::class, 'reviewLock'])->name('admin.user.reviewLock');
             Route::put('/nguoi-dung/{user}/mo-danh-gia', [AdminUserController::class, 'reviewOpen'])->name('admin.user.reviewOpen');
+            Route::get('/nguoi-dung/danh-gia', [AdminUserController::class, 'review'])->name('admin.user.review');
+            Route::put('/nguoi-dung/danh-gia/cap-nhat-danh-gia', [AdminUserController::class, 'updateReview'])->name('admin.user.updateReview');
+            Route::get('/nguoi-dung/danh-gia/lay-danh-gia', [AdminUserController::class, 'getReviews'])->name('admin.user.getReviews');
+            Route::delete('/nguoi-dung/danh-gia/xoa-danh-gia', [AdminUserController::class, 'deleteReview'])->name('admin.user.deleteReview');
+            Route::put('/nguoi-dung/danh-gia/tra-loi', [AdminUserController::class, 'reply'])->name('admin.user.reply');
         });
         // Giao hang
         Route::middleware('role:admin-shipper,admin-head')->group(function () {

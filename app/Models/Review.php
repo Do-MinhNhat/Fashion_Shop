@@ -11,13 +11,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Review extends Model
 {
     /** @use HasFactory<\Database\Factories\ReviewFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
-    protected $fillable = [
-        'product_id',
-        'user_id',
-        'rating',
-        'comment',
+    protected $fillable = ['product_id','user_id','rating','comment','status','reply','replier',
     ];
 
     public function product(): BelongsTo

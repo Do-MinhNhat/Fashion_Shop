@@ -21,9 +21,9 @@ return new class extends Migration
             $table->foreignIdFor(Product::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(User::class, 'replier')->nullable()->constrained('users');
             $table->text('reply')->nullable();
+            $table->boolean('status')->default(1);
             $table->timestamp('reply_at')->nullable();
             $table->timestamps();
-            $table->softDeletes();
             $table->unique(['user_id', 'product_id']);
         });
     }

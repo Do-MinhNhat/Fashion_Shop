@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Product;
+use App\Models\Review;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -68,6 +71,49 @@ class UserController extends Controller
         ")->first();
 
         return view('admin.user.account', compact('users', 'viewData', 'counts', 'roles'));
+    }
+
+    public function review(Request $request)
+    {
+        $viewData = [];
+        $viewData['title'] = 'Admin - người dùng';
+        $viewData['subtitle'] = 'Quản lý đánh giá';
+        $products = Product::query()->filter($request->all())->orderByDesc(
+            Review::select('created_at')
+                ->whereColumn('product_id', 'products.id')
+                ->latest()
+                ->take(1)
+        )->with(['reviews.replier', 'reviews.user'])->withCount('reviews')->Paginate(10)->withQueryString();
+        return view('admin.user.review', compact('products', 'viewData'));
+    }
+
+    public function updateReview(Request $request)
+    {
+        $review = Review::find($request->id);
+        $review->update(['status' => $request->status]);
+        return response()->json(['success' => true]);
+    }
+
+    public function getReviews(Request $request){
+        $product = Product::with('reviews.user')->find($request->id);
+        return response()->json(['success' => true, 'data' => $product->reviews]);
+    }
+
+    public function deleteReview(Request $request)
+    {
+        $review = Review::find($request->id);
+        if($review) $review->delete();
+        return response()->json(['success' => true]);
+    }
+
+    public function reply(Request $request)
+    {
+        $request->validate([
+            'reply' => 'nullable|string|max:1000',
+        ]);
+        $review = Review::find($request->id);
+        $review->update(['reply' => $request->reply, 'replier' => Auth::id()]);
+        return response()->json(['success' => true]);
     }
 
     public function store(StoreUserRequest $request)

@@ -244,7 +244,7 @@
                    {{ request()->routeIs('admin.user.account') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
                 Tài khoản
             </a>
-            <a href="{{ route('admin.order.accepted') }}"
+            <a href="{{ route('admin.user.review') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
                    {{ request()->routeIs('admin.user.review') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
                 Quản lý bình luận
