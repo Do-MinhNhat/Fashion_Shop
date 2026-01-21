@@ -14,10 +14,10 @@ use App\Models\OrderDetail;
 class CheckoutController extends Controller
 {
     public function index(){
-        // 1️⃣ User đang đăng nhập
+    
         $user = Auth::user();
 
-        // 2️⃣ Lấy giỏ hàng + đầy đủ thông tin liên quan
+        // Lấy giỏ hàng + đầy đủ thông tin liên quan
         $cartItems = CartDetail::with([
                 // Variant
                 'variant',
@@ -34,14 +34,13 @@ class CheckoutController extends Controller
             ->where('status', 1)
             ->get();
 
-        // 3️⃣ Không cho vào checkout nếu giỏ trống
         if ($cartItems->isEmpty()) {
             return redirect()
                 ->route('user.cart.index')
                 ->with('error', 'Giỏ hàng của bạn đang trống');
         }
 
-        // 4️⃣ Tính tổng tiền (CHỈ HIỂN THỊ)
+        // Tính tổng tiền
         $total = $cartItems->sum(function ($item) {
             $variant = $item->variant;
 
@@ -52,7 +51,7 @@ class CheckoutController extends Controller
             return $price * $item->quantity;
         });
 
-        // 5️⃣ Trả dữ liệu cho view
+        
         return view('user.checkout.index', compact(
             'user',
             'cartItems',
@@ -96,7 +95,7 @@ class CheckoutController extends Controller
             $total += $price * $item->quantity;
         }
 
-        // ✅ TẠO ORDER (KHỚP BẢNG)
+        //  tao order 
         $order = Order::create([
             'user_id' => $user->id,
             'name' => $request->receiver_name,
@@ -107,7 +106,7 @@ class CheckoutController extends Controller
             'total_price' => $total,
         ]);
 
-        // ✅ TẠO ORDER DETAIL + TRỪ KHO
+        //  tao order detail
         foreach ($cartItems as $item) {
             $variant = $item->variant;
 
