@@ -112,7 +112,7 @@ class UserController extends Controller
             'reply' => 'nullable|string|max:1000',
         ]);
         $review = Review::find($request->id);
-        $review->update(['reply' => $request->reply, 'replier' => Auth::id()]);
+        $review->update(['reply' => $request->reply, 'replier' => Auth::id(), 'replied_at' => now()]);
         return response()->json(['success' => true]);
     }
 
