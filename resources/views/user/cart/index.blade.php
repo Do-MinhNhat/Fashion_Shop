@@ -32,7 +32,7 @@
                 @foreach ($items as $item)
                 @php
                     $total = $items->sum(fn($item) => $item->variant->price * $item->quantity);
-                    $price = $item->variant->price;
+                    $price = $item->variant->final_price;
                     $lineTotal = $price * $item->quantity;
                     $product = $item->variant->product;
                     $colors = $product->variants->pluck('color')->unique('id')->filter();
