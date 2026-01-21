@@ -13,7 +13,6 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Admin\ImportController as AdminImportController;
-use App\Http\Controllers\Admin\ShipController as AdminShipController;
 use App\Http\Controllers\Admin\SlideShowController as AdminSlideShowController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
@@ -99,7 +98,8 @@ Route::middleware('auth')->group(function () {
         });
         // Giao hang
         Route::middleware('role:admin-shipper,admin-head')->group(function () {
-            Route::get('/giao-hang', [AdminShipController::class, 'index'])->name('admin.ship.index');
+            Route::get('/don-hang/nhan-don', [AdminOrderController::class, 'ship'])->name('admin.order.ship');
+            Route::get('/don-hang/da-nhan', [AdminOrderController::class, 'accepted'])->name('admin.order.accepted');
         });
         // Quan ly san pham
         Route::middleware('role:admin-product,admin-head')->group(function () {
@@ -165,8 +165,6 @@ Route::middleware('auth')->group(function () {
 
             //Quản lý đơn hàng
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
-            Route::get('/don-hang/nhan-don', [AdminOrderController::class, 'ship'])->name('admin.order.ship');
-            Route::get('/don-hang/da-nhan', [AdminOrderController::class, 'accepted'])->name('admin.order.accepted');
             Route::put('/don-hang/{order}/cap-nhat', [AdminOrderController::class, 'update'])->name('admin.order.update');
             Route::put('/don-hang/{order}/xac-nhan', [AdminOrderController::class, 'confirm'])->name('admin.order.confirm');
             Route::put('/don-hang/{order}/tu-choi', [AdminOrderController::class, 'decline'])->name('admin.order.decline');

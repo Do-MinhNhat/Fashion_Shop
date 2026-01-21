@@ -95,11 +95,12 @@ class OrderController extends Controller
         $viewData['title'] = 'Admin - Đơn hàng';
         $viewData['subtitle'] = 'Nhận giao hàng';
 
-        $counts = Order::selectRaw("
+        $counts = Order::where('shipper_id', Auth::id())
+        ->selectRaw("
             count(*) as total_count,
-            (select count(*) from orders where shipper_id = ? and order_status_id = 2) as total_accepted_count,
-            (select count(*) from orders where shipper_id = ? and order_status_id = 3) as total_shipped_count
-        ", [Auth::id(), Auth::id()])->first();
+            sum(case when order_status_id = 2 then 1 else 0 end) as total_accepted_count,
+            sum(case when order_status_id = 3 then 1 else 0 end) as total_shipped_count
+        ")->first();
 
         if (!$request->has('ship_status')) {
             $request->merge(['ship_status' => 2]);
