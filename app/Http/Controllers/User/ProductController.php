@@ -110,7 +110,7 @@ class ProductController extends Controller
         $totalRating = $reviews->total();
 
         // Phân bố sao
-        $starCounts = $product->reviews()
+        $starCounts = $product->reviewsRaw()
             ->selectRaw('rating, COUNT(*) as total')
             ->groupBy('rating')
             ->pluck('total', 'rating')

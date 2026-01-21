@@ -39,6 +39,11 @@ class Product extends Model
         return $this->hasMany(Review::class)->latest();
     }
 
+    public function reviewsRaw(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function variants(): HasMany
     {
         return $this->hasMany(Variant::class);

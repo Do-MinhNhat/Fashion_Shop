@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/gio-hang', [CartDetailController::class, 'store'])->name('user.cart.store');
     Route::delete('/gio-hang/xoa/{id}', [CartDetailController::class, 'destroy'])->name('user.cart.destroy');
     Route::patch('/gio-hang/cap-nhat/{id}', [CartDetailController::class, 'update'])->name('user.cart.update');
+    Route::patch('/gio-hang/{id}', [CartDetailController::class, 'update']);
     Route::delete('/gio-hang/clear', [CartDetailController::class, 'clear'])->name('user.cart.clear');
     // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('user.profile.wishlist.index');

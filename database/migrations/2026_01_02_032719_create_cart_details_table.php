@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Variant::class)->constrained()->onDelete('cascade');
             $table->integer('quantity')->default(1);
+            $table->boolean('status')->default(false);
             $table->unique(['user_id', 'variant_id']);
             $table->timestamps();
         });
