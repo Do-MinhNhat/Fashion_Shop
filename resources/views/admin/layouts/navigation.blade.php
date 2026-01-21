@@ -24,7 +24,6 @@
 </style>
 
 <nav class="sidebar-nav font-bold flex-1 flex flex-col h-full bg-[#0f1117] border-r border-white/5 py-8 select-none overflow-y-auto font-sans text-sm">
-
     {{-- PHẦN 1: DASHBOARD --}}
     <div class="px-4 mb-8">
         @php $isActive = request()->routeIs('admin.home.*'); @endphp
@@ -44,6 +43,7 @@
             <span class="font-medium tracking-wide">Dashboard</span>
         </a>
     </div>
+    @if(Auth::user()->role_id === 3 || Auth::user()->role_id === 5)
     {{-- SẢN PHẨM --}}
     @php
     $isProductGroup = request()->routeIs('admin.product.*') || request()->routeIs('admin.import.*') || request()->routeIs('admin.category.*') || request()->routeIs('admin.brand.*') || request()->routeIs('admin.color.*') || request()->routeIs('admin.size.*') || request()->routeIs('admin.tag.*');
@@ -121,7 +121,6 @@
             </a>
         </div>
     </div>
-
     @php
     $isImportGroup = request()->routeIs('admin.import.*');
     @endphp
@@ -134,7 +133,7 @@
                     : 'text-gray-400 hover:bg-white/5 hover:text-white'
                 }}">
             <div class="flex items-center">
-                <i class="fas fa-box w-9 text-lg transition-colors {{ $isImportGroup ? 'text-purple-400' : 'group-hover:text-purple-400' }}"></i>
+                <i class="fas fa-boxes-stacked w-9 text-lg transition-colors {{ $isImportGroup ? 'text-purple-400' : 'group-hover:text-purple-400' }}"></i>
                 <span class="font-medium">Quản lý nhập hàng</span>
             </div>
             <i class="fas fa-chevron-right text-[10px] transition-transform duration-300 {{ $isImportGroup ? 'text-white' : 'text-gray-600' }}" :class="open ? 'rotate-90' : ''"></i>
@@ -165,7 +164,8 @@
             </a>
         </div>
     </div>
-
+    @endif
+    @if(Auth::user()->role_id === 3 || Auth::user()->role_id === 5 || Auth::user()->role_id === 4)
     {{-- BÁN HÀNG --}}
     @php
     $isOrderGroup = request()->routeIs('admin.order.*') || request()->routeIs('admin.ship.*');
@@ -175,7 +175,7 @@
             class="w-full flex items-center text-left justify-between px-4 py-3.5 rounded-xl transition-all duration-300 group
                     {{ $isOrderGroup ? 'bg-white/5 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white' }}">
             <div class="flex items-center">
-                <i class="fas fa-shopping-cart w-9 text-lg transition-colors {{ $isOrderGroup ? 'text-teal-400' : 'group-hover:text-teal-400' }}"></i>
+                <i class="fas fa-list w-9 text-lg transition-colors {{ $isOrderGroup ? 'text-teal-400' : 'group-hover:text-teal-400' }}"></i>
                 <span class="font-medium">Quản lý đơn hàng</span>
             </div>
             <i class="fas fa-chevron-right text-[10px] transition-transform duration-300 {{ $isOrderGroup ? 'text-white' : 'text-gray-600' }}"
@@ -189,13 +189,14 @@
             x-transition:enter-end="opacity-100 translate-y-0"
             class="mt-2 space-y-1 pl-12 pr-2 relative">
             <div class="absolute left-8 top-2 bottom-2 w-px bg-white/10"></div>
-
+            @if(Auth::user()->role_id === 3 || Auth::user()->role_id === 5)
             <a href="{{ route('admin.order.index') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
                    {{ request()->routeIs('admin.order.index') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
                 Đơn hàng
             </a>
-
+            @endif
+            @if(Auth::user()->role_id === 4 || Auth::user()->role_id === 5)
             <a href="{{ route('admin.order.ship') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
                    {{ request()->routeIs('admin.order.ship') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
@@ -206,9 +207,11 @@
                    {{ request()->routeIs('admin.order.accepted') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
                 Đơn hàng đã nhận
             </a>
+            @endif
         </div>
     </div>
-
+    @endif
+    @if(Auth::user()->role_id === 2 || Auth::user()->role_id === 5)
     {{-- Người dùng --}}
     @php
     $isUserGroup = request()->routeIs('admin.user.*') || request()->routeIs('admin.ship.*');
@@ -218,7 +221,7 @@
             class="w-full flex items-center text-left justify-between px-4 py-3.5 rounded-xl transition-all duration-300 group
                     {{ $isUserGroup ? 'bg-white/5 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white' }}">
             <div class="flex items-center">
-                <i class="fas fa-shopping-cart w-9 text-lg transition-colors {{ $isUserGroup ? 'text-teal-400' : 'group-hover:text-teal-400' }}"></i>
+                <i class="fas fa-users w-9 text-lg transition-colors {{ $isUserGroup ? 'text-teal-400' : 'group-hover:text-teal-400' }}"></i>
                 <span class="font-medium">Quản lý người dùng</span>
             </div>
             <i class="fas fa-chevron-right text-[10px] transition-transform duration-300 {{ $isUserGroup ? 'text-white' : 'text-gray-600' }}"
@@ -238,12 +241,13 @@
                    {{ request()->routeIs('admin.user.index') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
                 Người dùng
             </a>
-
+            @if(Auth::user()->role_id === 5)
             <a href="{{ route('admin.user.account') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
                    {{ request()->routeIs('admin.user.account') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
                 Tài khoản
             </a>
+            @endif
             <a href="{{ route('admin.user.review') }}"
                 class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
                    {{ request()->routeIs('admin.user.review') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
@@ -251,7 +255,8 @@
             </a>
         </div>
     </div>
-
+    @endif
+    @if(Auth::user()->role_id === 5)
     <div class="mt-2">
         @php $isActive = request()->routeIs('admin.slideshow.*'); @endphp
         <a href="{{ route('admin.slideshow.index') }}"
@@ -283,4 +288,5 @@
             <span class="font-medium tracking-wide">Cấu hình hệ thống</span>
         </a>
     </div>
+    @endif
 </nav>
