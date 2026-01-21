@@ -9,11 +9,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use App\Models\CartDetail;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +27,9 @@ class User extends Authenticatable
         'password',
         'role_id',
         'phone',
+        'status',
+        'review',
+        'gender',
     ];
 
     /**
@@ -56,12 +60,12 @@ class User extends Authenticatable
         return $this->hasMany(CartDetail::class);
     }
 
-    public function wishlists()
+    public function wishlists(): HasMany
     {
         return $this->hasMany(Wishlist::class);
     }
 
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
@@ -75,8 +79,54 @@ class User extends Authenticatable
         return $this->hasMany(Import::class);
     }
 
+    public function processedOrders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'admin_id');
+    }
+
+    public function deliveries(): HasMany
+    {
+        return $this->hasMany(Order::class, 'shipper_id');
+    }
+
+    public function replies(): HasMany
+    {
+        return $this->hasMany(Review::class, 'admin_id');
+    }
+
     public function isAdmin(): bool
     {
         return $this->role()->where('name', 'like', 'admin%')->exists();
+    }
+
+    public function reviews(): HasMany{
+        return $this->hasMany(Review::class);
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', $search)
+                    ->orWhere('phone', $search)
+                    ->orWhere('id', $search);
+            });
+        });
+
+        // Filter
+        $query->when($filters['role'] ?? null, function ($query, $role) {
+            $query->where('category_id', $role);
+        });
+
+        $query->when(isset($filters['gender']), function ($query) use ($filters) {
+            $query->where('status', $filters['gender']);
+        });
+
+        $query->when(isset($filters['status']), function ($query) use ($filters) {
+            $query->where('status', $filters['status']);
+        });
+
+        return $query;
     }
 }

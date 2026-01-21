@@ -92,6 +92,7 @@
                                     <button type="button" @click="open = false" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
                                     <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu</button>
                                 </div>
+                                <input type="hidden" name="id" x-model="oldData.id">
                             </form>
                         </div>
                     </div>

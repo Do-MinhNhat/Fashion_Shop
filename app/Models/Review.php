@@ -11,30 +11,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Review extends Model
 {
     /** @use HasFactory<\Database\Factories\ReviewFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
-    protected $fillable = [
-        'product_id',
-        'user_id',
-        'rating',
-        'comment',
-        'reply',
-        'replier',
-        'reply_at',
-    ];
+    protected $fillable = ['product_id','user_id','rating','comment','status','reply','replier', 'reply_at'];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function replierUser()
+    public function replier(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'replier');
+        return $this->belongsTo(User::class, 'admin_id');
     }
 }

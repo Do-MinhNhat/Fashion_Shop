@@ -30,6 +30,7 @@ class UpdateOrderRequest extends FormRequest
             'shipper_id' => 'nullable|exists:users,id',
             'order_status_id' => 'required|exists:order_statuses,id',
             'ship_status_id' => 'required|exists:ship_statuses,id',
+            'message' => 'nullable|string|max:1000',
         ];
     }
     public function messages(): array
