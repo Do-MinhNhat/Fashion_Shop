@@ -9,9 +9,13 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::middleware('guest')->group(function () {
+    Route::post('/ajax-login', [AuthController::class, 'ajaxLogin'])
+    ->name('ajax.login');
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
