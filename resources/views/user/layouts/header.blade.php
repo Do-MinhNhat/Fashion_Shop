@@ -71,7 +71,7 @@
             
         </div>
 
-        @include('user.layouts.navigation')
+        <x-navigation />
 
         {{-- MOBILE MENU --}}
         <div id="mobile-menu" class="fixed inset-0 z-40 bg-white transform -translate-x-full transition-transform duration-300 lg:hidden flex flex-col pt-24 px-6 space-y-6">
