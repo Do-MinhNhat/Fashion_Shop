@@ -22,7 +22,6 @@ class ReviewController extends Controller
     }
     public function store(StoreReviewRequest $request, $productId)
     {
-        
         $userId = Auth::id();
 
         // Kiểm tra đã mua + đã nhận hàng (status 4)

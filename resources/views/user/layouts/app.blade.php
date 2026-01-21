@@ -35,50 +35,49 @@
         @yield('content')
         <x-chatbox.chatbox />
     </main>
-    @include('user.layouts.register')
+    @include('user.layouts.login')
     @include('user.layouts.footer')
 
     @stack('scripts')
     <script>
         //pop up đăng nhập đăng ký
-    document.getElementById('loginForm')
-.addEventListener('submit', async function(e){
-    e.preventDefault();
+        document.getElementById('loginForm').addEventListener('submit', async function(e){
+            e.preventDefault();
 
-    let formData = new FormData(this);
+            let formData = new FormData(this);
 
-    let res = await fetch("{{ route('ajax.login') }}", {
-        method: "POST",
-        headers: {
-            'X-CSRF-TOKEN': document
-              .querySelector('input[name=_token]').value,
-            'Accept': 'application/json'
-        },
-        body: formData
-    });
+            let res = await fetch("{{ route('ajax.login') }}", {
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': document
+                    .querySelector('input[name=_token]').value,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
 
-    const data = await res.json();
+            const data = await res.json();
 
-    if(data.success){
-        location.reload();
-    }else{
-        document.getElementById('loginError').innerText = data.message;
-    }
-});
+            if(data.success){
+                location.reload();
+            }else{
+                document.getElementById('loginError').innerText = data.message;
+            }
+        });
 
-function openLoginModal(){
-  const modal = document.getElementById('loginModal');
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-  document.body.classList.add('overflow-hidden');
-}
+        function openLoginModal(){
+        const modal = document.getElementById('loginModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+        }
 
-function closeLoginModal(){
-  const modal = document.getElementById('loginModal');
-  modal.classList.add('hidden');
-  modal.classList.remove('flex');
-  document.body.classList.remove('overflow-hidden');
-}
+        function closeLoginModal(){
+        const modal = document.getElementById('loginModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
+        }
 
         function toggleWishlistGlobal(button, productId) {
             // 1. Kiểm tra đăng nhập
