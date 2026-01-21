@@ -209,21 +209,47 @@
         </div>
     </div>
 
-    {{-- KHÁCH HÀNG --}}
-    <div class="mt-2">
-        @php $isActive = request()->routeIs('admin.user.*'); @endphp
-        <a href="{{ route('admin.user.index') }}"
-            class="group flex items-center text-left px-4 py-3.5 rounded-xl transition-all duration-300 ease-out relative overflow-hidden
-               {{ $isActive
-                  ? 'bg-white/10 text-white shadow-lg shadow-black/20 ring-1 ring-white/10'
-                  : 'text-gray-400 hover:bg-white/5 hover:text-white'
-               }}">
-            @if($isActive)
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.6)]"></div>
-            @endif
-            <i class="fas fa-users w-9 text-lg transition-colors duration-300 {{ $isActive ? 'text-pink-400' : 'group-hover:text-pink-400' }}"></i>
-            <span class="font-medium tracking-wide">Khách hàng</span>
-        </a>
+    {{-- Người dùng --}}
+    @php
+    $isUserGroup = request()->routeIs('admin.user.*') || request()->routeIs('admin.ship.*');
+    @endphp
+    <div x-data="{ open: {{ $isUserGroup ? 'true' : 'false' }} }" class="font-bold">
+        <button @click="open = !open"
+            class="w-full flex items-center text-left justify-between px-4 py-3.5 rounded-xl transition-all duration-300 group
+                    {{ $isUserGroup ? 'bg-white/5 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white' }}">
+            <div class="flex items-center">
+                <i class="fas fa-shopping-cart w-9 text-lg transition-colors {{ $isUserGroup ? 'text-teal-400' : 'group-hover:text-teal-400' }}"></i>
+                <span class="font-medium">Quản lý người dùng</span>
+            </div>
+            <i class="fas fa-chevron-right text-[10px] transition-transform duration-300 {{ $isUserGroup ? 'text-white' : 'text-gray-600' }}"
+                :class="open ? 'rotate-90' : ''"></i>
+        </button>
+
+        <div x-show="open"
+            x-cloak
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            class="mt-2 space-y-1 pl-12 pr-2 relative">
+            <div class="absolute left-8 top-2 bottom-2 w-px bg-white/10"></div>
+
+            <a href="{{ route('admin.user.index') }}"
+                class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
+                   {{ request()->routeIs('admin.user.index') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                Người dùng
+            </a>
+
+            <a href="{{ route('admin.user.account') }}"
+                class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
+                   {{ request()->routeIs('admin.user.account') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                Tài khoản
+            </a>
+            <a href="{{ route('admin.order.accepted') }}"
+                class="flex items-center py-2.5 px-3 rounded-lg transition-all duration-200 relative group/item
+                   {{ request()->routeIs('admin.user.review') ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-white hover:bg-white/5' }}">
+                Quản lý bình luận
+            </a>
+        </div>
     </div>
 
     <div class="mt-2">
@@ -246,8 +272,8 @@
     <div class="px-4 pb-6 mt-auto">
         <div class="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-6"></div>
 
-        @php $isActive = request()->routeIs('admin.setting.*'); @endphp
-        <a href="{{ route('admin.setting.index') }}"
+        @php $isActive = request()->routeIs('admin.contact.*'); @endphp
+        <a href="{{ route('admin.contact.index') }}"
             class="group flex items-center text-left px-4 py-3.5 rounded-xl transition-all duration-300
            {{ $isActive
               ? 'bg-white/10 text-white'

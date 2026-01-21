@@ -19,7 +19,7 @@
             </div>
 
             <div x-show="open"
-                x-data="ordersManager()"
+                x-data="orderManager()"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 scale-95"
                 x-transition:enter-end="opacity-100 scale-100"
@@ -162,10 +162,9 @@
 @once
 @push('scripts')
 <script>
-    function ordersManager() {
+    function orderManager() {
         return {
             init() {
-                console.log('old:', this.oldData);
                 this.$watch('order', (order) => {
                     this.oldData = {
                         ship_status_id: order.ship_status_id,

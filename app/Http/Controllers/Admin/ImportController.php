@@ -21,9 +21,7 @@ class ImportController extends Controller
         $viewData['title'] = 'Admin - Nhập hàng';
         $viewData['subtitle'] = 'Quản lý nhập hàng';
 
-        $imports = Import::query()->filter($request->all())->with(['user','importDetails'])->paginate(10)->withQueryString();
-
-        $variants = Variant::with('product')->get();
+        $imports = Import::query()->filter($request->all())->with(['user', 'importDetails.variant.product'])->paginate(10)->withQueryString();
 
         $counts = Import::selectRaw("
             count(*) as total_count,
@@ -31,7 +29,7 @@ class ImportController extends Controller
             (select sum(quantity) from import_details) as total_items_count
         ")->first();
 
-        return view('admin.import.index', compact('viewData', 'imports', 'variants', 'counts'));
+        return view('admin.import.index', compact('viewData', 'imports', 'counts'));
     }
 
     /**

@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ImportController as AdminImportController;
 use App\Http\Controllers\Admin\ShipController as AdminShipController;
 use App\Http\Controllers\Admin\SlideShowController as AdminSlideShowController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\VariantController as AdminVariantController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\User\ReviewController;
@@ -86,6 +87,10 @@ Route::middleware('auth')->group(function () {
         // Quan ly nguoi dung
         Route::middleware('role:admin-user,admin-head')->group(function () {
             Route::get('/nguoi-dung', [AdminUserController::class, 'index'])->name('admin.user.index');
+            Route::put('/nguoi-dung/{user}/khoa-tai-khoan', [AdminUserController::class, 'statusLock'])->name('admin.user.statusLock');
+            Route::put('/nguoi-dung/{user}/mo-tai-khoan', [AdminUserController::class, 'statusOpen'])->name('admin.user.statusOpen');
+            Route::put('/nguoi-dung/{user}/khoa-danh-gia', [AdminUserController::class, 'reviewLock'])->name('admin.user.reviewLock');
+            Route::put('/nguoi-dung/{user}/mo-danh-gia', [AdminUserController::class, 'reviewOpen'])->name('admin.user.reviewOpen');
         });
         // Giao hang
         Route::middleware('role:admin-shipper,admin-head')->group(function () {
@@ -170,13 +175,33 @@ Route::middleware('auth')->group(function () {
             Route::post('/phieu-nhap', [AdminImportController::class, 'store'])->name('admin.import.store');
 
         });
-        // slideshow
+        // Head Admin
         Route::middleware(['role:admin-head'])->group(function () {
             Route::resource('slideshow', AdminSlideShowController::class)->names('admin.slideshow');
-        });
-        // Cau hinh
-        Route::middleware('role:admin-head')->group(function () {
-            Route::get('/cau-hinh', [AdminHomeController::class, 'index'])->name('admin.setting.index');
+            //Quản lý tài khoản
+            Route::get('/nguoi-dung/tai-khoan', [AdminUserController::class, 'index'])->name('admin.user.account');
+            Route::get('/nguoi-dung/thung-rac', [AdminUserController::class, 'trash'])->name('admin.user.trash');
+            Route::post('/nguoi-dung/tai-khoan', [AdminUserController::class, 'store'])->name('admin.user.store');
+            Route::delete('/nguoi-dung/{user}/', [AdminUserController::class, 'delete'])->name('admin.user.delete');
+            Route::put('/nguoi-dung/{user}/khoi-phuc', [AdminUserController::class, 'restore'])->name('admin.user.restore')->withTrashed();
+            Route::delete('/nguoi-dung/{user}/force', [AdminUserController::class, 'forceDelete'])->name('admin.user.forceDelete')->withTrashed();
+            Route::put('/nguoi-dung/{user}/cap-nhat', [AdminUserController::class, 'update'])->name('admin.user.update');
+            //Quản lý Chức vụ
+            Route::get('/chuc-vu', [AdminRoleController::class, 'index'])->name('admin.role.index');
+            Route::get('/chuc-vu/thung-rac', [AdminRoleController::class, 'trash'])->name('admin.role.trash');
+            Route::post('/chuc-vu', [AdminRoleController::class, 'store'])->name('admin.role.store');
+            Route::delete('/chuc-vu/{role}/', [AdminRoleController::class, 'delete'])->name('admin.role.delete');
+            Route::put('/chuc-vu/{role}/khoi-phuc', [AdminRoleController::class, 'restore'])->name('admin.role.restore')->withTrashed();
+            Route::delete('/chuc-vu/{role}/force', [AdminRoleController::class, 'forceDelete'])->name('admin.role.forceDelete')->withTrashed();
+            Route::put('/chuc-vu/{role}/cap-nhat', [AdminRoleController::class, 'update'])->name('admin.role.update');
+            //Quản lý Contact
+            Route::get('/chuc-vu', [AdminRoleController::class, 'index'])->name('admin.contact.index');
+            Route::get('/chuc-vu/thung-rac', [AdminRoleController::class, 'trash'])->name('admin.role.trash');
+            Route::post('/chuc-vu', [AdminRoleController::class, 'store'])->name('admin.role.store');
+            Route::delete('/chuc-vu/{role}/', [AdminRoleController::class, 'delete'])->name('admin.role.delete');
+            Route::put('/chuc-vu/{role}/khoi-phuc', [AdminRoleController::class, 'restore'])->name('admin.role.restore')->withTrashed();
+            Route::delete('/chuc-vu/{role}/force', [AdminRoleController::class, 'forceDelete'])->name('admin.role.forceDelete')->withTrashed();
+            Route::put('/chuc-vu/{role}/cap-nhat', [AdminRoleController::class, 'update'])->name('admin.role.update');
         });
     });
 });

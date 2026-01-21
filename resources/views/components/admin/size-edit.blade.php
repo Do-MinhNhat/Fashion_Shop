@@ -110,8 +110,38 @@
     function sizeEditManager() {
         return {
             init() {
+                const self = this;
                 this.tsCategory = new TomSelect(this.$refs.categorySelect, {
-                    create: false,
+                    create: async function(input, callback) {
+                        if (confirm('Xác nhận thêm?')) {
+                            const data = {
+                                name: input
+                            };
+                            const msg = self.$refs.categoryError;
+                            try {
+                                msg.innerHTML = "...";
+                                const res = await axios.post("{{ route('admin.category.store') }}", data)
+                                const result = res.data;
+                                callback({
+                                    value: result.data.id,
+                                    text: result.data.name,
+                                });
+                                msg.className = 'text-xs text-green-500 italic'
+                                msg.innerHTML = `Đã thêm "${result.data.name}" thành công!`;
+                            } catch (error) {
+                                callback(false);
+                                if (error.response) {
+                                    msg.className = 'text-xs text-red-500 italic';
+                                    msg.innerHTML = Object.values(error.response.data.errors).flat()[0];
+                                } else {
+                                    console.log('Fetch error:', error);
+                                    alert('Không thể kết nối đến server');
+                                }
+                            }
+                        } else {
+                            callback(false);
+                        }
+                    },
                     sortField: {
                         field: "text",
                         order: "asc"

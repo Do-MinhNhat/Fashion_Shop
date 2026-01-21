@@ -23,6 +23,17 @@
         }
     }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    window.axios = axios;
+    window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+    let token = document.head.querySelector('meta[name="csrf-token"]');
+    if (token) {
+        window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    }
+</script>
 @endsection
 @section('style')
 <style>
@@ -102,6 +113,11 @@
     </div>
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div class="flex gap-3 w-full md:w-auto">
+            <a href="{{ route('admin.user.trash') }}">
+                <button class="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm">
+                    <i class="fas fa-trash mr-2"></i> Thùng rác
+                </button>
+            </a>
             <div class="relative w-full md:w-96">
                 <i class="fas fa-search fa-lg absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input form="filter-form" value="{{ request('search') }}" name="search" type="text" placeholder="Tìm kiếm theo ID, tên, email, sđt" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition shadow-sm">
@@ -111,9 +127,14 @@
             <div id="unfill-button"></div>
             <div id="fill-button"></div>
             <div id="filter-button"></div>
+            <button @click="$dispatch('open-add-modal')" class="px-5 py-2.5 bg-black text-white rounded-lg text-sm font-bold hover:bg-gray-800 shadow-lg shadow-black/20 flex items-center gap-2 transition-transform active:scale-95">
+                <i class="fas fa-plus"></i> Thêm mới
+            </button>
         </div>
     </div>
-    <x-admin.user-filter :roles="null" />
+    <x-admin.user-add :roles="$roles" />
+    <x-admin.user-edit :roles="$roles" />
+    <x-admin.user-filter :roles="$roles" />
     @if($users->isEmpty())
     <div class="flex flex-col items-center justify-center py-16 px-4">
         <div class="relative mb-6">
@@ -132,10 +153,12 @@
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">STT</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Mã số</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Người dùng</th>
+                    <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Chức vụ</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Giới tính</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Khả năng đánh giá</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Trạng thái</th>
                     <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Ngày tạo</th>
+                    <th class="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Thao tác</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100" x-data="{}">
@@ -157,6 +180,9 @@
                         <span class="text-xs text-gray-500">{{ $user->email }} - {{ $user->phone }}</span>
                         <p class="text-xs text-gray-500">{{ $user->address }}</p>
                     </td>
+                    <td class="p-4 text-sm font-medium text-center uppercase">
+                        {{ $user->role->name }}
+                    </td>
                     <td class="p-4 text-center">
                         @if($user->gender)
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
@@ -173,20 +199,10 @@
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Có
                         </span>
-                        <form method="POST" action="{{ route('admin.user.reviewLock', $user->id) }}" class="inline">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500 text-white hover:bg-red-600 transition" @click="if(!confirm('Xác nhận khóa?')) $event.preventDefault()">Khóa</button>
-                        </form>
                         @else
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
                             <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Đã khóa
                         </span>
-                        <form method="POST" action="{{ route('admin.user.reviewOpen', $user->id) }}" class="inline">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500 text-white hover:bg-green-600 transition" @click="if(!confirm('Xác nhận mở khóa?')) $event.preventDefault()">Mở</button>
-                        </form>
                         @endif
                     </td>
                     <td class="p-4 text-center">
@@ -194,24 +210,24 @@
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Hoạt động
                         </span>
-                        <form method="POST" action="{{ route('admin.user.statusLock', $user->id) }}" class="inline">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500 text-white hover:bg-red-600 transition" @click="if(!confirm('Xác nhận mở khóa?')) $event.preventDefault()">Khóa</button>
-                        </form>
                         @else
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
                             <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Đã khóa
                         </span>
-                        <form method="POST" action="{{ route('admin.user.statusOpen', $user->id) }}" class="inline">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500 text-white hover:bg-green-600 transition" @click="if(!confirm('Xác nhận khóa?')) $event.preventDefault()">Mở</button>
-                        </form>
                         @endif
                     </td>
                     <td class="p-4 text-sm font-medium">
                         {{ $user->created_at->format('d/m/Y H:i') }}
+                    </td>
+                    <td class="p-4 justify-center items-center gap-2">
+                        <button @click="$dispatch('open-edit-modal', @js($user))" class=" text-gray-400 hover:text-black p-2 transition"><i class="fas fa-edit fa-lg"></i></button>
+                        <form action="{{ route('admin.user.delete', $user) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-gray-400 hover:text-red-500 p-2 transition" @click="if(!confirm('Bạn có chắc chắn muốn xóa?')) $event.preventDefault()">
+                                <i class="fas fa-trash fa-lg"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach

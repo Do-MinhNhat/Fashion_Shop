@@ -20,13 +20,18 @@ class Review extends Model
         'comment',
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function replier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'admin_id');
     }
 }
