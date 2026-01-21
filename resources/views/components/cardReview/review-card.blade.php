@@ -4,10 +4,10 @@
     <div class="flex justify-between items-start mb-4">
         <div class="flex gap-4">
             <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center  font-bold text-gray-600 uppercase">
-                {{ substr($review->user->name ?? 'A', 0, 1) }}
+                {{ strtoupper(substr(optional($review->user)->name ?? 'A', 0, 1)) }}
             </div>
             <div>
-                <p class="text-sm font-bold text-gray-900">{{ $review->user->name ?? 'Người dùng ẩn danh' }}</p>
+                <p class="text-sm font-bold text-gray-900">{{ optional($review->user)->name ?? 'Người dùng ẩn danh' }}</p>
                 <div class="flex items-center gap-2 mt-1">
                     {{-- Render số sao của user --}}
                     <div class="flex text-yellow-500 text-xs">
@@ -27,7 +27,7 @@
 
     {{-- Admin Reply --}}
     <div class="relative">
-        @if($review->reply)
+        @if($review->is_replied)
             <div class="mt-5 pl-6 sm:pl-10 relative">
                 <div class="absolute left-0 top-0 bottom-0 w-px bg-gray-200"></div>
                 <div class="absolute left-0 top-4 w-4 sm:w-8 h-px bg-gray-200"></div>
@@ -36,24 +36,28 @@
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold uppercase shadow-sm">
-                                {{ substr($review->replierUser->name ?? 'A', 0, 1) }}
+                                {{ strtoupper(substr(optional($review->replierUser)->name ?? 'A', 0, 1)) }}
                             </div>
-                            
+
                             <div>
                                 <div class="flex items-center gap-2">
                                     <h4 class="text-sm font-bold text-gray-900">
-                                        {{ $review->replierUser->name ?? 'Administrator' }}
+                                        {{ optional($review->replierUser)->name ?? 'Administrator' }}
                                     </h4>
+
                                     {{-- Badge Role --}}
                                     <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-200 text-gray-600">
-                                        {{ $review->replierUser->role->name ?? 'Administrator' }}
+                                        {{ optional(optional($review->replierUser)->role)->name ?? 'Administrator' }}
                                     </span>
                                 </div>
-                                <p class="text-xs text-gray-400">
-                                    <i class="far fa-clock mr-1"></i> 
-                                    {{ \Carbon\Carbon::parse($review->reply_at)->format('d/m/Y H:i') }}
-                                </p>
-                            </div>
+
+                                @if ($review->reply_at)
+                                    <p class="text-xs text-gray-400">
+                                        <i class="far fa-clock mr-1"></i>
+                                        {{ \Carbon\Carbon::parse($review->reply_at)->format('d/m/Y H:i') }}
+                                    </p>
+                                @endif
+                            </div>  
                         </div>
                     </div>
 
@@ -64,6 +68,7 @@
             </div>
         @endif
         @can('reply', $review)
+            @if(!$review->is_replied)
             <div class="mt-5 pl-6 sm:pl-10 relative" x-data="{ focused: false }">
                 {{-- Decorative Line --}}
                 <div class="absolute left-0 top-0 bottom-0 w-px bg-gray-200"></div>
@@ -109,6 +114,7 @@
                     </form>
                 </div>
             </div>
+            @endif
         @endcan
     </div>
 </div>
