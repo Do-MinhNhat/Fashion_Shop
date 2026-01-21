@@ -18,6 +18,9 @@ class Review extends Model
         'user_id',
         'rating',
         'comment',
+        'reply',
+        'replier',
+        'reply_at',
     ];
 
     public function product()
@@ -28,5 +31,10 @@ class Review extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function replierUser()
+    {
+        return $this->belongsTo(User::class, 'replier');
     }
 }
