@@ -34,14 +34,14 @@
                     @php
                         $sold_quantity = $product->variants->flatMap(fn ($variant) => $variant->orderDetails)->sum('quantity')
                     @endphp
-                    <li class="flex items-center justify-between border-b border-gray-50 pb-3">
-                        <div class="flex items-center gap-3">
+                <li class="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <div class="flex items-center gap-3">
                             <img
                                 src="{{ asset('storage/' . $product->thumbnail) }}"
                                 class="w-10 h-10 object-cover rounded bg-gray-100"
                                 alt="{{ $product->name }}"
                             >
-                            <div>
+                        <div>
                                 <p class="text-sm font-medium text-gray-800">
                                     {{ $product->name }}
                                 </p>

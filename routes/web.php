@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ColorController as AdminColorController;
 use App\Http\Controllers\User\CartDetailController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\User\ProductController;
@@ -76,15 +77,19 @@ Route::middleware('auth')->group(function () {
     // Checkout
     Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
     // Review
-    Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('user.review.store');
     Route::get('/reviews',[ReviewController::class,'index'])->name('user.reviews.index');
+    Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('user.review.store');
 
     //Admin vvvvvvvvvvvvvvvvvvvvvvvvv
     Route::middleware('is_admin')->prefix('quan-ly')->group(function () {
         Route::get('/', [AdminHomeController::class, 'index'])->name('admin.home.index');
-        // Quan ly nguoi dung
+        // Quan ly nguoi dung và đánh giá
         Route::middleware('role:admin-user,admin-head')->group(function () {
+            //users
             Route::get('/nguoi-dung', [AdminUserController::class, 'index'])->name('admin.user.index');
+
+            // reviews
+            Route::post('/reviews/{review}/reply', [AdminReviewController::class, 'reply'])->name('admin.reviews.reply');
         });
         // Giao hang
         Route::middleware('role:admin-shipper,admin-head')->group(function () {
@@ -173,6 +178,10 @@ Route::middleware('auth')->group(function () {
         // slideshow
         Route::middleware(['role:admin-head'])->group(function () {
             Route::resource('slideshow', AdminSlideShowController::class)->names('admin.slideshow');
+        });
+        // Review
+        Route::middleware('role:admin-user,admin-head')->group(function () {
+            
         });
         // Cau hinh
         Route::middleware('role:admin-head')->group(function () {

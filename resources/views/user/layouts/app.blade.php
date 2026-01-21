@@ -26,6 +26,9 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 
     @stack('styles')
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
 
 <body>
@@ -34,8 +37,9 @@
     <main class="pt-10">
         @yield('content')
         <x-chatbox.chatbox />
+        @include('user.layouts.login')
     </main>
-    @include('user.layouts.login')
+    
     @include('user.layouts.footer')
 
     @stack('scripts')

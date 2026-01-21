@@ -127,6 +127,22 @@ class OrderController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show($id)
+    {
+        $order = Order::with([
+            'orderDetails.variant.product',
+            'orderDetails.variant.size',
+            'orderDetails.variant.color',
+            'orderStatus',
+            'user'
+        ])->findOrFail($id);
+
+        return response()->json($order);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Order $order)
