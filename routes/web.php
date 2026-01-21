@@ -76,6 +76,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/wishlist/clear', [WishlistController::class, 'clear'])->name('user.wishlist.clear');
     // Checkout
     Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
+    Route::post('/thanh-toan', [CheckoutController::class, 'store'])
+    ->name('checkout.store')
+    ->middleware('auth');
     // Review
     Route::get('/reviews',[ReviewController::class,'index'])->name('user.reviews.index');
     Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('user.review.store');

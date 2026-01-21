@@ -10,6 +10,10 @@ class OrderDetail extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderDetailFactory> */
     use HasFactory;
+    protected $fillable =['order_id',
+    'variant_id',
+    'price',
+    'quantity'];
 
     public function product(): BelongsTo
     {
