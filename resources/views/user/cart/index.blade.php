@@ -32,17 +32,35 @@
                 @foreach ($items as $item)
                 @php
                     $total = $items->sum(fn($item) => $item->variant->price * $item->quantity);
-                    $price = $item->variant->price;
+                    $price = $item->variant->final_price;
                     $lineTotal = $price * $item->quantity;
+                    $product = $item->variant->product;
+                    $colors = $product->variants->pluck('color')->unique('id')->filter();
+                    $sizes = $product->variants->pluck('size')->unique('id')->filter();
+                    $variantsData = $product->variants->map(function ($v) {
+                        return [
+                            'id'       => $v->id,
+                            'color_id' => $v->color_id,
+                            'size_id'  => $v->size_id,
+                            'price'    => $v->sale_price ?? $v->price,
+                            'stock'    => $v->quantity,
+                        ];
+                    });
                 @endphp
-                    <div 
-                        data-id="{{ $item->id }}" 
-                        data-price="{{ $price }}" 
+                    <div
+                        data-id="{{ $item->id }}"
+                        data-price="{{ $price }}"
+                        data-variants='@json($variantsData)'
                         data-route="{{ route('user.cart.update', $item->id) }}"
                         class="cart-item flex flex-col md:flex-row items-center gap-6 border-b border-gray-100 pb-8 group"
                     >
                         <div class="w-full md:w-auto flex justify-center">
-                            <input type="checkbox" class="cart-checkbox w-4 h-4 text-black border-gray-300 rounded focus:ring-black" value="{{ $item->id }}" checked>
+                            <input 
+                                type="checkbox" 
+                                value="{{ $item->id }}"
+                                @checked($item->status)
+                                class="cart-checkbox w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
+                            >
                         </div>  
 
                         <div class="w-full md:w-24 aspect-[3/4] overflow-hidden bg-gray-100">
@@ -53,8 +71,40 @@
                             <div class="flex justify-between items-start">
                                 <a href="{{ route('user.product.show', $item->variant->product->slug) }}" class=" text-xl font-medium hover:underline underline-offset-4">{{ $item->variant->product->name }}</a>
                             </div>
-                            <p class="text-sm text-gray-500 mt-1">{{ $item->variant->color->name }} / Size {{ $item->variant->size->name }}</p>
-                            <p class="text-sm font-bold mt-2 md:hidden">{{ number_format($price, 0, ',', '.') }} ₫</p>
+
+                            <div class="flex items-center gap-2 mt-1 text-sm">
+                                {{-- Color --}}
+                                <select class="border rounded px-2 py-1"
+                                    onchange="updateVariant({{ $item->id }})"
+                                    id="color-{{ $item->id }}"
+                                >
+                                    @foreach ($colors as $color)
+                                        <option
+                                            value="{{ $color->id }}"
+                                            @selected($color->id === $item->variant->color_id)
+                                        >
+                                            {{ $color->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                {{-- Size --}}
+                                <select class="border rounded px-2 py-1"
+                                    onchange="updateVariant({{ $item->id }})"
+                                    id="size-{{ $item->id }}"
+                                >
+                                    @foreach ($sizes as $size)
+                                        <option
+                                            value="{{ $size->id }}"
+                                            @selected($size->id === $item->variant->size_id)
+                                        >
+                                            Size {{ $size->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <p class="text-sm font-bold mt-2 md:hidden price">{{ number_format($price, 0, ',', '.') }} ₫</p>
                             
                             <form id="delete-form-{{ $item->id }}" method="POST" action="{{ route('user.cart.destroy', $item->id) }}">
                                 @csrf
@@ -201,6 +251,34 @@
         if(grandTotalEl) grandTotalEl.innerText = formatVND(total);
     };
 
+    // checkbox
+    document.querySelectorAll('.cart-checkbox').forEach(cb => {
+        cb.addEventListener('change', function () {
+            const item = this.closest('.cart-item');
+            const updateUrl = item.dataset.route;
+            const checked = this.checked;
+
+            fetch(updateUrl, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ status: checked ? 1 : 0 })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) throw new Error();
+                recalcCart();
+            })
+            .catch(() => {
+                this.checked = !checked;
+                recalcCart();
+                Swal.fire('Lỗi', 'Không thể cập nhật trạng thái', 'error');
+            });
+        });
+    });
+
     // 2. Hàm xác nhận xóa tất cả
     function confirmRemoveAll() {
         Swal.fire({
@@ -270,10 +348,11 @@
         });
     }
 
+    // Reload để hiện giao diện giỏ trống đúng Blade
     function checkEmptyCart() {
         const items = document.querySelectorAll('.cart-item');
         if (items.length === 0) {
-            location.reload(); // Reload để hiện giao diện giỏ trống đúng Blade
+            location.reload();
         }
     }
 
@@ -295,86 +374,135 @@
         })
     };
 
+    document.querySelectorAll('.cart-item').forEach(item => {
+        const input = item.querySelector('.qty-input');
+        const btnInc = item.querySelector('.btn-inc');
+        const btnDec = item.querySelector('.btn-dec');
+
+        btnInc?.addEventListener('click', () => {
+            const max = parseInt(input.max);
+            let val = parseInt(input.value);
+            if (val < max) {
+                input.value = val + 1;
+                input.dispatchEvent(new Event('change'));
+            }
+        });
+
+        btnDec?.addEventListener('click', () => {
+            let val = parseInt(input.value);
+            if (val > 1) {
+                input.value = val - 1;
+                input.dispatchEvent(new Event('change'));
+            }
+        });
+    });
+
     // === LOGIC AJAX CẬP NHẬT SỐ LƯỢNG ===
-    document.addEventListener('click', function (e) {
-        // Chỉ chạy khi click vào nút tăng hoặc giảm
-        if (e.target.classList.contains('btn-inc') || e.target.classList.contains('btn-dec')) {
-            const item = e.target.closest('.cart-item');
-            const input = item.querySelector('.qty-input');
-            const updateUrl = item.dataset.route; // Lấy URL từ HTML
-            
-            let currentQty = parseInt(input.value);
-            let newQty = currentQty;
+    function updateVariant(cartId) {
+        const item = document.querySelector(`.cart-item[data-id="${cartId}"]`);
+        const variants = JSON.parse(item.dataset.variants);
 
-            if (e.target.classList.contains('btn-inc')) newQty++;
-            if (e.target.classList.contains('btn-dec') && currentQty > 1) newQty--;
+        const colorSelect = document.getElementById(`color-${cartId}`);
+        const sizeSelect  = document.getElementById(`size-${cartId}`);
+        const qtyInput    = item.querySelector('.qty-input');
+        const priceEl     = item.querySelector('.price');
+        const lineTotalEl = item.querySelector('.line-total');
 
-            // Nếu số lượng không đổi thì không làm gì cả
-            if (newQty === currentQty) return;
+        const colorId = parseInt(colorSelect.value);
+        let sizeId = parseInt(sizeSelect.value);
 
-            // 1. Cập nhật giao diện ngay lập tức (Optimistic UI) cho mượt
-            input.value = newQty;
-            recalcCart();
+        // === 1. Disable size theo color ===
+        const validVariants = variants.filter(v => v.color_id === colorId);
+        const validSizeIds = validVariants.map(v => v.size_id);
 
-            // 2. Gửi AJAX lên server để lưu vào DB
-            fetch(updateUrl, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ quantity: newQty })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.success) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Rất tiếc!',
-                        text: data.error,
-                        confirmButtonColor: '#000'
-                    });
-                    
-                    input.value = data.current_qty || currentQty;
-                    recalcCart();
-                } else {
-                    /* Toast.fire({
-                        icon: 'success',
-                        title: 'Đã cập nhật số lượng'
-                    });
-                    */
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra, vui lòng thử lại');
-                input.value = currentQty; // Quay về số cũ
-                recalcCart();
-            });
+        [...sizeSelect.options].forEach(opt => {
+            const id = parseInt(opt.value);
+            opt.disabled = !validSizeIds.includes(id);
+        });
+
+        if (!validSizeIds.includes(sizeId)) {
+            sizeId = validSizeIds[0];
+            sizeSelect.value = sizeId;
         }
-    });
 
-    // Checkbox thay đổi -> tính lại tiền
-    document.querySelectorAll('.cart-checkbox').forEach(cb => {
-        cb.addEventListener('change', recalcCart);
-    });
+        // === 2. Tìm variant ===
+        const variant = variants.find(v =>
+            v.color_id === colorId && v.size_id === sizeId
+        );
+
+        if (!variant) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Biến thể không tồn tại'
+            });
+            return;
+        }
+
+        // === 3. Update UI ngay (Optimistic UI) ===
+        item.dataset.price = variant.price;
+
+        const qty = parseInt(qtyInput.value);
+        const lineTotal = variant.price * qty;
+
+        if (priceEl) priceEl.innerText = formatVND(variant.price);
+        if (lineTotalEl) lineTotalEl.innerText = formatVND(lineTotal);
+
+        qtyInput.max = variant.stock;
+
+        if (qty > variant.stock) {
+            qtyInput.value = variant.stock;
+        }
+        qtyInput.max = variant.stock;
+
+        qtyInput.dataset.oldQty = qtyInput.value;
+
+        recalcCart();
+
+        // === 4. Update DB ===
+        fetch(item.dataset.route, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                variant_id: variant.id,
+                quantity: parseInt(qtyInput.value)
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: data.error
+                });
+            }
+
+            // Nếu merge → reload nhẹ
+            if (data.merged) {
+                location.reload();
+            }
+        })
+        .catch(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Không thể cập nhật biến thể'
+            });
+        });
+    }
 
     // Nút thanh toán
     const btnCheckout = document.getElementById('checkoutBtn');
-    if(btnCheckout) {
+    if (btnCheckout) {
         btnCheckout.addEventListener('click', e => {
             e.preventDefault();
-            const ids = [...document.querySelectorAll('.cart-checkbox:checked')].map(cb => cb.value);
-            if (ids.length === 0) {
-                alert('Vui lòng chọn sản phẩm để thanh toán.');
-                return;
-            }
-            const params = new URLSearchParams();
-            ids.forEach(id => params.append('items[]', id));
-            window.location.href = `${checkoutUrl}?${params.toString()}`;
+            window.location.href = checkoutUrl;
         });
-    };
+    }
 
+    // số lượng sản phẩm
     document.querySelectorAll('.qty-input').forEach(input => {
         input.addEventListener('change', function () {
             const item = this.closest('.cart-item');
@@ -390,7 +518,7 @@
             }
 
             // Lưu lại số cũ để rollback nếu lỗi
-            this.dataset.oldQty = oldQty;
+            this.dataset.oldQty = newQty;
 
             // Optimistic UI
             recalcCart();

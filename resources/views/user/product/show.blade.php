@@ -340,7 +340,6 @@
 
     // 6. XỬ LÝ WISHLIST
     const btnWishlist = document.getElementById('btn-wishlist');
-    
     if(btnWishlist) {
         btnWishlist.addEventListener('click', function() {
             @guest

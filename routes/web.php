@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/gio-hang', [CartDetailController::class, 'store'])->name('user.cart.store');
     Route::delete('/gio-hang/xoa/{id}', [CartDetailController::class, 'destroy'])->name('user.cart.destroy');
     Route::patch('/gio-hang/cap-nhat/{id}', [CartDetailController::class, 'update'])->name('user.cart.update');
+    Route::patch('/gio-hang/{id}', [CartDetailController::class, 'update']);
     Route::delete('/gio-hang/clear', [CartDetailController::class, 'clear'])->name('user.cart.clear');
     // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('user.profile.wishlist.index');
@@ -77,6 +78,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/wishlist/clear', [WishlistController::class, 'clear'])->name('user.wishlist.clear');
     // Checkout
     Route::get('/thanh-toan', [CheckoutController::class, 'index'])->name('user.checkout.index');
+    Route::post('/thanh-toan', [CheckoutController::class, 'store'])
+    ->name('checkout.store')
+    ->middleware('auth');
     // Review
     Route::get('/reviews',[ReviewController::class,'index'])->name('user.reviews.index');
     Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('user.review.store');

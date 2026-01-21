@@ -46,6 +46,11 @@ class Variant extends Model
         return $this->hasMany(ImportDetail::class);
     }
 
+    public function getFinalPriceAttribute()
+    {
+        return $this->sale_price ?? $this->price;
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

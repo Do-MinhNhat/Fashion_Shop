@@ -13,7 +13,7 @@ class ReviewController extends Controller
 {
     public function index()
     {
-         $reviews = Review::with('product', 'user', 'replierUser.role')
+        $reviews = Review::with(['product', 'user', 'replierUser.role'])
             ->where('status', 1)
             ->where('user_id', Auth::id())
             ->whereNotNull('reply')

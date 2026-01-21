@@ -25,9 +25,22 @@ class Review extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function replier(): BelongsTo
+    public function replierUser()
     {
-        return $this->belongsTo(User::class, 'admin_id');
+        return $this->belongsTo(User::class, 'replier');
+    }
+
+    public function scopeReplied($query)
+    {
+        return $query
+            ->whereNotNull('reply')
+            ->where('reply', '!=', '')
+            ->whereNotNull('reply_at');
+    }
+
+    public function getIsRepliedAttribute(): bool
+    {
+        return !empty($this->reply) && !is_null($this->reply_at);
     }
     
     public function replierUser()
