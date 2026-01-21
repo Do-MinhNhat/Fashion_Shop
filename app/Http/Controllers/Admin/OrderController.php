@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Order;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
-use App\Models\OrderStatus;
-use App\Models\ShipStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,18 +19,15 @@ class OrderController extends Controller
         $viewData['title'] = 'Admin - Đơn hàng';
         $viewData['subtitle'] = 'Quản lý đơn hàng';
 
-        $orders = Order::query()->filter($request->all())->with(['user', 'orderDetails'])->paginate(10)->withQueryString();
-
-        $shipStatus = ShipStatus::all();
-        $orderStatus = OrderStatus::all();
+        $orders = Order::query()->filter($request->all())->with(['user.role', 'orderDetails.variant.product', 'shipStatus', 'orderStatus'])->paginate(10)->withQueryString();
 
         $counts = Order::selectRaw("
             count(*) as total_count,
             (select sum(total_price) from orders where order_status_id = 3) as total_price_count,
             (select sum(order_details.quantity) from order_details join orders on orders.id = order_details.order_id where orders.order_status_id = 3) as total_items_count
         ")->first();
-        
-        return view('admin.order.index', compact('viewData', 'orders', 'counts', 'shipStatus', 'orderStatus'));
+
+        return view('admin.order.index', compact('viewData', 'orders', 'counts'));
     }
 
     public function confirm(Order $order)
@@ -45,12 +39,15 @@ class OrderController extends Controller
         return back()->with('success', 'Đơn hàng đã được xác nhận.');
     }
 
-    public function decline(Order $order)
+    public function decline(Order $order, Request $request)
     {
+        $request->validate([
+            'message' => 'required|string|max:1000',
+        ]);
         if ($order->order_status_id != 1) {
             return back()->with('error', "Đơn #{$order->id} đã được xử lý trước đó");
         }
-        $order->update(['admin_id' => Auth::id(), 'order_status_id' => 4]);
+        $order->update(['admin_id' => Auth::id(), 'order_status_id' => 4, 'message' => $request->message]);
         return back()->with('success', 'Đơn hàng đã bị từ chối.');
     }
 
@@ -72,7 +69,7 @@ class OrderController extends Controller
     public function fail(Request $request, Order $order)
     {
         $request->validate([
-            'message' => 'required|string|max:255',
+            'message' => 'required|string|max:1000',
         ]);
         $order->update(['ship_status_id' => 4, 'message' => $request->message]);
         return back()->with('success', "Đã báo cáo đơn hàng #{$order->id}");
@@ -84,7 +81,7 @@ class OrderController extends Controller
         $viewData['title'] = 'Admin - Đơn hàng';
         $viewData['subtitle'] = 'Nhận giao hàng';
 
-        $orders = Order::query()->filter($request->all())->where([['order_status_id', 2], ['ship_status_id', 1]])->with(['user', 'orderDetails'])->paginate(10)->withQueryString();
+        $orders = Order::query()->filter($request->all())->where([['order_status_id', 2], ['ship_status_id', 1]])->with(['user', 'orderDetails.variant.product'])->paginate(10)->withQueryString();
 
         return view('admin.order.ship', compact('viewData', 'orders'));
     }
@@ -95,17 +92,18 @@ class OrderController extends Controller
         $viewData['title'] = 'Admin - Đơn hàng';
         $viewData['subtitle'] = 'Nhận giao hàng';
 
-        $counts = Order::selectRaw("
+        $counts = Order::where('shipper_id', Auth::id())
+        ->selectRaw("
             count(*) as total_count,
-            (select count(*) from orders where shipper_id = ? and order_status_id = 2) as total_accepted_count,
-            (select count(*) from orders where shipper_id = ? and order_status_id = 3) as total_shipped_count
-        ", [Auth::id(), Auth::id()])->first();
+            sum(case when order_status_id = 2 then 1 else 0 end) as total_accepted_count,
+            sum(case when order_status_id = 3 then 1 else 0 end) as total_shipped_count
+        ")->first();
 
         if (!$request->has('ship_status')) {
             $request->merge(['ship_status' => 2]);
         }
 
-        $orders = Order::query()->filter($request->all())->where([['order_status_id', '>', 1], ['shipper_id', Auth::id()]])->with(['user', 'orderDetails'])->paginate(10)->withQueryString();
+        $orders = Order::query()->filter($request->all())->where([['order_status_id', '>', 1], ['shipper_id', Auth::id()]])->with(['user', 'orderDetails.variant.product'])->paginate(10)->withQueryString();
 
         return view('admin.order.accepted', compact('viewData', 'orders', 'counts'));
     }
@@ -113,9 +111,21 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreOrderRequest $request)
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
     {
-        //
+        $order = Order::with([
+            'orderDetails.variant.product',
+            'orderDetails.variant.size',
+            'orderDetails.variant.color',
+            'orderStatus',
+            'user'
+        ])->findOrFail($id);
+
+        return response()->json($order);
     }
 
     /**

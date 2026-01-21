@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ColorController as AdminColorController;
 use App\Http\Controllers\User\CartDetailController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\User\ProductController;
@@ -13,10 +14,9 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Admin\ImportController as AdminImportController;
-use App\Http\Controllers\Admin\ShipController as AdminShipController;
 use App\Http\Controllers\Admin\SlideShowController as AdminSlideShowController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
-use App\Http\Controllers\Admin\VariantController as AdminVariantController;
+use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\User\OrderController;
@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/gio-hang', [CartDetailController::class, 'store'])->name('user.cart.store');
     Route::delete('/gio-hang/xoa/{id}', [CartDetailController::class, 'destroy'])->name('user.cart.destroy');
     Route::patch('/gio-hang/cap-nhat/{id}', [CartDetailController::class, 'update'])->name('user.cart.update');
+    Route::patch('/gio-hang/{id}', [CartDetailController::class, 'update']);
     Route::delete('/gio-hang/clear', [CartDetailController::class, 'clear'])->name('user.cart.clear');
     // Wishlist
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('user.profile.wishlist.index');
@@ -79,19 +80,33 @@ Route::middleware('auth')->group(function () {
     ->name('checkout.store')
     ->middleware('auth');
     // Review
-    Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('user.review.store');
     Route::get('/reviews',[ReviewController::class,'index'])->name('user.reviews.index');
+    Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('user.review.store');
 
     //Admin vvvvvvvvvvvvvvvvvvvvvvvvv
     Route::middleware('is_admin')->prefix('quan-ly')->group(function () {
         Route::get('/', [AdminHomeController::class, 'index'])->name('admin.home.index');
-        // Quan ly nguoi dung
+        // Quan ly nguoi dung và đánh giá
         Route::middleware('role:admin-user,admin-head')->group(function () {
+            //users
             Route::get('/nguoi-dung', [AdminUserController::class, 'index'])->name('admin.user.index');
+            Route::put('/nguoi-dung/{user}/khoa-tai-khoan', [AdminUserController::class, 'statusLock'])->name('admin.user.statusLock');
+            Route::put('/nguoi-dung/{user}/mo-tai-khoan', [AdminUserController::class, 'statusOpen'])->name('admin.user.statusOpen');
+            Route::put('/nguoi-dung/{user}/khoa-danh-gia', [AdminUserController::class, 'reviewLock'])->name('admin.user.reviewLock');
+            Route::put('/nguoi-dung/{user}/mo-danh-gia', [AdminUserController::class, 'reviewOpen'])->name('admin.user.reviewOpen');
+            Route::get('/nguoi-dung/danh-gia', [AdminUserController::class, 'review'])->name('admin.user.review');
+            Route::put('/nguoi-dung/danh-gia/cap-nhat-danh-gia', [AdminUserController::class, 'updateReview'])->name('admin.user.updateReview');
+            Route::get('/nguoi-dung/danh-gia/lay-danh-gia', [AdminUserController::class, 'getReviews'])->name('admin.user.getReviews');
+            Route::delete('/nguoi-dung/danh-gia/xoa-danh-gia', [AdminUserController::class, 'deleteReview'])->name('admin.user.deleteReview');
+            Route::put('/nguoi-dung/danh-gia/tra-loi', [AdminUserController::class, 'reply'])->name('admin.user.reply');
+
+            // reviews
+            Route::post('/reviews/{review}/reply', [AdminReviewController::class, 'reply'])->name('admin.reviews.reply');
         });
         // Giao hang
         Route::middleware('role:admin-shipper,admin-head')->group(function () {
-            Route::get('/giao-hang', [AdminShipController::class, 'index'])->name('admin.ship.index');
+            Route::get('/don-hang/nhan-don', [AdminOrderController::class, 'ship'])->name('admin.order.ship');
+            Route::get('/don-hang/da-nhan', [AdminOrderController::class, 'accepted'])->name('admin.order.accepted');
         });
         // Quan ly san pham
         Route::middleware('role:admin-product,admin-head')->group(function () {
@@ -157,8 +172,7 @@ Route::middleware('auth')->group(function () {
 
             //Quản lý đơn hàng
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
-            Route::get('/don-hang/nhan-don', [AdminOrderController::class, 'ship'])->name('admin.order.ship');
-            Route::get('/don-hang/da-nhan', [AdminOrderController::class, 'accepted'])->name('admin.order.accepted');
+            Route::get('/don-hang/{id}', [AdminOrderController::class, 'show'])->name('admin.order.show');
             Route::put('/don-hang/{order}/cap-nhat', [AdminOrderController::class, 'update'])->name('admin.order.update');
             Route::put('/don-hang/{order}/xac-nhan', [AdminOrderController::class, 'confirm'])->name('admin.order.confirm');
             Route::put('/don-hang/{order}/tu-choi', [AdminOrderController::class, 'decline'])->name('admin.order.decline');
@@ -172,13 +186,33 @@ Route::middleware('auth')->group(function () {
             Route::post('/phieu-nhap', [AdminImportController::class, 'store'])->name('admin.import.store');
 
         });
-        // slideshow
+        // Head Admin
         Route::middleware(['role:admin-head'])->group(function () {
             Route::resource('slideshow', AdminSlideShowController::class)->names('admin.slideshow');
-        });
-        // Cau hinh
-        Route::middleware('role:admin-head')->group(function () {
-            Route::get('/cau-hinh', [AdminHomeController::class, 'index'])->name('admin.setting.index');
+            //Quản lý tài khoản
+            Route::get('/nguoi-dung/tai-khoan', [AdminUserController::class, 'index'])->name('admin.user.account');
+            Route::get('/nguoi-dung/thung-rac', [AdminUserController::class, 'trash'])->name('admin.user.trash');
+            Route::post('/nguoi-dung/tai-khoan', [AdminUserController::class, 'store'])->name('admin.user.store');
+            Route::delete('/nguoi-dung/{user}/', [AdminUserController::class, 'delete'])->name('admin.user.delete');
+            Route::put('/nguoi-dung/{user}/khoi-phuc', [AdminUserController::class, 'restore'])->name('admin.user.restore')->withTrashed();
+            Route::delete('/nguoi-dung/{user}/force', [AdminUserController::class, 'forceDelete'])->name('admin.user.forceDelete')->withTrashed();
+            Route::put('/nguoi-dung/{user}/cap-nhat', [AdminUserController::class, 'update'])->name('admin.user.update');
+            //Quản lý Chức vụ
+            Route::get('/chuc-vu', [AdminRoleController::class, 'index'])->name('admin.role.index');
+            Route::get('/chuc-vu/thung-rac', [AdminRoleController::class, 'trash'])->name('admin.role.trash');
+            Route::post('/chuc-vu', [AdminRoleController::class, 'store'])->name('admin.role.store');
+            Route::delete('/chuc-vu/{role}/', [AdminRoleController::class, 'delete'])->name('admin.role.delete');
+            Route::put('/chuc-vu/{role}/khoi-phuc', [AdminRoleController::class, 'restore'])->name('admin.role.restore')->withTrashed();
+            Route::delete('/chuc-vu/{role}/force', [AdminRoleController::class, 'forceDelete'])->name('admin.role.forceDelete')->withTrashed();
+            Route::put('/chuc-vu/{role}/cap-nhat', [AdminRoleController::class, 'update'])->name('admin.role.update');
+            //Quản lý Contact
+            Route::get('/lien-he', [AdminContactController::class, 'index'])->name('admin.contact.index');
+            Route::get('/lien-he/thung-rac', [AdminContactController::class, 'trash'])->name('admin.contact.trash');
+            Route::post('/lien-he', [AdminContactController::class, 'store'])->name('admin.contact.store');
+            Route::delete('/lien-he/{contact}/', [AdminContactController::class, 'delete'])->name('admin.contact.delete');
+            Route::put('/lien-he/{contact}/khoi-phuc', [AdminContactController::class, 'restore'])->name('admin.contact.restore')->withTrashed();
+            Route::delete('/lien-he/{contact}/force', [AdminContactController::class, 'forceDelete'])->name('admin.contact.forceDelete')->withTrashed();
+            Route::put('/lien-he/{contact}/cap-nhat', [AdminContactController::class, 'update'])->name('admin.contact.update');
         });
     });
 });

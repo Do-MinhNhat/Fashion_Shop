@@ -38,6 +38,16 @@ class Category extends Model
         return $this->hasMany(Product::class);
     }
 
+    public function brands()
+    {
+        return $this->belongsToMany(
+            Brand::class,
+            'products',
+            'category_id',
+            'brand_id'
+        )->where('brands.status', 1)->distinct();
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {

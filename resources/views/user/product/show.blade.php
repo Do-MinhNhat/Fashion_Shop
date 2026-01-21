@@ -1,9 +1,9 @@
 @extends('user.layouts.app')
 @section('title', $product->name)
-
 @php
     $sold_quantity = $product->variants->flatMap(fn ($variant) => $variant->orderDetails)->sum('quantity')
 @endphp
+
 @section('content')
 
 <div class="pt-20 lg:pt-28 max-w-7xl mx-auto px-6">
@@ -222,7 +222,6 @@
                             <span class="w-3 font-bold">{{ $star }}</span>
                             <i class="fas fa-star text-xs text-gray-300"></i>
                             <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                {{-- Chiều rộng Dynamic --}}
                                 <div class="h-full bg-gray-900" style="width: {{ $percent }}%"></div>
                             </div>
                             <span class="w-8 text-right text-gray-400 text-xs">
@@ -235,7 +234,7 @@
                 <button x-data @click="$dispatch('open-review-modal')" 
                         class="w-full border border-gray-900 text-gray-900 py-3 text-sm font-bold uppercase tracking-wider hover:bg-black hover:text-white transition">
                     Viết đánh giá
-                </button>
+                </button>   
                 {{-- Popup Review Modal --}}
                 <x-review-modal :product="$product" />
             </div>
@@ -341,7 +340,6 @@
 
     // 6. XỬ LÝ WISHLIST
     const btnWishlist = document.getElementById('btn-wishlist');
-    
     if(btnWishlist) {
         btnWishlist.addEventListener('click', function() {
             @guest

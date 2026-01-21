@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Order;
+use App\Models\Review;
 use App\Observers\OrderObserver;
+use App\Policies\ReviewPolicy;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +13,10 @@ use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
+    protected $policies = [
+        Review::class => ReviewPolicy::class,
+    ];
+
     public function register(): void
     {
         //

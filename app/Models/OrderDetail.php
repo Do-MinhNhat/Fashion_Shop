@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderDetail extends Model
 {
@@ -13,17 +14,18 @@ class OrderDetail extends Model
     'variant_id',
     'price',
     'quantity'];
-    public function product()
+
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function order()
+    public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    public function variant()
+    public function variant(): BelongsTo
     {
         return $this->belongsTo(Variant::class);
     }

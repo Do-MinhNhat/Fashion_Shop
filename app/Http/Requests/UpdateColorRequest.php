@@ -30,7 +30,7 @@ class UpdateColorRequest extends FormRequest
     {
         return [
             'name.required' => 'Tên màu sắc không được để trống.',
-            'name.unique' => 'Tên màu sắc0 này đã tồn tại.',
+            'name.unique' => 'Tên màu sắc này đã tồn tại.',
             'status.required' => 'Trạng thái không được để trống',
             'status.boolean' => 'Trạng thái không hợp lệ',
             'hex_code.required' => 'Mã màu không được để trống',

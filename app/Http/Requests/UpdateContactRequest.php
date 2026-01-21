@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateContactRequest extends FormRequest
 {
+
+    protected $errorBag = 'edit';
     /**
      * Determine if the user is authorized to make this request.
      */

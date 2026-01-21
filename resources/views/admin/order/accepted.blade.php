@@ -140,7 +140,7 @@
                     <td class="p-4 text-sm font-medium">
                         <x-money :value="$order->total_price" />
                     </td>
-                    <td class="p-4 text-sm font-medium text-center" @click.stop>
+                    <td class="p-4 text-sm font-medium text-center">
                         @if($order->order_status_id == 2)
                         <div class="flex flex-col items-center gap-2">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">

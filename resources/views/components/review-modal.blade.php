@@ -1,27 +1,22 @@
 @props(['product'])
 
-<div x-data="{ show: false, rating: 0, hoverRating: 0 }"
+<div
+    x-data="{ show: false, rating: 0, hoverRating: 0 }"
+    x-cloak
     @open-review-modal.window="show = true"
     @close-review-modal.window="show = false"
     @reset-rating.window="rating = 0; hoverRating = 0"
     class="relative z-50"
     x-show="show"
 >
-
-    <div x-show="show"
-         x-transition
-         class="fixed inset-0 bg-black/60 backdrop-blur-sm"
-         @click="show = false">
-    </div>
-
+    <div x-show="show" x-transition class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="show = false"></div>
     <div class="fixed inset-0 overflow-y-auto">
         <div class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
             <div x-show="show"
                 x-transition
-                class="relative transform overflow-hidden bg-white text-left shadow-2xl sm:my-8 sm:w-full sm:max-w-lg rounded-lg">
-
-                <button @click="show = false"
-                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-900">
+                class="relative transform overflow-hidden bg-white text-left shadow-2xl sm:my-8 sm:w-full sm:max-w-lg rounded-lg"
+            >
+                <button @click="show = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900">
                     <i class="fas fa-times text-xl"></i>
                 </button>
 

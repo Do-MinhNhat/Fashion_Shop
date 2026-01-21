@@ -103,7 +103,7 @@
         <div id="filter-button"></div>
     </div>
     <x-admin.import-filter />
-    <x-admin.order-edit :shipStatus="$shipStatus" :orderStatus="$orderStatus" />
+    <x-admin.order-edit />
     @if($orders->isEmpty())
     <div class="flex flex-col items-center justify-center py-16 px-4">
         <div class="relative mb-6">
@@ -161,15 +161,16 @@
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-100">
                                     <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> {{ $order->orderStatus->name }}
                                 </span>
-                                <div class="flex gap-2">
+                                <div class="flex gap-2" x-data="ordersManager()">
                                     <form method="POST" action="{{ route('admin.order.confirm', $order->id) }}" class="inline">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500 text-white hover:bg-green-600 transition">Xác nhận</button>
+                                        <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500 text-white hover:bg-green-600 transition" @click="if(!confirm('Xác nhận duyệt đơn?')) $event.preventDefault()">Xác nhận</button>
                                     </form>
-                                    <form method="POST" action="{{ route('admin.order.decline', $order->id) }}" class="inline">
+                                    <form method="POST" action="{{ route('admin.order.decline', $order->id) }}" class="inline" @submit.prevent="openFailOrderModal($event)">
                                         @csrf
                                         @method('PUT')
+                                        <input type="hidden" name="message" x-ref="failMessage">
                                         <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500 text-white hover:bg-red-600 transition">Từ chối</button>
                                     </form>
                                 </div>
@@ -237,7 +238,7 @@
                     </td>
                     @if(request('status') != '1')
                     <td class="p-4 text-sm font-medium" @click.stop>
-                        <button @click="$dispatch('open-modal', @js($order))" type="submit" class="px-4 py-2.5 rounded-lg font-medium bg-blue-500 text-white hover:bg-blue-600 transition">Xử lý</button>
+                        <button @click="$dispatch('open-modal', @js($order))" class="px-4 py-2.5 rounded-lg font-medium bg-blue-500 text-white hover:bg-blue-600 transition">chỉnh sửa</button>
                     </td>
                     @endif
                 </tr>
@@ -295,3 +296,18 @@
     @endif
 </div>
 @endsection
+@push('scripts')
+<script>
+    function ordersManager() {
+        return {
+            openFailOrderModal(event) {
+                const message = prompt("Vui lòng nhập lý do từ chối cho đơn hàng này:");
+                if (message !== null) {
+                    this.$refs.failMessage.value = message;
+                    event.target.submit();
+                }
+            }
+        }
+    }
+</script>
+@endpush

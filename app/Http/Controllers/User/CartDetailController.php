@@ -9,8 +9,8 @@ use App\Models\CartDetail;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Variant;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartDetailController extends Controller
 {
@@ -98,6 +98,7 @@ class CartDetailController extends Controller
                 'user_id'    => $user->id,
                 'variant_id' => $request->variant_id,
                 'quantity'   => $request->quantity,
+                'status' => true,
             ]);
         }
 
@@ -108,34 +109,84 @@ class CartDetailController extends Controller
     public function update(UpdateCartDetailRequest $request, $id)
     {
         $cartDetail = CartDetail::findOrFail($id);
+        abort_if($cartDetail->user_id !== Auth::id(), 403);
 
-        // Bảo mật: Kiểm tra xem item này có phải của user đang đăng nhập không
-        if ($cartDetail->user_id !== Auth::id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+        $quantity = $request->input('quantity', $cartDetail->quantity);
+
+        // 1. UPDATE VARIANT (COLOR / SIZE)
+        if ($request->filled('variant_id')) {
+            $newVariant = Variant::findOrFail($request->variant_id);
+
+            // Check tồn kho
+            if ($quantity > $newVariant->quantity) {
+                return response()->json([
+                    'error' => 'Biến thể này chỉ còn ' . $newVariant->quantity . ' sản phẩm'
+                ], 400);
+            }
+
+            // Gộp nếu variant đã tồn tại
+            $existing = CartDetail::where('user_id', Auth::id())
+                ->where('variant_id', $newVariant->id)
+                ->where('id', '!=', $cartDetail->id)
+                ->first();
+
+            if ($existing) {
+                $existing->update([
+                    'quantity' => min(
+                        $existing->quantity + $quantity,
+                        $newVariant->quantity
+                    )
+                ]);
+
+                $cartDetail->delete();
+
+                return response()->json([
+                    'success' => true,
+                    'merged'  => true,
+                    'quantity'=> $existing->quantity,
+                    'price'   => $newVariant->sale_price ?? $newVariant->price
+                ]);
+            }
+
+            $cartDetail->variant_id = $newVariant->id;
         }
 
-        $qty = $request->input('quantity');
-        
-        // Validate số lượng
-        if ($qty < 1) {
-            return response()->json(['error' => 'Số lượng phải lớn hơn 0'], 400);
+        // 2. UPDATE QUANTITY
+        if ($request->filled('quantity')) {
+            $variant = $cartDetail->variant;
+
+            if ($quantity > $variant->quantity) {
+                return response()->json([
+                    'error' => 'Kho chỉ còn ' . $variant->quantity . ' sản phẩm'
+                ], 400);
+            }
+
+            $cartDetail->quantity = $quantity;
         }
 
-        // Check tồn kho
-        $stock = $cartDetail->variant->quantity;
-        if ($qty > $stock) {
-            return response()->json([
-                'error' => 'Kho chỉ còn ' . $stock . ' sản phẩm',
-                'current_qty' => $stock
-            ], 400);
+        // 3. UPDATE STATUS
+        if ($request->has('status')) {
+            $cartDetail->status = $request->boolean('status');
         }
 
-        $cartDetail->update(['quantity' => $qty]);
+        $cartDetail->save();
 
         return response()->json([
-            'success' => true,
-            'message' => 'Cập nhật thành công'
+            'success'  => true,
+            'quantity' => $cartDetail->quantity,
+            'price'    => $cartDetail->variant->sale_price ?? $cartDetail->variant->price
         ]);
+    }
+
+    public function toggleStatus(Request $request, CartDetail $cartDetail)
+    {
+        abort_if($cartDetail->user_id !== Auth::id(), 403);
+
+        $cartDetail->update([
+            'status' => (bool) $request->boolean('status')
+        ]);
+
+        return response()->json(['success' => true]);
     }
 
     // Hàm xóa sản phẩm khỏi giỏ

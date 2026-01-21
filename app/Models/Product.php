@@ -36,6 +36,11 @@ class Product extends Model
 
     public function reviews(): HasMany
     {
+        return $this->hasMany(Review::class)->latest();
+    }
+
+    public function reviewsRaw(): HasMany
+    {
         return $this->hasMany(Review::class);
     }
 
@@ -60,13 +65,18 @@ class Product extends Model
     }
 
     public function brand(): BelongsTo
-    {   
+    {
         return $this->belongsTo(Brand::class);
     }
 
     public function wishlists()
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function latestReview()
+    {
+        return $this->hasOne(Review::class)->latestOfMany();
     }
 
     protected function price(): Attribute
@@ -103,7 +113,7 @@ class Product extends Model
                 });
             });
         });
-        
+
         // Filter
         $query->when($filters['category'] ?? null, function ($query, $categoryId) {
             $query->where('category_id', $categoryId);

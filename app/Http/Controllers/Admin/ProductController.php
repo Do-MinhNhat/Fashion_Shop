@@ -27,7 +27,7 @@ class ProductController extends Controller
         $viewData['title'] = 'Admin - Sản phẩm';
         $viewData['subtitle'] = 'Quản lý sản phẩm';
 
-        $products = Product::query()->filter($request->all())->with(['variants', 'tags', 'images'])->Paginate(10)->withQueryString();
+        $products = Product::query()->filter($request->all())->with(['variants.color', 'variants.size', 'tags', 'images'])->Paginate(10)->withQueryString();
 
         $brands = Brand::all();
 
@@ -84,22 +84,6 @@ class ProductController extends Controller
         $product->variants()->createMany($request->variants);
         $product->tags()->sync($request->tags);
         return redirect()->back()->with('success', 'Đã thêm sản phẩm "' . $product->name . '" cùng các biến thể!' . $imgMsg);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        //
     }
 
     /**
@@ -183,7 +167,7 @@ class ProductController extends Controller
         $viewData['title'] = 'Admin - Sản phẩm';
         $viewData['subtitle'] = 'Thùng rác sản phẩm';
 
-        $products = Product::query()->filter($request->all())->onlyTrashed()->with('variants')->paginate(15)->withQueryString();
+        $products = Product::query()->filter($request->all())->onlyTrashed()->with('variants.color', 'variants.size')->paginate(15)->withQueryString();
 
         $brands = Brand::all();
 

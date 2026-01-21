@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Role;
 use App\Http\Controllers\Controller;
@@ -30,7 +30,14 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
-        //
+        $role = Role::create($request->validated());
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $role,
+            ], 201);
+        }
+        return redirect()->back()->with('success', "Đã thêm chức vụ: '{$role->name}'!");
     }
 
     /**
