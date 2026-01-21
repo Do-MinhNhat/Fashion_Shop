@@ -113,9 +113,17 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreOrderRequest $request)
+    public function show($id)
     {
-        //
+        $order = Order::with([
+            'orderDetails.variant.product',
+            'orderDetails.variant.size',
+            'orderDetails.variant.color',
+            'orderStatus',
+            'user'
+        ])->findOrFail($id);
+
+        return response()->json($order);
     }
 
     /**

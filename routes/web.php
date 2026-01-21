@@ -154,6 +154,7 @@ Route::middleware('auth')->group(function () {
 
             //Quản lý đơn hàng
             Route::get('/don-hang', [AdminOrderController::class, 'index'])->name('admin.order.index');
+            Route::get('/don-hang/{id}', [AdminOrderController::class, 'show'])->name('admin.order.show');
             Route::get('/don-hang/nhan-don', [AdminOrderController::class, 'ship'])->name('admin.order.ship');
             Route::get('/don-hang/da-nhan', [AdminOrderController::class, 'accepted'])->name('admin.order.accepted');
             Route::put('/don-hang/{order}/cap-nhat', [AdminOrderController::class, 'update'])->name('admin.order.update');
