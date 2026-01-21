@@ -14,7 +14,8 @@ class CartDetail extends Model
     protected $fillable = [
         "user_id",
         "variant_id",
-        "quantity"
+        "quantity",
+        "status"
     ];
 
     public function variant()
