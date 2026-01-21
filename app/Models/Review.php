@@ -25,9 +25,9 @@ class Review extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function replierUser()
+    public function replier()
     {
-        return $this->belongsTo(User::class, 'replier');
+        return $this->belongsTo(User::class, 'admin_id');
     }
 
     public function scopeReplied($query)
@@ -42,7 +42,7 @@ class Review extends Model
     {
         return !empty($this->reply) && !is_null($this->reply_at);
     }
-    
+
     public function replierUser()
     {
         return $this->belongsTo(User::class, 'replier');
