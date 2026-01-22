@@ -40,7 +40,7 @@ class ContactSeeder extends Seeder
                 'status'=>true,
             ],
             [
-                'name'=>'Name Store',
+                'name'=>'NameStore',
                 'url'=>'Fashtion Shop',
                 'status'=>true,
             ],
