@@ -121,7 +121,7 @@ class ProductController extends Controller
             $imgMsg = $imgMsg . ", ảnh phụ giữ nguyên";
         }
         foreach ($request->variants as $variant) {
-            $cleanDate = array_diff_key($variant, array_flip(['id', 'size_id', 'color_id', 'product_id', 'created_at', 'updated_at', 'deleted_at']));
+            $cleanDate = array_diff_key($variant, array_flip(['id', 'size_id', 'color_id', 'product_id', 'created_at', 'updated_at', 'deleted_at', 'color', 'size']));
             $product->variants()->where('id', $variant['id'])->update($cleanDate);
         }
         $product->tags()->sync($request->tags);
