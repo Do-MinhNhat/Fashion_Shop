@@ -28,6 +28,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+
 //User Checkout Route
 //-----------------------------
 
@@ -63,7 +64,8 @@ Route::middleware('auth')->group(function () {
     // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'update'])->name('user.profile.update');
     // Route::get('/ho-so-ca-nhan', [UserProfileController::class, 'destroy'])->name('user.profile.destroy');
     // Order
-    Route::get('/ho-so-ca-nhan/don-hang', [OrderController::class, 'index'])->name('user.profile.order.index');
+    Route::get('/ho-so-ca-nhan/don-hang',[App\Http\Controllers\OrderController::class, 'index'])->name('user.profile.order.index');
+    Route::post('/ho-so-ca-nhan/don-hang/{order}/huy',[App\Http\Controllers\OrderController::class, 'cancel'])->name('user.profile.order.cancel');
     // Cart
     Route::get('/gio-hang', [CartDetailController::class, 'index'])->name('user.cart.index');
     Route::post('/gio-hang', [CartDetailController::class, 'store'])->name('user.cart.store');
