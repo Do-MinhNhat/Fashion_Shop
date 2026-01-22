@@ -4,7 +4,7 @@
     <div class="space-y-4">
         <a href="#" class="text-2xl font-serif font-bold tracking-widest uppercase block">{{$contactMap['NameStore']??"Không có"}}</a>
         <p class="text-xs text-gray-500 leading-6">
-            Vietnam Office<br>
+            <img src="{{asset('logo.jpg')}}">
             <i>Địa Chỉ: </i>{{$contactMap['Address']??"không có"}}<br>
         </p>
         <p class="text-xs text-gray-500"><i>Store: </i>{{$contactMap['Link']??"Không có"}}</p>
