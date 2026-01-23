@@ -4,9 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Variant;
-use App\Models\Product;
-use App\Models\Color;
-use App\Models\Size;
 
 class VariantSeeder extends Seeder
 {

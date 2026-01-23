@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->string('thumbnail')->nullable();
+            $table->string('thumbnail')->default('default.png');
             $table->decimal('rating',2,1)->default(0);
             $table->boolean('status')->default(1)->index();
             $table->integer('view')->default(0)->index();

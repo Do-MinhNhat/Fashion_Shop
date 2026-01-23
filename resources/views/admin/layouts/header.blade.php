@@ -19,7 +19,7 @@
                 class="flex items-center gap-3 cursor-pointer py-1.5 px-2 rounded-lg hover:bg-white/5 transition-all border border-transparent hover:border-white/5 group">
                 {{-- Avatar --}}
                 <div class="relative">
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=6366f1&color=fff&size=128"
+                    <img src="{{ asset('storage/'. Auth::user()->image) }}"
                         class="w-8 h-8 rounded-full object-cover ring-2 ring-white/10 group-hover:ring-indigo-500/50 transition-all">
                     {{-- Status Dot --}}
                     <span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-[#0f1117] bg-green-500"></span>

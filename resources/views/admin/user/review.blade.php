@@ -48,7 +48,7 @@
 
             <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 h-16 shrink-0" x-show="selected">
                 <div class=" flex items-center gap-3">
-                    <img class=" w-10 h-10 rounded-lg object-cover border border-gray-200">
+                    <img :src="'{{ asset('storage') }}/' + selected.thumbnail" class=" w-10 h-10 rounded-lg object-cover border border-gray-200">
                     <div>
                         <h2 class="text-sm font-bold text-gray-900" x-text="selected.name"></h2>
                         <div class="flex items-center text-xs text-gray-500">
@@ -72,7 +72,7 @@
                                 <div class="flex justify-between items-start mb-3">
                                     <div class="flex gap-3">
                                         <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
-                                            <img :src="review.user.image" class="w-10 h-10 rounded-lg object-cover">
+                                            <img :src="'{{ asset('storage') }}/' + review.user.image" class="w-10 h-10 rounded-lg object-cover">
                                         </div>
                                         <div>
                                             <h4 class="text-sm font-bold text-gray-900" x-text="review.user.name"></h4>
@@ -175,7 +175,7 @@
                         class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition border border-transparent"
                         :class="selected && selected.id == {{ $product->id }} ? 'bg-blue-50 border-blue-200 ring-1 ring-blue-300' : 'hover:bg-gray-50 hover:border-gray-200'">
                         <div class="relative w-12 h-12 shrink-0">
-                            <img src="{{ $product->thumbnail }}" class="w-full h-full object-cover rounded-md border border-gray-100">
+                            <img src="{{ asset('storage/' . $product->thumbnail) }}" class="w-full h-full object-cover rounded-md border border-gray-100">
                         </div>
 
                         <div class="flex-1 min-w-0">

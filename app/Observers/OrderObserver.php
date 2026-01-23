@@ -27,6 +27,11 @@ class OrderObserver
                 }
             });
         }
+
+        if ($order->wasChanged('ship_status_id') && $order->ship_status_id == 1) {
+            $order->shipper_id = null;
+            $order->saveQuietly();
+        }
     }
 
     /**

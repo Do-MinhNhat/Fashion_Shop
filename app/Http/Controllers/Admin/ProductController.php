@@ -66,6 +66,9 @@ class ProductController extends Controller
         if ($request->hasFile('cropped-thumbnail')) {
             $thumbnail = $baseName . "." . $request->file('cropped-thumbnail')->extension();
             $thumbPath = $this->uploadImage($thumbnail, $request->file('cropped-thumbnail'), 'product/thumbnail');
+            if($thumbPath === null){
+                return redirect()->back()->with('error', 'Lỗi tải ảnh lên. Vui lòng thử lại!');
+            }
             $product->update(['thumbnail' => $thumbPath]);
             $imgMsg = $imgMsg . " Ảnh chính: 1 hình";
         } else {
@@ -75,6 +78,9 @@ class ProductController extends Controller
             foreach ($request->file('cropped-images') as $index => $file) {
                 $imagesName = $baseName . "_" . ($index + 1) . "." . $file->extension();
                 $imagePath = $this->uploadImage($imagesName, $file, 'product/image');
+                if ($imagePath === null) {
+                    return redirect()->back()->with('error', 'Lỗi tải ảnh lên. Vui lòng thử lại!');
+                }
                 $product->images()->create(['url' => $imagePath]);
             }
             $imgMsg = $imgMsg . ", Ảnh phụ: " . count($request->file('cropped-images')) . " hình";
@@ -98,6 +104,9 @@ class ProductController extends Controller
             $this->deleteImage($product->thumbnail);
             $thumbnail = $baseName . "." . $request->file('cropped-thumbnail')->extension();
             $thumbPath = $this->uploadImage($thumbnail, $request->file('cropped-thumbnail'), 'product/thumbnail');
+            if($thumbPath === null){
+                return redirect()->back()->with('error', 'Lỗi tải ảnh lên. Vui lòng thử lại!');
+            }
             $product->update(['thumbnail' => $thumbPath]);
             $imgMsg = $imgMsg . " Cập nhật ảnh chính";
         } else {
@@ -110,6 +119,9 @@ class ProductController extends Controller
                 $imagesName = $baseName . "_" . $imgNum;
                 $this->deleteImage($oldImage);
                 $imagePath = $this->uploadImage($imagesName, $file, 'product/image');
+                if ($imagePath === null) {
+                    return redirect()->back()->with('error', 'Lỗi tải ảnh lên. Vui lòng thử lại!');
+                }
                 if ($oldImage) {
                     $product->images()->where('url', $oldImage)->update(['url' => $imagePath]);
                 } else {
