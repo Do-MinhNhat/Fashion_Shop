@@ -143,12 +143,12 @@
                     </td>
                     <td class="p-4">
                         <div class="flex items-center gap-4">
-                            <img src=" {{ asset('storage/'.$order->user->image) }}" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/10 group-hover:ring-indigo-500/50 transition-all">
+                            <img src=" {{ asset('storage/'.$order->user?->image) }}" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/10 group-hover:ring-indigo-500/50 transition-all">
                             <div>
-                                <p class="font-medium text-gray-900 group-hover:text-blue-600 transition">{{ $order->user->name }}</p>
+                                <p class="font-medium text-gray-900 group-hover:text-blue-600 transition">{{ $order->user?->name }}</p>
                             </div>
                         </div>
-                        <span class="text-xs text-gray-500">{{ $order->user->email }} - {{ $order->phone }}</span>
+                        <span class="text-xs text-gray-500">{{ $order->user?->email }} - {{ $order->phone }}</span>
                         <p class="text-xs text-gray-500">{{ $order->address }}</p>
                     </td>
                     <td class="p-4 text-sm font-medium">

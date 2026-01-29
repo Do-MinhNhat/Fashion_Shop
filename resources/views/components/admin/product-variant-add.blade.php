@@ -112,7 +112,7 @@
                                 </div>
 
                                 <input type="hidden" name="product_id" x-model="oldData.product_id">
-                                <input type="hidden" name="category_id" x-model="oldData.product_id">
+                                <input type="hidden" name="category_id" x-model="oldData.category_id">
 
                                 <!-- Footer -->
                                 <div class="flex justify-end gap-3 pt-3 border-t">

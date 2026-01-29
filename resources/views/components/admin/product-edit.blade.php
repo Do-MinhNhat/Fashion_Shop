@@ -513,7 +513,7 @@
                         })
 
                     imgs.forEach((img) => {
-                        let index = Number(img.split('.').shift().split('_').pop());
+                        let index = Number(img.split('.').shift().split('_').pop()) + 1;
                         this.$refs['preview-' + index].classList.remove('hidden');
                         this.$refs['preview-' + index].src = '{{ asset("storage") }}/' + img;
                         this.$refs['image-' + index].classList.add('hidden');

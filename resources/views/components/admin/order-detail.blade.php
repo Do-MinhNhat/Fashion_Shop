@@ -113,24 +113,24 @@
                     </div>
 
                     <div class="lg:col-span-1 space-y-6">
-                        
+
                         <div class="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
                             <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 border-b pb-2">Thông tin khách hàng</h4>
                             <div class="flex items-center gap-3 mb-4">
                                 <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">NV</div>
                                 <div>
-                                    <p class="text-sm font-bold text-gray-900">{{ $order->user->name }}</p>
+                                    <p class="text-sm font-bold text-gray-900">{{ $order->user?->name }}</p>
                                     <p class="text-xs text-gray-500">Khách hàng thân thiết</p>
                                 </div>
                             </div>
                             <div class="space-y-3 text-sm text-gray-600">
                                 <div class="flex items-start gap-3">
                                     <i class="fas fa-envelope mt-1 text-gray-400 w-4"></i>
-                                    <span class="break-all">{{ $order->user->email }}</span>
+                                    <span class="break-all">{{ $order->user?->email }}</span>
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <i class="fas fa-phone text-gray-400 w-4"></i>
-                                    <span>{{ $order->user->phone }}</span>
+                                    <span>{{ $order->user?->phone }}</span>
                                 </div>
                                 <div class="flex items-start gap-3">
                                     <i class="fas fa-map-marker-alt mt-1 text-gray-400 w-4"></i>
@@ -141,7 +141,7 @@
 
                         <div class="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
                             <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 border-b pb-2">Lịch sử đơn hàng</h4>
-                            
+
                             <div class="relative pl-4 border-l-2 border-gray-200 space-y-6">
                                 <div class="relative">
                                     <div class="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-gray-300 ring-4 ring-white"></div>
@@ -150,7 +150,7 @@
                                     <p class="text-xs text-gray-500">Bởi: Khách hàng</p>
                                 </div>
                                 </div>
-                            
+
                             <button class="w-full mt-4 text-xs text-blue-600 hover:underline">Xem toàn bộ lịch sử</button>
                         </div>
                     </div>
@@ -160,7 +160,7 @@
                     <button class="inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 w-full sm:w-auto">
                         <i class="fas fa-print mr-2"></i> In hóa đơn
                     </button>
-                    
+
                     <div class="flex items-center gap-3 w-full sm:w-auto">
                         <div class="relative flex-1 sm:flex-none">
                             <select class="block w-full rounded-md border-0 py-2 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-600 sm:text-sm sm:leading-6">
@@ -171,13 +171,13 @@
                                 <option class="text-red-600">Đã hủy</option>
                             </select>
                         </div>
-                        
+
                         <button class="inline-flex items-center justify-center rounded-md bg-blue-600 px-6 py-2 text-sm font-bold text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 w-full sm:w-auto">
                             Cập nhật
                         </button>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>

@@ -194,7 +194,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware(['role:admin-head'])->group(function () {
             Route::resource('slideshow', AdminSlideShowController::class)->names('admin.slideshow');
             //Quản lý tài khoản
-            Route::get('/nguoi-dung/tai-khoan', [AdminUserController::class, 'index'])->name('admin.user.account');
+            Route::get('/nguoi-dung/tai-khoan', [AdminUserController::class, 'account'])->name('admin.user.account');
             Route::get('/nguoi-dung/thung-rac', [AdminUserController::class, 'trash'])->name('admin.user.trash');
             Route::post('/nguoi-dung/tai-khoan', [AdminUserController::class, 'store'])->name('admin.user.store');
             Route::delete('/nguoi-dung/{user}/', [AdminUserController::class, 'delete'])->name('admin.user.delete');
