@@ -8,3 +8,5 @@ php artisan migrate <br />
 php artisan db:seed <br />
 php artisan storage:link <br />
 Link Video Demo các chức năng chính: https://youtu.be/ZagPBU76KFY <br />
+
+LƯU Ý!!!: do hệ thống không sử lý chi tiết việc xóa sản phẩm nên dù cho có là xóa mềm thì cũng sẽ gây ra NULL ở các sản phẩm có eager loading!!! vd: Order chứa thông tin Admin duyệt, Admin bị xóa -> Order gọi Admin (đã xóa mềm) gây ra NUll. <br />
