@@ -1,5 +1,6 @@
 *
 !brand/
 !product/
+!product/thumbnail
 !default-user.png
 !.gitignore

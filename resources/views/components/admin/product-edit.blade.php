@@ -253,7 +253,7 @@
                                 <!-- Footer -->
                                 <div class="flex justify-end gap-3 pt-3 border-t">
                                     <button type="button" @click="open = false" class="px-4 py-2 bg-gray-100 text-sm rounded hover:bg-gray-200">Hủy</button>
-                                    <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800">Lưu sản phẩm</button>
+                                    <button type="submit" class="px-4 py-2 bg-black text-white text-sm rounded hover:bg-gray-800" @click="if(!confirm('Xác nhận lưu?')) $event.preventDefault()">Lưu sản phẩm</button>
                                 </div>
                                 <input type="hidden" x-ref="variantsInput" name="variants_data" :value="JSON.stringify(variants)">
                                 <input type="hidden" x-ref="slugInput" name="slug" x-model="oldData.slug">
